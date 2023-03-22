@@ -108,7 +108,7 @@ const register = () => {
         return;
     }
     store.dispatch('register',user).then(() => {
-        router.push({name:'Dashboard'})
+        location.reload()
     }).catch(err=>{
         if(err.response.data.nameexists){
             nameError.value = err.response.data.nameexists

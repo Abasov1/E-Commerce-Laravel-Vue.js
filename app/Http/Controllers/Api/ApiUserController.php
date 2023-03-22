@@ -76,12 +76,12 @@ class ApiUserController extends Controller
                     'auth' => true,
                     'admin' => true
                 ]);
-                return response([
-                    'user' => $user,
-                    'auth' => true,
-                    'admin' => false
-                ]);
             }
         }
+        return response([
+            'user' => $user,
+            'auth' => true,
+            'admin' => false
+        ]);
     }
 }

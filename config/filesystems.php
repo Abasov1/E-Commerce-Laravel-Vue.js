@@ -55,6 +55,12 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+        'public_vite' => [
+            'driver' => 'local',
+            'root' => public_path('vite'),
+            'url' => env('APP_URL') . '/vite',
+            'visibility' => 'public',
+        ],
 
     ],
 

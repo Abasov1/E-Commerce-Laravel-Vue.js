@@ -5,7 +5,7 @@ import router from '../router'
 const store = createStore({
     state:{
         user:{
-            data:{},
+            data:null,
             token:null,
             admin:null
         },
@@ -32,6 +32,10 @@ const store = createStore({
             if(data.user.is_admin){
                 state.user.admin = true
             }
+            state.loading = false
+        },
+        endload(state){
+            localStorage.removeItem('TOKEN');
             state.loading = false
         }
     },
@@ -70,11 +74,9 @@ const store = createStore({
                     router.push({name:'test'})
                 })
             }catch(error){
-                if(error.response.status === 401){
-                    router.push({name:'Salam'})
-                }
+                commit('endload')
+                router.push({name:'Salam'})
             }
-
         }
     },
     modules:{}

@@ -88,7 +88,7 @@
             return
         }
         store.dispatch('login',user).then(() => {
-            router.push({name:'Dashboard'})
+            location.reload()
         }).catch(err=>{
             if(err.response.data.message){
                 responseMsg.value = err.response.data.message
