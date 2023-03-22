@@ -67,4 +67,21 @@ class ApiUserController extends Controller
             'success' => true
         ]);
     }
+    public function yoxla(){
+        $user = Auth::user();
+        if($user){
+            if($user->is_admin){
+                return response ([
+                    'user' => $user,
+                    'auth' => true,
+                    'admin' => true
+                ]);
+                return response([
+                    'user' => $user,
+                    'auth' => true,
+                    'admin' => false
+                ]);
+            }
+        }
+    }
 }

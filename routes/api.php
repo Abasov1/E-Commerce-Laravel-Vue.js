@@ -20,6 +20,8 @@ Route::middleware('auth:sanctum')->group(function(){
         return $request->user();
     });
     Route::post('logout',[ApiUserController::class,'logout']);
+    Route::post('yoxla',[ApiUserController::class,'yoxla']);
 });
 Route::post('register',[ApiUserController::class,'register']);
 Route::post('login',[ApiUserController::class,'login']);
+
