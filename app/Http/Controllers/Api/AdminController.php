@@ -56,4 +56,54 @@ class AdminController extends Controller
             'message' => 'product created successfully'
         ]);
     }
+    public function addbrand(Request $request){
+        $request->validate([
+            'name' => 'required|unique:brands,name'
+        ],[
+            'name.unique' => 'This brand is already exists'
+        ]);
+        Brand::create([
+            'name' => $request->name,
+        ]);
+        return response([
+            'message' => 'brand created successfully'
+        ]);
+    }
+    public function addmerchant(Request $request){
+        $request->validate([
+            'name' => 'required|unique:merchants,name'
+        ],[
+            'name.unique' => 'This merchant is already exists'
+        ]);
+        Merchant::create([
+            'name' => $request->name,
+        ]);
+        return response([
+            'message' => 'merchant created successfully'
+        ]);
+    }
+    public function loadbrands(Request $request){
+        if($request->search){
+            $brands = Brand::where('name','LIKE','%' . $request->search . '%')->latest()->paginate($request->perPage,['*'],'page',$request->page);
+        }else{
+            $brands = Brand::latest()->paginate($request->perPage,['*'],'page',$request->page);
+        }
+        return response([
+            'brands' =>$brands,
+            'request' => $request
+        ]);
+    }
+    public function deletebrand($id){
+        $brand = Brand::where('id',$id)->first();
+        if($brand->exists()){
+            $brand->delete();
+            return response([
+                'message' => 'Brand is deleted'
+            ]);
+        }else{
+            return response([
+                'message' => 'This brand does not exists'
+            ]);
+        }
+    }
 }

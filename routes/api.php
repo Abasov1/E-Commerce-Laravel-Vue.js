@@ -21,11 +21,25 @@ Route::middleware('auth:sanctum')->group(function(){
         return $request->user();
     });
     Route::post('logout',[ApiUserController::class,'logout']);
+
+    //Check for token
     Route::post('yoxla',[ApiUserController::class,'yoxla']);
+
+    //Search
     Route::post('merchants',[AdminController::class,'merchantS']);
     Route::post('brands',[AdminController::class,'brandS']);
     Route::post('categorys',[AdminController::class,'categoryS']);
+
+    //Add
     Route::post('addproduct',[AdminController::class,'addproduct']);
+    Route::post('addbrand',[AdminController::class,'addbrand']);
+    Route::post('addmerchant',[AdminController::class,'addmerchant']);
+
+    //Delete
+    Route::post('deletebrand/{id}',[AdminController::class,'deletebrand']);
+
+    //Load tables
+    Route::post('loadbrands',[AdminController::class,'loadbrands']);
 });
 Route::post('register',[ApiUserController::class,'register']);
 Route::post('login',[ApiUserController::class,'login']);

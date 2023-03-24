@@ -71,9 +71,14 @@
         <div data-i18n="Dashboards">Dashboards</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item" :class="[this.$route.name === 'test' ? 'active' : '']">
-          <router-link :to="{name:'test'}" class="menu-link">
-            <div data-i18n="Analytics">Analytics</div>
+        <li class="menu-item" :class="[this.$route.name === 'Brand' ? 'active' : '']">
+          <router-link :to="{name:'Brand'}" class="menu-link">
+            <div data-i18n="Analytics">Brands</div>
+          </router-link>
+        </li>
+        <li class="menu-item" :class="[this.$route.name === 'Merchant' ? 'active' : '']">
+          <router-link :to="{name:'Merchant'}" class="menu-link">
+            <div data-i18n="Analytics">Merchants</div>
           </router-link>
         </li>
         <li class="menu-item" :class="[this.$route.name === 'Product' ? 'active' : '']">

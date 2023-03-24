@@ -93,7 +93,25 @@ const store = createStore({
             }catch(error){
                 console.log(error)
             }
-        }
+        },
+        addbrand: async({commit},selected) => {
+                await axios.post('http://127.0.0.1:8000/api/addbrand',selected,{
+                    headers: {
+                        Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                    }
+                }).then((response)=>{
+                    alert(response.data.message)
+                })
+        },
+        addmerchant: async({commit},selected) => {
+            await axios.post('http://127.0.0.1:8000/api/addmerchant',selected,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response)=>{
+                alert(response.data.message)
+            })
+    }
     },
     modules:{}
 })

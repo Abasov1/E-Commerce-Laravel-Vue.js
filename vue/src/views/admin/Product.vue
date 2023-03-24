@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     <div v-if="selected.inf" v-for="inf in selected.inf" class="row mb-3">
-                        <label class="col-sm-2 col-form-label" for="basic-default-phone"><b>{{inf.title}}: </b> {{inf.body}}</label>
+                        <label class="col-sm-2 "><b>{{inf.title}}: </b> {{inf.body}}</label>
                     </div>
                     <div class="row justify-content-end">
                         <div class="col-sm-10">
