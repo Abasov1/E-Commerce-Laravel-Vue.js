@@ -13,13 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('survey_questions', function (Blueprint $table) {
+        Schema::create('brands', function (Blueprint $table) {
             $table->id();
-            $table->string('type', 45);
-            $table->string('question',2000);
-            $table->longText('description')->nullable();
-            $table->longText('data')->nullable();
-            $table->foreignId('survey_id');
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('survey_questions');
+        Schema::dropIfExists('brands');
     }
 };

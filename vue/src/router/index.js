@@ -9,6 +9,7 @@ import Layout from '../components/Layout.vue'
 import AuthLayout from '../components/AuthLayout.vue'
 import AdminLayout from '../components/AdminLayout.vue'
 import Testik from '../views/admin/Testik.vue'
+import Product from '../views/admin/Product.vue'
 import store from '../store/index.js'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,7 +44,12 @@ const router = createRouter({
               path:'/test',
               name:'test',
               component: Testik
-          }
+          },
+          {
+            path:'/product',
+            name:'Product',
+            component: Product
+        }
         ]
 
     },

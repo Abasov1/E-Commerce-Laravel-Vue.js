@@ -65,21 +65,21 @@
 
   <ul class="menu-inner py-1">
     <!-- Dashboards -->
-    <li class="menu-item" @click="dashboardActiveClick" :class="{'active':dashboardActive,'open':dashboardActive}">
+    <li class="menu-item" @click="dashboardActiveClick" :class="[this.$route.name === 'test' ? 'active open' : '',this.$route.name === 'Product' ? 'active open' : '',dashboardActive ? 'active open' : '']">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-home-circle"></i>
         <div data-i18n="Dashboards">Dashboards</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item active">
-          <a href="dashboards-analytics.html" class="menu-link">
+        <li class="menu-item" :class="[this.$route.name === 'test' ? 'active' : '']">
+          <router-link :to="{name:'test'}" class="menu-link">
             <div data-i18n="Analytics">Analytics</div>
-          </a>
+          </router-link>
         </li>
-        <li class="menu-item">
-          <a href="dashboards-crm.html" class="menu-link">
-            <div data-i18n="CRM">CRM</div>
-          </a>
+        <li class="menu-item" :class="[this.$route.name === 'Product' ? 'active' : '']">
+          <router-link :to="{name:'Product'}" class="menu-link">
+            <div data-i18n="CRM">Products</div>
+          </router-link>
         </li>
         <li class="menu-item">
           <a href="dashboards-ecommerce.html" class="menu-link">
@@ -1448,29 +1448,6 @@
         <!-- Content -->
         <router-view>
         </router-view>
-
-<!-- Footer -->
-<footer class="content-footer footer bg-footer-theme">
-  <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
-    <div class="mb-2 mb-md-0">
-
-      , made with ❤️ by <a href="https://themeselection.com/" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
-    </div>
-    <div>
-
-      <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
-      <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
-
-      <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/documentation/" target="_blank" class="footer-link me-4">Documentation</a>
-
-
-      <a href="https://themeselection.com/support/" target="_blank" class="footer-link d-none d-sm-inline-block">Support</a>
-
-    </div>
-  </div>
-</footer>
-<!-- / Footer -->
-
 
           <div class="content-backdrop fade"></div>
         </div>

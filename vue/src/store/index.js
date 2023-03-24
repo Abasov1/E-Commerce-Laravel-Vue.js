@@ -9,7 +9,10 @@ const store = createStore({
             token:null,
             admin:null
         },
-        loading: true
+        loading: true,
+        search:{
+            merchant:null
+        }
     },
     getters:{},
     mutations:{
@@ -71,11 +74,24 @@ const store = createStore({
                     }
                 }).then((response)=>{
                     commit('loadik',response.data)
-                    router.push({name:'test'})
+                    router.push({name:'Product'})
                 })
             }catch(error){
                 commit('endload')
                 router.push({name:'Salam'})
+            }
+        },
+        addproduct: async({commit},selected) => {
+            try{
+                await axios.post('http://127.0.0.1:8000/api/addproduct',selected,{
+                    headers: {
+                        Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                    }
+                }).then((response)=>{
+                    alert(response.data.message)
+                })
+            }catch(error){
+                console.log(error)
             }
         }
     },

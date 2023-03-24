@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\ApiUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,10 @@ Route::middleware('auth:sanctum')->group(function(){
     });
     Route::post('logout',[ApiUserController::class,'logout']);
     Route::post('yoxla',[ApiUserController::class,'yoxla']);
+    Route::post('merchants',[AdminController::class,'merchantS']);
+    Route::post('brands',[AdminController::class,'brandS']);
+    Route::post('categorys',[AdminController::class,'categoryS']);
+    Route::post('addproduct',[AdminController::class,'addproduct']);
 });
 Route::post('register',[ApiUserController::class,'register']);
 Route::post('login',[ApiUserController::class,'login']);
