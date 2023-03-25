@@ -12,6 +12,7 @@ import Testik from '../views/admin/Testik.vue'
 import Product from '../views/admin/Product.vue'
 import Brand from '../views/admin/Brand.vue'
 import Merchant from '../views/admin/Merchant.vue'
+import Category from '../views/admin/Category.vue'
 import store from '../store/index.js'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,7 +40,7 @@ const router = createRouter({
         path: '/admin',
         name:'Admin',
         meta:{isAdmin:true},
-        redirect:'/test',
+        redirect:'/brands',
         component: AdminLayout,
         children:[
           {
@@ -51,6 +52,11 @@ const router = createRouter({
             path:'/merchants',
             name:'Merchant',
             component: Merchant
+          },
+          {
+            path:'/categories',
+            name:'Category',
+            component: Category
           },
           {
             path:'/product',

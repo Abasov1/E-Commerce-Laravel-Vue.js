@@ -35,7 +35,6 @@
                             <input v-model="form.category" v-debounce:700ms="searchCategory" type="text" class="form-control" :class="[v$.category_id.$error ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
                             <span v-if="!selected.category_id" @click="chooseCategory">{{category.name}}</span>
                         </div>
-
                     </div>
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="basic-default-name">Price <b v-if="v$.price.$error" style="color:rgb(255,62,29)"> - required</b></label>

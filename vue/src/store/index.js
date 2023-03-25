@@ -61,12 +61,12 @@ const store = createStore({
                         Authorization: 'Bearer '+localStorage.getItem('TOKEN')
                     }
                 }).then((response) => {
-                    console.log(response.data)
+                    router.push('Salam')
                 }).catch(err=>{
                     console.log(err.response.data.message)
                 })
             },
-        loadUser: async({commit}) => {
+        loadUser: async({commit,dispatch}) => {
             try{
                await axios.post('http://127.0.0.1:8000/api/yoxla',null,{
                     headers: {
@@ -74,7 +74,7 @@ const store = createStore({
                     }
                 }).then((response)=>{
                     commit('loadik',response.data)
-                    router.push({name:'Product'})
+                    router.push({name:'Category'})
                 })
             }catch(error){
                 commit('endload')
@@ -111,7 +111,16 @@ const store = createStore({
             }).then((response)=>{
                 alert(response.data.message)
             })
-    }
+        },
+        addcategory: async({commit},selected) => {
+            await axios.post('http://127.0.0.1:8000/api/addcategory',selected,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response)=>{
+                alert(response.data.message)
+            })
+        }
     },
     modules:{}
 })

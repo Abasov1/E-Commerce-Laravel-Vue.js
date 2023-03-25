@@ -1,19 +1,26 @@
 <template>
-    <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="container-xxl flex-grow-1 container-p-y" id='topos'>
         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span> Horizontal Layouts</h4>
         <div class="row">
             <div class="col-xxl">
                 <div class="card mb-4">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5 class="mb-0">Merchant input</h5> <small class="text-muted float-end">netersen gulenver</small>
+                    <h5 class="mb-0">Category input</h5> <small class="text-muted float-end">netersen gulenver</small>
                 </div>
                 <div class="card-body">
-                    <form @submit.prevent="makeMerchant">
+                    <form @submit.prevent="makeCategory">
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">Name  <b v-if="selected.id && !v$.name.$error" style="color:yellow;"> - updating</b><b v-if="v$.name.$error" style="color:rgb(255,62,29)"> - required</b></label>
+                        <label class="col-sm-2 col-form-label" for="basic-default-phone"> Parent Category  <b v-if="v$.category_id.$error" style="color:rgb(255,62,29)"> - required</b><b style="cursor:pointer;color:blue;" @click="resetCategory" v-if="selected.category_id">reset</b></label>
                             <div class="col-sm-10">
-                            <input v-model="selected.name" type="text" class="form-control" :class="[v$.name.$error ? 'is-invalid' : '',merchanterror ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
-                            <span v-if='merchanterror' style="color:rgb(255,62,29)">{{merchanterror}}</span>
+                                <input v-model="form.category" v-debounce:700ms="searchCategory" type="text" class="form-control" :class="[v$.category_id.$error ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
+                                <span v-if="!selected.category_id" @click="chooseCategory">{{foundCategory.name}}</span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label" for="basic-default-name">Name <b v-if="selected.id && !v$.name.$error" style="color:yellow;"> - updating</b><b v-if="v$.name.$error" style="color:rgb(255,62,29)"> - required</b></label>
+                            <div class="col-sm-10">
+                            <input v-model="selected.name" type="text" class="form-control" :class="[v$.name.$error ? 'is-invalid' : '',categoryerror ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
+                            <span v-if='categoryerror' style="color:rgb(255,62,29)">{{categoryerror}}</span>
                             </div>
                         </div>
 
@@ -61,7 +68,7 @@
                                         <label>Search:</label>
                                     </div>
                                     <div class="col-10">
-                                        <input v-model="page.search" v-debounce:400ms="searchMerchants" type="search" class="form-control" placeholder="" aria-controls="DataTables_Table_0">
+                                        <input v-model="page.search" v-debounce:400ms="searchCategories" type="search" class="form-control" placeholder="" aria-controls="DataTables_Table_0">
                                     </div>
                                 </div>
                             </div>
@@ -80,29 +87,29 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="merchant in merchants" :key="merchant.id">
+                        <tr v-for="category in categories" :key="category.id">
                             <td class="dt-checkboxes-cell">
                                 <input type="checkbox" class="dt-checkboxes form-check-input">
                             </td>
-                            <td>
+                            <td style="overflow:hidden;">
                                 <div class="d-flex justify-content-start align-items-center user-name">
                                     <div class="avatar-wrapper">
                                         <div class="avatar me-2">
-                                            <span class="avatar-initial rounded-circle bg-label-warning">{{merchant.name.charAt(0)}}</span>
+                                            <span class="avatar-initial rounded-circle bg-label-warning">{{category.name.charAt(0)}}</span>
                                         </div>
                                     </div>
-                                    <div class="d-flex flex-column">
-                                        <span class="emp_name text-truncate">{{merchant.name}}</span>
+                                    <div class="d-flex flex-column" style="overflow:hidden;width:200px;">
+                                        <span class="emp_name text-truncate">{{category.name}}</span>
                                     </div>
                                 </div>
                             </td>
                             <td>ggiacoppo2r@apache.org</td>
-                            <td>{{merchant.date}}</td>
+                            <td>{{category.date}}</td>
                             <td>$24973.48</td>
                             <td><span class="badge  bg-label-success">Professional</span></td>
                             <td>
-                                <a @click.prevent="deletE(merchant.id)" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-trash"></i></a>
-                                <a @click.prevent="editE(merchant.id,merchant.name)" href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>
+                                <a @click.prevent="deletE(category.id)" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-trash"></i></a>
+                                <a @click.prevent="editE(category.id,category.name,category.category_id,category.parent)" href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>
 
                             </td>
                         </tr>
@@ -110,7 +117,7 @@
                     </table>
                     <div class="row" style="padding-left:40px;padding-top:20px;">
                         <div class="col-sm-12 col-md-6">
-                            <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">Showing {{page.perPage}} of {{merchantCount}} merchants</div>
+                            <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">Showing {{page.page}} to {{page.perPage}} of {{categoryCount}} categories</div>
                         </div>
                         <div class="col-sm-12 col-md-6">
                             <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
@@ -137,6 +144,8 @@
                 </div>
             </div>
         </div>
+            <!-- Modal to add new record -->
+
     </div>
     </template>
 
@@ -147,10 +156,14 @@
     import axios from 'axios'
     import { useVuelidate } from '@vuelidate/core'
     import { required } from '@vuelidate/validators'
-    const merchanterror = ref('')
-    const merchants = ref([])
+    const categoryerror = ref('')
+    const categories = ref([])
+    const foundCategory = ref('')
     const pagesCount = ref('')
-    const merchantCount = ref('')
+    const categoryCount = ref('')
+    const form = reactive({
+        category:''
+    })
     const page = reactive({
         page:1,
         search:'',
@@ -161,102 +174,140 @@
     const currentPage = parseInt(page.page)
     const selected = reactive({
         name:'',
-        id:''
+        id:'',
+        category_id:''
     })
     const rules = {
         name:{required},
+        category_id:{required}
     }
 
     watch(()=>selected.name,()=>{
-        if(merchanterror){
-            merchanterror.value = ''
+        if(categoryerror){
+            categoryerror.value = ''
         }
     })
-
     watch(()=>page.perPage,()=>{
         page.page = 1
-        loadMerchants()
+        loadCategories()
     })
 
     const v$ = useVuelidate(rules,selected)
 
-    const makeMerchant = () => {
+    const makeCategory = () => {
         v$.value.$validate()
         if(v$.value.$error){
             return
         }
-        store.dispatch('addmerchant',selected).then(async()=>{
+        store.dispatch('addcategory',selected).then(async()=>{
             page.order = false
-            await loadMerchants()
+            await loadCategories()
         }).catch(err=>{
-            merchanterror.value = err.response.data.message
+            categoryerror.value = err.response.data.message
         })
     }
 
     const reset = () => {
         selected.name = ''
         selected.id = ''
+        form.category = ''
+        selected.category_id = ''
         v$.value.$reset()
     }
+
+    const searchCategory = async() => {
+    if(form.category){
+            await axios.post('http://127.0.0.1:8000/api/categorys',form,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response)=>{
+                foundCategory.value = response.data.category
+            })
+        }else{
+            foundCategory.value = ''
+        }
+    }
+    const chooseCategory = () => {
+        if(foundCategory.value){
+            selected.category_id = foundCategory.value.id
+            form.category = foundCategory.value.name
+            foundCategory.value = ''
+        }
+    }
+    const resetCategory = () => {
+        selected.category_id = ''
+        form.category = ''
+    }
     onMounted(async()=>{
-        await loadMerchants()
+        await loadCategories()
     })
 
     const deletE = async(id) => {
         if(window.confirm('Are you sure you want to delete?')){
-            await axios.post('http://127.0.0.1:8000/api/deletemerchant/'+id,null,{
+            await axios.post('http://127.0.0.1:8000/api/deletecategory/'+id,null,{
                     headers: {
                         Authorization: 'Bearer '+localStorage.getItem('TOKEN')
                     }
                 }).then((response)=>{
-                    loadMerchants()
+                    loadCategories()
                     alert(response.data.message)
                 })
         }
     }
-    const editE = (id,name) => {
+    const editE = (id,name,parentId,parentName) => {
+        if(parentName){
+            form.category = parentName.name
+        }
         selected.id = id
+        selected.category_id = parentId
         selected.name = name
         window.location.href = '#'
     }
-    const searchMerchants = () => {
+    const searchCategories = () => {
         page.page = 1
-        loadMerchants()
+        loadCategories()
     }
     const order = () => {
         page.order = true
-        loadMerchants()
+        loadCategories()
         page.orderBy = !page.orderBy
     }
-    const loadMerchants = async() => {
-        await axios.post('http://127.0.0.1:8000/api/loadmerchants',page,{
+    const loadCategories = async() => {
+        await axios.post('http://127.0.0.1:8000/api/loadcategories',page,{
                     headers: {
                         Authorization: 'Bearer '+localStorage.getItem('TOKEN')
                     }
                 }).then((response)=>{
-                    merchants.value = response.data.merchants.data
+                    categories.value = response.data.categories.data
                     pagesCount.value = response.data.last
-                    merchantCount.value = response.data.count
+                    categoryCount.value = response.data.count
                 })
     }
     const changePage = (n) => {
         page.page = n
-        loadMerchants()
+        loadCategories()
     }
     const previousPage = () => {
         if(page.page != 1){
             page.page--
-            loadMerchants()
+            loadCategories()
         }
     }
     const nextPage = () => {
         if(page.page != pagesCount){
             page.page++
-            loadMerchants()
+            loadCategories()
         }
     }
     </script>
 
     <style scoped>
-
+    .activePager{
+        background-color:rgb(105,108,255);
+        color:white;
+    }
+    .deactivePager{
+        background-color:rgb(240,242,244);color:rgb(105,122,141);
+    }
     </style>

@@ -34,12 +34,17 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('addproduct',[AdminController::class,'addproduct']);
     Route::post('addbrand',[AdminController::class,'addbrand']);
     Route::post('addmerchant',[AdminController::class,'addmerchant']);
+    Route::post('addcategory',[AdminController::class,'addcategory']);
 
     //Delete
     Route::post('deletebrand/{id}',[AdminController::class,'deletebrand']);
+    Route::post('deletemerchant/{id}',[AdminController::class,'deletemerchant']);
+    Route::post('deletecategory/{id}',[AdminController::class,'deletecategory']);
 
     //Load tables
     Route::post('loadbrands',[AdminController::class,'loadbrands']);
+    Route::post('loadmerchants',[AdminController::class,'loadmerchants']);
+    Route::post('loadcategories',[AdminController::class,'loadcategories']);
 });
 Route::post('register',[ApiUserController::class,'register']);
 Route::post('login',[ApiUserController::class,'login']);

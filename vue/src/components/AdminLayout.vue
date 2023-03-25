@@ -65,7 +65,7 @@
 
   <ul class="menu-inner py-1">
     <!-- Dashboards -->
-    <li class="menu-item" @click="dashboardActiveClick" :class="[this.$route.name === 'test' ? 'active open' : '',this.$route.name === 'Product' ? 'active open' : '',dashboardActive ? 'active open' : '']">
+    <li class="menu-item" @click="dashboardActiveClick" :class="[this.$route.name === 'Brand' || this.$route.name === 'Product' || this.$route.name === 'Merchant' || this.$route.name === 'Category' ? 'active open' : '',dashboardActive ? 'active open' : '']">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon tf-icons bx bx-home-circle"></i>
         <div data-i18n="Dashboards">Dashboards</div>
@@ -79,6 +79,11 @@
         <li class="menu-item" :class="[this.$route.name === 'Merchant' ? 'active' : '']">
           <router-link :to="{name:'Merchant'}" class="menu-link">
             <div data-i18n="Analytics">Merchants</div>
+          </router-link>
+        </li>
+        <li class="menu-item" :class="[this.$route.name === 'Category' ? 'active' : '']">
+          <router-link :to="{name:'Category'}" class="menu-link">
+            <div data-i18n="Analytics">Categories</div>
           </router-link>
         </li>
         <li class="menu-item" :class="[this.$route.name === 'Product' ? 'active' : '']">
@@ -1472,11 +1477,6 @@
 
   </div>
   <!-- / Layout wrapper -->
-
-
-  <div class="buy-now">
-    <a href="https://themeselection.com/item/sneat-bootstrap-html-admin-template/" target="_blank" class="btn btn-danger btn-buy-now">Buy Now</a>
-  </div>
 </template>
 <script setup>
 import { onMounted,ref } from 'vue'

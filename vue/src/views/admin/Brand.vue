@@ -1,5 +1,5 @@
 <template>
-    <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="container-xxl flex-grow-1 container-p-y" id='topos'>
         <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span> Horizontal Layouts</h4>
         <div class="row">
             <div class="col-xxl">
@@ -10,7 +10,7 @@
                 <div class="card-body">
                     <form @submit.prevent="makeBrand">
                         <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label" for="basic-default-name">Name <b v-if="v$.name.$error" style="color:rgb(255,62,29)"> - required</b></label>
+                            <label class="col-sm-2 col-form-label" for="basic-default-name">Name <b v-if="selected.id && !v$.name.$error" style="color:yellow;"> - updating</b><b v-if="v$.name.$error" style="color:rgb(255,62,29)"> - required</b></label>
                             <div class="col-sm-10">
                             <input v-model="selected.name" type="text" class="form-control" :class="[v$.name.$error ? 'is-invalid' : '',branderror ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
                             <span v-if='branderror' style="color:rgb(255,62,29)">{{branderror}}</span>
@@ -31,138 +31,114 @@
         <div class="card pt-4">
             <div class="card-datatable table-responsive">
                 <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
-                <div class="row">
-                    <div class="col-sm-12 col-md-6">
-                        <div class="dataTables_length" id="DataTables_Table_0_length">
-                            <div class="row d-flex justify-content-center align-items-center">
-                                <div class="col-1 d-flex justify-content-center align-items-center">
-                                    <label>Show</label>
-                                </div>
-                                <div class="col-4 d-flex justify-content-center align-items-center">
-                                    <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="form-select">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="75">75</option>
-                                        <option value="100">100</option>
-                                    </select>
-                                </div>
-                                <div class="col-6 d-flex justify-content-start" >
-                                    entries
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end">
-                        <div id="DataTables_Table_0_filter" class="dataTables_filter">
-                            <div class="row d-flex justify-content-center align-items-center">
-                                <div class="col-1 d-flex justify-content-center align-items-center">
-                                    <label>Search:</label>
-                                </div>
-                                <div class="col-10">
-                                    <input v-model="page.search" v-debounce:400ms="loadBrands" type="search" class="form-control" placeholder="" aria-controls="DataTables_Table_0">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <table class="datatables-basic table border-top">
-                <thead>
-                    <tr>
-                    <th>id</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Date</th>
-                    <th>Salary</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="brand in brands" :key="brand.id">
-                        <td class="dt-checkboxes-cell">
-                            <input type="checkbox" class="dt-checkboxes form-check-input">
-                        </td>
-                        <td>
-                            <div class="d-flex justify-content-start align-items-center user-name">
-                                <div class="avatar-wrapper">
-                                    <div class="avatar me-2">
-                                        <span class="avatar-initial rounded-circle bg-label-warning">GG</span>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dataTables_length" id="DataTables_Table_0_length">
+                                <div class="row d-flex justify-content-center align-items-center">
+                                    <div class="col-1 d-flex justify-content-center align-items-center">
+                                        <label>Show</label>
+                                    </div>
+                                    <div class="col-4 d-flex justify-content-center align-items-center">
+                                        <select v-model="page.perPage" name="DataTables_Table_0_length" aria-controls="DataTables_Table_0" class="form-select">
+                                            <option value="1">1</option>
+                                            <option value="10">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="75">75</option>
+                                            <option value="100">100</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 d-flex justify-content-start" >
+                                        entries
                                     </div>
                                 </div>
-                                <div class="d-flex flex-column">
-                                    <span class="emp_name text-truncate">{{brand.name}}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end">
+                            <div id="DataTables_Table_0_filter" class="dataTables_filter">
+                                <div class="row d-flex justify-content-center align-items-center">
+                                    <div class="col-1 d-flex justify-content-center align-items-center">
+                                        <label>Search:</label>
+                                    </div>
+                                    <div class="col-10">
+                                        <input v-model="page.search" v-debounce:400ms="searchBrands" type="search" class="form-control" placeholder="" aria-controls="DataTables_Table_0">
+                                    </div>
                                 </div>
                             </div>
-                        </td>
-                        <td>ggiacoppo2r@apache.org</td>
-                        <td>04/15/2021</td>
-                        <td>$24973.48</td>
-                        <td><span class="badge  bg-label-success">Professional</span></td>
-                        <td>
-                            <a @click.prevent="deletE(brand.id)" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-trash"></i></a>
-                            <a href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>
-                        </td>
-                    </tr>
-                </tbody>
-                </table>
-            </div>
-            </div>
-            </div>
-            <!-- Modal to add new record -->
-            <div class="offcanvas offcanvas-end" id="add-new-record">
-            <div class="offcanvas-header border-bottom">
-                <h5 class="offcanvas-title" id="exampleModalLabel">New Record</h5>
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body flex-grow-1">
-                <form class="add-new-record pt-0 row g-2" id="form-add-new-record" onsubmit="return false">
-                <div class="col-sm-12">
-                    <label class="form-label" for="basicFullname">Full Name</label>
-                    <div class="input-group input-group-merge">
-                    <span id="basicFullname2" class="input-group-text"><i class="bx bx-user"></i></span>
-                    <input type="text" id="basicFullname" class="form-control dt-full-name" name="basicFullname" placeholder="John Doe" aria-label="John Doe" aria-describedby="basicFullname2" />
+                        </div>
                     </div>
-                </div>
-                <div class="col-sm-12">
-                    <label class="form-label" for="basicPost">Post</label>
-                    <div class="input-group input-group-merge">
-                    <span id="basicPost2" class="input-group-text"><i class='bx bxs-briefcase'></i></span>
-                    <input type="text" id="basicPost" name="basicPost" class="form-control dt-post" placeholder="Web Developer" aria-label="Web Developer" aria-describedby="basicPost2" />
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <label class="form-label" for="basicEmail">Email</label>
-                    <div class="input-group input-group-merge">
-                    <span class="input-group-text"><i class="bx bx-envelope"></i></span>
-                    <input type="text" id="basicEmail" name="basicEmail" class="form-control dt-email" placeholder="john.doe@example.com" aria-label="john.doe@example.com" />
-                    </div>
-                    <div class="form-text">
-                    You can use letters, numbers & periods
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <label class="form-label" for="basicDate">Joining Date</label>
-                    <div class="input-group input-group-merge">
-                    <span id="basicDate2" class="input-group-text"><i class='bx bx-calendar'></i></span>
-                    <input type="text" class="form-control dt-date" id="basicDate" name="basicDate" aria-describedby="basicDate2" placeholder="MM/DD/YYYY" aria-label="MM/DD/YYYY" />
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <label class="form-label" for="basicSalary">Salary</label>
-                    <div class="input-group input-group-merge">
-                    <span id="basicSalary2" class="input-group-text"><i class='bx bx-dollar'></i></span>
-                    <input type="number" id="basicSalary" name="basicSalary" class="form-control dt-salary" placeholder="12000" aria-label="12000" aria-describedby="basicSalary2" />
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <button type="submit" class="btn btn-primary data-submit me-sm-3 me-1">Submit</button>
-                    <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
-                </div>
-                </form>
+                    <table class="datatables-basic table border-top">
+                    <thead>
+                        <tr>
+                        <th>id</th>
+                        <th @click="order" class="d-flex justify-content-between">Name <i style="solor:rgb(187,195,204)" :class="[page.orderBy ? 'bx bxs-chevron-up':'bx bxs-chevron-down']"></i></th>
+                        <th>Email</th>
+                        <th>Date</th>
+                        <th>Salary</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="brand in brands" :key="brand.id">
+                            <td class="dt-checkboxes-cell">
+                                <input type="checkbox" class="dt-checkboxes form-check-input">
+                            </td>
+                            <td style="overflow:hidden;">
+                                <div class="d-flex justify-content-start align-items-center user-name">
+                                    <div class="avatar-wrapper">
+                                        <div class="avatar me-2">
+                                            <span class="avatar-initial rounded-circle bg-label-warning">{{brand.name.charAt(0)}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column" style="overflow:hidden;max-width:100px;">
+                                        <span class="emp_name text-truncate">{{brand.name}}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>ggiacoppo2r@apache.org</td>
+                            <td>{{brand.date}}</td>
+                            <td>$24973.48</td>
+                            <td><span class="badge  bg-label-success">Professional</span></td>
+                            <td>
+                                <a @click.prevent="deletE(brand.id)" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-trash"></i></a>
+                                <a @click.prevent="editE(brand.id,brand.name)" href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>
 
+                            </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                    <div class="row" style="padding-left:40px;padding-top:20px;">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">Showing {{page.page}} to {{page.perPage}} of {{brandCount}} brands</div>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+                                <ul class="pagination">
+                                    <li class="paginate_button page-item previous" :class="[page.page === 1 ? 'disabled' : '']" id="DataTables_Table_0_previous">
+                                        <a @click.prevent="previousPage" href="#" aria-controls="DataTables_Table_0" data-dt-idx="previous" tabindex="0" class="page-link">Previous</a>
+                                    </li>
+                                    <li v-for="n in pagesCount" :key="n"  class="paginate_button page-item active">
+                                        <a @click.prevent="changePage(n)" v-show="n < page.page + 5 && page.page < n+2 && n != pagesCount" href="#" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0" class="page-link" :style="[page.page == n ? 'background-color:rgb(105,108,255);color:white;' : 'background-color:rgb(240,242,244);color:rgb(105,122,141);']">{{n}}</a>
+                                    </li>
+                                    <li v-if='pagesCount - page.page > 5' class="paginate_button page-item disabled" id="DataTables_Table_0_ellipsis">
+                                        <a href="#" aria-controls="DataTables_Table_0" data-dt-idx="ellipsis" tabindex="0" class="page-link">…</a>
+                                    </li>
+                                    <li class="paginate_button page-item ">
+                                        <a @click.prevent="changePage(pagesCount)" href="#" aria-controls="DataTables_Table_0" data-dt-idx="14" tabindex="0" class="page-link" :style="[page.page === pagesCount ? 'background-color:rgb(105,108,255);color:white;' : 'background-color:rgb(240,242,244);color:rgb(105,122,141);']">{{pagesCount}}</a>
+                                    </li>
+                                    <li class="paginate_button page-item next" :class="[page.page === pagesCount ? 'disabled' : '']" id="DataTables_Table_0_next">
+                                        <a @click.prevent="nextPage" href="#" aria-controls="DataTables_Table_0" data-dt-idx="next" tabindex="0" class="page-link">Next</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            </div>
+        </div>
+            <!-- Modal to add new record -->
+
     </div>
     </template>
 
@@ -175,13 +151,19 @@
     import { required } from '@vuelidate/validators'
     const branderror = ref('')
     const brands = ref([])
+    const pagesCount = ref('')
+    const brandCount = ref('')
     const page = reactive({
-        page:'1',
+        page:1,
         search:'',
-        perPage:'10'
+        perPage:'10',
+        order:false,
+        orderBy:true
     })
+    const currentPage = parseInt(page.page)
     const selected = reactive({
         name:'',
+        id:''
     })
     const rules = {
         name:{required},
@@ -192,6 +174,10 @@
             branderror.value = ''
         }
     })
+    watch(()=>page.perPage,()=>{
+        page.page = 1
+        loadBrands()
+    })
 
     const v$ = useVuelidate(rules,selected)
 
@@ -201,6 +187,7 @@
             return
         }
         store.dispatch('addbrand',selected).then(async()=>{
+            page.order = false
             await loadBrands()
         }).catch(err=>{
             branderror.value = err.response.data.message
@@ -209,6 +196,7 @@
 
     const reset = () => {
         selected.name = ''
+        selected.id = ''
         v$.value.$reset()
     }
 
@@ -228,6 +216,20 @@
                 })
         }
     }
+    const editE = (id,name) => {
+        selected.id = id
+        selected.name = name
+        window.location.href = '#'
+    }
+    const searchBrands = () => {
+        page.page = 1
+        loadBrands()
+    }
+    const order = () => {
+        page.order = true
+        loadBrands()
+        page.orderBy = !page.orderBy
+    }
     const loadBrands = async() => {
         await axios.post('http://127.0.0.1:8000/api/loadbrands',page,{
                     headers: {
@@ -235,11 +237,34 @@
                     }
                 }).then((response)=>{
                     brands.value = response.data.brands.data
+                    pagesCount.value = response.data.last
+                    brandCount.value = response.data.count
                 })
     }
-
+    const changePage = (n) => {
+        page.page = n
+        loadBrands()
+    }
+    const previousPage = () => {
+        if(page.page != 1){
+            page.page--
+            loadBrands()
+        }
+    }
+    const nextPage = () => {
+        if(page.page != pagesCount){
+            page.page++
+            loadBrands()
+        }
+    }
     </script>
 
     <style scoped>
-
+    .activePager{
+        background-color:rgb(105,108,255);
+        color:white;
+    }
+    .deactivePager{
+        background-color:rgb(240,242,244);color:rgb(105,122,141);
+    }
     </style>
