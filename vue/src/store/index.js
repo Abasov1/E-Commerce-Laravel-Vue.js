@@ -74,7 +74,7 @@ const store = createStore({
                     }
                 }).then((response)=>{
                     commit('loadik',response.data)
-                    router.push({name:'Category'})
+                    router.push({name:'Product'})
                 })
             }catch(error){
                 commit('endload')

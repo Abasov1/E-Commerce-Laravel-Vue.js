@@ -96,7 +96,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>ggiacoppo2r@apache.org</td>
+                            <td>qaqaquqa@gmail.com</td>
                             <td>{{brand.date}}</td>
                             <td>$24973.48</td>
                             <td><span class="badge  bg-label-success">Professional</span></td>

@@ -91,7 +91,7 @@
                                             <span class="avatar-initial rounded-circle bg-label-warning">{{merchant.name.charAt(0)}}</span>
                                         </div>
                                     </div>
-                                    <div class="d-flex flex-column">
+                                    <div class="d-flex flex-column" style="overflow:hidden;max-width:100px;">>
                                         <span class="emp_name text-truncate">{{merchant.name}}</span>
                                     </div>
                                 </div>

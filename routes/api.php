@@ -40,11 +40,13 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('deletebrand/{id}',[AdminController::class,'deletebrand']);
     Route::post('deletemerchant/{id}',[AdminController::class,'deletemerchant']);
     Route::post('deletecategory/{id}',[AdminController::class,'deletecategory']);
+    Route::post('deleteproduct/{id}',[AdminController::class,'deleteproduct']);
 
     //Load tables
     Route::post('loadbrands',[AdminController::class,'loadbrands']);
     Route::post('loadmerchants',[AdminController::class,'loadmerchants']);
     Route::post('loadcategories',[AdminController::class,'loadcategories']);
+    Route::post('loadproducts',[AdminController::class,'loadproducts']);
 });
 Route::post('register',[ApiUserController::class,'register']);
 Route::post('login',[ApiUserController::class,'login']);

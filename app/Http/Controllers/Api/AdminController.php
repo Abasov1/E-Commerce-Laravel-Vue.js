@@ -39,15 +39,43 @@ class AdminController extends Controller
         ]);
     }
     public function addproduct(PostRequest $request){
-        $request->validate($request->rules());
-        $product = Product::create([
-            'category_id' => $request->category_id,
-            'merchant_id' => $request->merchant_id,
-            'brand_id' => $request->brand_id,
-            'name' => $request->name,
-            'image' => 'default.png',
-            'price' => $request->price
-        ]);
+        if($request->id){
+            $request->validate([
+                'category_id' => 'required',
+                'merchant_id' => 'required',
+                'brand_id' => 'required',
+                'name' => ['required',ValidationRule::unique('products')->ignore($request->id)],
+                'price' => 'required',
+                'inf' => 'required'
+            ]);
+        }else{
+            $request->validate($request->rules());
+        }
+        if($request->id){
+            Product::where('id',$request->id)->first()->update([
+                'category_id' => $request->category_id,
+                'merchant_id' => $request->merchant_id,
+                'brand_id' => $request->brand_id,
+                'name' => $request->name,
+                'image' => 'default.png',
+                'price' => $request->price
+            ]);
+            $product = Product::where('id',$request->id)->first();
+            $infos = Information::where('product_id',$product->id)->get();
+            foreach($infos as $info){
+                $info->products()->detach($product->id);
+                $info->delete();
+            }
+        }else{
+            $product = Product::create([
+                'category_id' => $request->category_id,
+                'merchant_id' => $request->merchant_id,
+                'brand_id' => $request->brand_id,
+                'name' => $request->name,
+                'image' => 'default.png',
+                'price' => $request->price
+            ]);
+        }
         foreach($request->inf as $inf){
             $information = Information::create([
                 'product_id' => $product['id'],
@@ -56,9 +84,15 @@ class AdminController extends Controller
             ]);
             $product->informations()->attach($information->id);
         }
-        return response([
-            'message' => 'product created successfully'
-        ]);
+        if($request->id){
+            return response([
+                'message' => 'product updated successfully'
+            ]);
+        }else{
+            return response([
+                'message' => 'product created successfully'
+            ]);
+        }
     }
     public function addbrand(Request $request){
         $request->validate([
@@ -255,6 +289,40 @@ class AdminController extends Controller
             'count' => $count
         ]);
     }
+    public function loadproducts(Request $request){
+        if($request->search){
+            $brandos = Product::with(['merchant','brand','category'])->where('name','LIKE','%' . $request->search . '%');
+            if($request->order){
+                if($request->orderBy){
+                    $products = $brandos->orderBy('name','asc')->paginate($request->perPage);
+                }else{
+                    $products = $brandos->orderBy('name','desc')->paginate($request->perPage);
+                }
+            }else{
+                $products = $brandos->latest()->paginate($request->perPage);
+            }
+        }else{
+            if($request->order){
+                if($request->orderBy){
+                    $products = Product::with(['merchant','brand','category'])->orderBy('name','asc')->paginate($request->perPage);
+                }else{
+                    $products = Product::with(['merchant','brand','category'])->orderBy('name','desc')->paginate($request->perPage);
+                }
+            }else{
+                $products = Product::with(['merchant','brand','category','informations'])->latest()->paginate($request->perPage,['*'],'page',$request->page);
+            }
+        }
+        foreach($products as $br){
+            $br->date = Carbon::parse($br->created_at)->format('m/d/Y');
+        }
+        $lastPage = $products->lastPage();
+        $count = count(Product::all());
+        return response([
+            'products' =>$products,
+            'last' => $lastPage,
+            'count' => $count
+        ]);
+    }
     public function deletebrand($id){
         $brand = Brand::where('id',$id)->first();
         if($brand->exists()){
@@ -291,6 +359,19 @@ class AdminController extends Controller
         }else{
             return response([
                 'message' => 'This category does not exists'
+            ]);
+        }
+    }
+    public function deleteproduct($id){
+        $products = Product::where('id',$id)->first();
+        if($products->exists()){
+            $products->delete();
+            return response([
+                'message' => 'Product is deleted'
+            ]);
+        }else{
+            return response([
+                'message' => 'This product does not exists'
             ]);
         }
     }

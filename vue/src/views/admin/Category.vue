@@ -12,7 +12,7 @@
                         <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="basic-default-phone"> Parent Category  <b v-if="v$.category_id.$error" style="color:rgb(255,62,29)"> - required</b><b style="cursor:pointer;color:blue;" @click="resetCategory" v-if="selected.category_id">reset</b></label>
                             <div class="col-sm-10">
-                                <input v-model="form.category" v-debounce:700ms="searchCategory" type="text" class="form-control" :class="[v$.category_id.$error ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
+                                <input v-model="form.category" v-debounce:500ms="searchCategory" :readonly="selected.category_id != ''" type="text" class="form-control" :class="[v$.category_id.$error ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
                                 <span v-if="!selected.category_id" @click="chooseCategory">{{foundCategory.name}}</span>
                             </div>
                         </div>
@@ -79,7 +79,7 @@
                         <tr>
                         <th>id</th>
                         <th @click="order" class="d-flex justify-content-between">Name <i style="solor:rgb(187,195,204)" :class="[page.orderBy ? 'bx bxs-chevron-up':'bx bxs-chevron-down']"></i></th>
-                        <th>Email</th>
+                        <th>Parent  </th>
                         <th>Date</th>
                         <th>Salary</th>
                         <th>Status</th>
@@ -98,12 +98,13 @@
                                             <span class="avatar-initial rounded-circle bg-label-warning">{{category.name.charAt(0)}}</span>
                                         </div>
                                     </div>
-                                    <div class="d-flex flex-column" style="overflow:hidden;width:200px;">
+                                    <div class="d-flex flex-column" style="overflow:hidden;width:100px;">
                                         <span class="emp_name text-truncate">{{category.name}}</span>
                                     </div>
                                 </div>
                             </td>
-                            <td>ggiacoppo2r@apache.org</td>
+                            <td v-if="category.parent">{{category.parent.name}}</td>
+                            <td v-else>NULL</td>
                             <td>{{category.date}}</td>
                             <td>$24973.48</td>
                             <td><span class="badge  bg-label-success">Professional</span></td>
@@ -195,7 +196,11 @@
     const v$ = useVuelidate(rules,selected)
 
     const makeCategory = () => {
-        v$.value.$validate()
+        if(selected.category_id){
+            v$.value.$validate()
+        }else{
+            v$.value.name.$touch()
+        }
         if(v$.value.$error){
             return
         }
