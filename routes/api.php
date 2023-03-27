@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\ApiUserController;
+use Faker\Core\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,7 +48,13 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('loadmerchants',[AdminController::class,'loadmerchants']);
     Route::post('loadcategories',[AdminController::class,'loadcategories']);
     Route::post('loadproducts',[AdminController::class,'loadproducts']);
+
+    //Show
+    Route::get('loadproduct',[AdminController::class,'loadproduct']);
 });
 Route::post('register',[ApiUserController::class,'register']);
 Route::post('login',[ApiUserController::class,'login']);
-
+Route::get('/images/{filename}', function ($filename) {
+    $path = storage_path('app/images/' . $filename);
+    return response()->file($path);
+});

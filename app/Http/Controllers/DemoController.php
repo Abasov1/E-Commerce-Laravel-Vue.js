@@ -8,7 +8,9 @@ use App\Models\Information;
 use App\Models\Merchant;
 use App\Models\Product;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 class DemoController extends Controller
 {
     public function index(){
@@ -34,8 +36,17 @@ class DemoController extends Controller
         return back();
     }
     public function createbr(Request $request){
+        if($request->hasFile('image')){
+            $image = Image::make($request->file('image'));
+            $image->fit(300, 300);
+            $ex = $request->file('image')->getClientOriginalExtension();
+            $file = uniqid() .'.'. $ex;
+            $image->save(public_path('storage/'.$file));
+        }
         Brand::create([
-            'name' => $request->name
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'image' => $file
         ]);
         return back();
     }
@@ -58,5 +69,9 @@ class DemoController extends Controller
         $product = Product::find($request->product);
         $product->informations()->attach($information->id);
         return back();
+    }
+    public function showbrand($slug){
+        $brand = Brand::where('slug',$slug)->first();
+        return view('brand',get_defined_vars());
     }
 }

@@ -9,6 +9,18 @@
             </div>
             <div class="card-body">
                 <form @submit.prevent="makeProduct">
+                    <div v-if="previewUrl" class="row mb-3">
+                            <label class="col-sm-2 mt-auto mb-auto col-form-label" for="basic-default-name">Preview</label>
+                            <div class="col-sm-10">
+                                <img :src="previewUrl">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="formFile" class="col-sm-2 col-form-label" >Brand Image</label>
+                            <div class="col-sm-10">
+                                <input multiple @change="setImage" class="form-control" type="file" id="formFile">
+                            </div>
+                        </div>
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="basic-default-name">Name <b v-if="selected.id && !v$.name.$error" style="color:yellow;"> - updating</b><b v-if="v$.name.$error" style="color:rgb(255,62,29)"> - required</b></label>
                         <div class="col-sm-10">
@@ -142,7 +154,7 @@
                                         </div>
                                     </div>
                                     <div class="d-flex flex-column" style="overflow:hidden;max-width:100px;">
-                                        <span class="emp_name text-truncate">{{product.name}}</span>
+                                        <span  @click="showProduct(product.name,product.category.name,product.merchant.name,product.brand.name,product.price,product.informations,product.images)" style="cursor:pointer;" class="emp_name text-truncate">{{product.name}}</span>
                                     </div>
                                 </div>
                             </td>
@@ -187,6 +199,28 @@
                 </div>
             </div>
         </div>
+        <div v-if="previewProduct" class="container fixed-top fixed-bottom d-flex justify-content-center align-items-center">
+            <div class="card text-center position-relative " style="width:70%;height:70%">
+                <button @click="closePreview" type="button" class="close position-absolute top-0 end-0 m-3" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="card-body">
+                <h5 class="card-title">{{previewMaterial.name}}</h5>
+                <p class="card-text">This is my fixed card content.</p>
+                <div class="d-flex justify-content-left align-items-center" style="height: 100%; overflow-x: scroll;">
+                    <div class="position-relative">
+                    <img :src="'http://127.0.0.1:8000/api/images/'+previewMaterial.images[0].image" alt="Your Image" class="img-fluid">
+                    <a href="#" class="position-absolute top-50 end-0 translate-middle-y">
+                        <i class="bx bxs-chevron-right" style="font-size: 2rem;"></i>
+                    </a>
+                    <a href="#" class="position-absolute top-50 start-0 translate-middle-y">
+                        <i class="bx bxs-chevron-left" style="font-size: 2rem;"></i>
+                    </a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
 </div>
 </template>
 
@@ -201,9 +235,8 @@ const merchant = ref('')
 const brand = ref('')
 const category = ref('')
 const loopNumber = ref(0)
-const loopNumberr = () => {
-    loopNumber.value++
-}
+const previewUrl = ref('')
+const previewProduct = ref(false)
 const products = ref([])
 const infoCount = ref('')
 const pagesCount = ref('')
@@ -219,6 +252,15 @@ const page = reactive({
         page.page = 1
         loadProducts()
     })
+    const previewMaterial = reactive({
+        name:'',
+        merchant:'',
+        brand:'',
+        category:'',
+        price:'',
+        inf:[],
+        images:null
+    })
     const form = reactive({
         merchant:'',
         brand:'',
@@ -231,6 +273,7 @@ const page = reactive({
         updateIndex:false
     })
     const selected = reactive({
+        images:null,
         name:'',
         id:'',
         merchant_id:'',
@@ -296,7 +339,27 @@ const page = reactive({
         }
     }
 
-
+    const showProduct = (name,categoryname,merchantname,brandname,price,informations,images) => {
+        previewProduct.value = true
+        previewMaterial.name = name
+        previewMaterial.category = categoryname
+        previewMaterial.merchant = merchantname
+        previewMaterial.brandname = brandname
+        previewMaterial.price = price
+        previewMaterial.inf = informations
+        previewMaterial.images = images
+        console.log(images)
+    }
+    const closePreview = () => {
+        previewProduct.value = false
+        previewMaterial.name = ''
+        previewMaterial.category = ''
+        previewMaterial.merchant = ''
+        previewMaterial.brandname = ''
+        previewMaterial.price = ''
+        previewMaterial.inf = ''
+        previewMaterial.images = ''
+    }
     const reset = () => {
         merchant.value = ""
         brand.value = ""
@@ -323,13 +386,28 @@ const page = reactive({
         info.body = ""
         d$.value.$reset()
     }
+    const setImage = (event) => {
+        selected.images = event.target.files
+    }
     const makeProduct = () => {
         v$.value.$validate()
         if(v$.value.$error){
             return
         }
+        const formData = new FormData()
+        for (let i = 0; i < selected.images.length; i++) {
+          formData.append('images[]', selected.images[i]);
+        }
+        formData.append('name',selected.name)
+        formData.append('id',selected.id)
+        formData.append('category_id',selected.category_id)
+        formData.append('merchant_id',selected.merchant_id)
+        formData.append('brand_id',selected.brand_id)
+        formData.append('price',selected.price)
+        const infJson = JSON.stringify(selected.inf)
+        formData.append('inf',infJson)
         if(window.confirm('Are you sure to make product')){
-            store.dispatch('addproduct',selected).then(()=>{
+            store.dispatch('addproduct',formData).then(()=>{
                 loadProducts()
             })
         }else{
@@ -473,5 +551,14 @@ const page = reactive({
 </script>
 
 <style scoped>
-
+.modalcard{
+    position:fixed;
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999999999;
+    padding:20px;
+}
 </style>

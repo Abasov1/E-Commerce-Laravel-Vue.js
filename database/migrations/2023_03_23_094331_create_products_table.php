@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->foreignId('brand_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('image');
+            $table->string('slug');
             $table->string('price');
             $table->timestamps();
         });

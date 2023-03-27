@@ -196,6 +196,9 @@ return [
         App\Providers\RouteServiceProvider::class,
 
     ],
+    'constants' => [
+        'APP_PUBLIC_PATH' => public_path(),
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -213,3 +216,4 @@ return [
     ])->toArray(),
 
 ];
+?>

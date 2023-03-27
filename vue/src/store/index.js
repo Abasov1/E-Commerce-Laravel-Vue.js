@@ -88,7 +88,7 @@ const store = createStore({
                         Authorization: 'Bearer '+localStorage.getItem('TOKEN')
                     }
                 }).then((response)=>{
-                    alert(response.data.message)
+                    console.log(response.data.inf)
                 })
             }catch(error){
                 console.log(error)

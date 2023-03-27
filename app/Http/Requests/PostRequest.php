@@ -27,7 +27,7 @@ class PostRequest extends FormRequest
             'category_id' => 'required',
             'merchant_id' => 'required',
             'brand_id' => 'required',
-            'name' => 'required',
+            'name' => 'required|unique:products,name',
             'price' => 'required',
             'inf' => 'required'
         ];

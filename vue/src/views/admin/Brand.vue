@@ -9,6 +9,18 @@
                 </div>
                 <div class="card-body">
                     <form @submit.prevent="makeBrand">
+                        <div v-if="previewUrl" class="row mb-3">
+                            <label class="col-sm-2 mt-auto mb-auto col-form-label" for="basic-default-name">Preview</label>
+                            <div class="col-sm-10">
+                                <img :src="previewUrl">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="formFile" class="col-sm-2 col-form-label" >Brand Image</label>
+                            <div class="col-sm-10">
+                                <input @change="setImage" class="form-control" type="file" id="formFile">
+                            </div>
+                        </div>
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="basic-default-name">Name <b v-if="selected.id && !v$.name.$error" style="color:yellow;"> - updating</b><b v-if="v$.name.$error" style="color:rgb(255,62,29)"> - required</b></label>
                             <div class="col-sm-10">
@@ -16,7 +28,6 @@
                             <span v-if='branderror' style="color:rgb(255,62,29)">{{branderror}}</span>
                             </div>
                         </div>
-
                         <div class="row justify-content-end">
                             <div class="col-sm-10">
                             <button class="btn btn-primary">Send</button>
@@ -28,6 +39,7 @@
                 </div>
             </div>
         </div>
+
         <div class="card pt-4">
             <div class="card-datatable table-responsive">
                 <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
@@ -72,10 +84,8 @@
                         <tr>
                         <th>id</th>
                         <th @click="order" class="d-flex justify-content-between">Name <i style="solor:rgb(187,195,204)" :class="[page.orderBy ? 'bx bxs-chevron-up':'bx bxs-chevron-down']"></i></th>
-                        <th>Email</th>
+                        <th>Products count</th>
                         <th>Date</th>
-                        <th>Salary</th>
-                        <th>Status</th>
                         <th>Action</th>
                         </tr>
                     </thead>
@@ -88,7 +98,8 @@
                                 <div class="d-flex justify-content-start align-items-center user-name">
                                     <div class="avatar-wrapper">
                                         <div class="avatar me-2">
-                                            <span class="avatar-initial rounded-circle bg-label-warning">{{brand.name.charAt(0)}}</span>
+                                            <span v-if="brand.image === 'default.png'" class="avatar-initial rounded-circle bg-label-warning">{{brand.name.charAt(0)}}</span>
+                                            <img v-else :src="'http://127.0.0.1:8000/api/images/'+brand.image" alt="Avatar" class="rounded-circle">
                                         </div>
                                     </div>
                                     <div class="d-flex flex-column" style="overflow:hidden;max-width:100px;">
@@ -96,10 +107,8 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>qaqaquqa@gmail.com</td>
+                            <td>{{brand.prcount}}</td>
                             <td>{{brand.date}}</td>
-                            <td>$24973.48</td>
-                            <td><span class="badge  bg-label-success">Professional</span></td>
                             <td>
                                 <a @click.prevent="deletE(brand.id)" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-trash"></i></a>
                                 <a @click.prevent="editE(brand.id,brand.name)" href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>
@@ -152,6 +161,7 @@
     const branderror = ref('')
     const brands = ref([])
     const pagesCount = ref('')
+    const previewUrl = ref('')
     const brandCount = ref('')
     const page = reactive({
         page:1,
@@ -163,6 +173,7 @@
     const currentPage = parseInt(page.page)
     const selected = reactive({
         name:'',
+        image:null,
         id:''
     })
     const rules = {
@@ -178,7 +189,21 @@
         page.page = 1
         loadBrands()
     })
-
+    const getImageUrl = (imageName) =>  {
+      axios.get(`/api/image-url/${imageName}`).then(response => {
+        this.imageUrl = response.data.url;
+      }).catch(error => {
+        console.error(error);
+      });
+    }
+    const setImage = (event) => {
+        selected.image = event.target.files[0]
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewUrl.value = e.target.result;
+        };
+        reader.readAsDataURL(selected.image);
+    }
     const v$ = useVuelidate(rules,selected)
 
     const makeBrand = () => {
@@ -186,7 +211,11 @@
         if(v$.value.$error){
             return
         }
-        store.dispatch('addbrand',selected).then(async()=>{
+        const formData = new FormData()
+        formData.append("image",selected.image)
+        formData.append("name",selected.name)
+        formData.append("id",selected.id)
+        store.dispatch('addbrand',formData).then(async()=>{
             page.order = false
             await loadBrands()
         }).catch(err=>{

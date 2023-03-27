@@ -84,4 +84,16 @@ class ApiUserController extends Controller
             'admin' => false
         ]);
     }
+    public function showimage(){
+    $pngPath = public_path('storage/aha.png');
+
+    $headers = [
+        'Content-Type' => 'image/png',
+    ];
+
+    return response()->file($pngPath, $headers);
+}
+    public function dumb(){
+        return "dumb";
+    }
 }

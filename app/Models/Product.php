@@ -13,7 +13,7 @@ class Product extends Model
         'category_id',
         'brand_id',
         'name',
-        'image',
+        'slug',
         'price'
     ];
     public function merchant(){
@@ -24,6 +24,9 @@ class Product extends Model
     }
     public function category(){
         return $this->hasOne(Category::class,'id','category_id');
+    }
+    public function images(){
+        return $this->hasMany(Pimage::class);
     }
     public function informations(){
         return $this->belongsToMany(Information::class,'product_information');

@@ -10,8 +10,9 @@
         <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     </head>
     <body class="antialiased">
-        <form action="/createbr" method="post">
+        <form action="/createbr" method="post" enctype="multipart/form-data">
             @csrf
+            <input type="file" name="image" id=""> <br>
             <input type="text" name="name" id=""> <br>
             <button type="submit">Brand yarat</button>
         </form> <br> <br>
@@ -45,19 +46,19 @@
         </form><br><br>
         <form action="/createpr" method="post">
             @csrf
-            Merchant: 
+            Merchant:
             <select name="merchant" id="">
-                @foreach($merchants as $merchant)   
+                @foreach($merchants as $merchant)
                     <option value="{{$merchant->id}}">{{$merchant->name}}</option>
                 @endforeach
             </select><br>
-            Brand: 
+            Brand:
             <select name="brand" id="">
                 @foreach($brands as $brand)
                     <option value="{{$brand->id}}">{{$brand->name}}</option>
                 @endforeach
             </select><br>
-            Category: 
+            Category:
             <select name="category" id="">
                 @foreach($allcategories as $category)
                     <option value="{{$category->id}}">{{$category->name}}</option>
@@ -69,13 +70,13 @@
         <h3>Categories:</h3>
         @foreach ($categories as $category)
             <div>
-                {{$category->name}} : 
+                {{$category->name}} :
                 @foreach ($category->subcategories as $subcat)
                     <div style="margin-left:20px;">
                         {{$subcat->name}}
                         @include('demosub',['subcats'=>$subcat->subcategories])
                     </div>
-                    
+
                 @endforeach
             </div>
         @endforeach
@@ -86,6 +87,7 @@
         <h3>brands:</h3>
         @foreach ($brands as $brand)
             {{$brand->name}}
+            <img src="{{asset('storage/'.$brand->image)}}" alt="">
         @endforeach
         <h3>products:</h3>
         @foreach ($products as $product)

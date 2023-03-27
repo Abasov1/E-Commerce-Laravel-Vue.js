@@ -9,6 +9,18 @@
                 </div>
                 <div class="card-body">
                     <form @submit.prevent="makeCategory">
+                        <div v-if="previewUrl" class="row mb-3">
+                            <label class="col-sm-2 mt-auto mb-auto col-form-label" for="basic-default-name">Preview</label>
+                            <div class="col-sm-10">
+                                <img :src="previewUrl">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="formFile" class="col-sm-2 col-form-label" >Brand Image</label>
+                            <div class="col-sm-10">
+                                <input @change="setImage" class="form-control" type="file" id="formFile">
+                            </div>
+                        </div>
                         <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="basic-default-phone"> Parent Category  <b v-if="v$.category_id.$error" style="color:rgb(255,62,29)"> - required</b><b style="cursor:pointer;color:blue;" @click="resetCategory" v-if="selected.category_id">reset</b></label>
                             <div class="col-sm-10">
@@ -23,7 +35,6 @@
                             <span v-if='categoryerror' style="color:rgb(255,62,29)">{{categoryerror}}</span>
                             </div>
                         </div>
-
                         <div class="row justify-content-end">
                             <div class="col-sm-10">
                             <button class="btn btn-primary">Send</button>
@@ -79,10 +90,9 @@
                         <tr>
                         <th>id</th>
                         <th @click="order" class="d-flex justify-content-between">Name <i style="solor:rgb(187,195,204)" :class="[page.orderBy ? 'bx bxs-chevron-up':'bx bxs-chevron-down']"></i></th>
-                        <th>Parent  </th>
+                        <th>Parent </th>
+                        <th>Product count</th>
                         <th>Date</th>
-                        <th>Salary</th>
-                        <th>Status</th>
                         <th>Action</th>
                         </tr>
                     </thead>
@@ -95,7 +105,8 @@
                                 <div class="d-flex justify-content-start align-items-center user-name">
                                     <div class="avatar-wrapper">
                                         <div class="avatar me-2">
-                                            <span class="avatar-initial rounded-circle bg-label-warning">{{category.name.charAt(0)}}</span>
+                                            <span v-if="category.image === 'default.png'" class="avatar-initial rounded-circle bg-label-warning">{{category.name.charAt(0)}}</span>
+                                            <img v-else :src="'http://127.0.0.1:8000/api/images/'+category.image" alt="Avatar" class="rounded-circle">
                                         </div>
                                     </div>
                                     <div class="d-flex flex-column" style="overflow:hidden;width:100px;">
@@ -105,9 +116,8 @@
                             </td>
                             <td v-if="category.parent">{{category.parent.name}}</td>
                             <td v-else>NULL</td>
+                            <td>{{category.prcount}}</td>
                             <td>{{category.date}}</td>
-                            <td>$24973.48</td>
-                            <td><span class="badge  bg-label-success">Professional</span></td>
                             <td>
                                 <a @click.prevent="deletE(category.id)" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-trash"></i></a>
                                 <a @click.prevent="editE(category.id,category.name,category.category_id,category.parent)" href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>
@@ -160,6 +170,7 @@
     const categoryerror = ref('')
     const categories = ref([])
     const foundCategory = ref('')
+    const previewUrl = ref('')
     const pagesCount = ref('')
     const categoryCount = ref('')
     const form = reactive({
@@ -176,6 +187,7 @@
     const selected = reactive({
         name:'',
         id:'',
+        image:null,
         category_id:''
     })
     const rules = {
@@ -194,7 +206,14 @@
     })
 
     const v$ = useVuelidate(rules,selected)
-
+    const setImage = (event) => {
+        selected.image = event.target.files[0]
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewUrl.value = e.target.result;
+        };
+        reader.readAsDataURL(selected.image);
+    }
     const makeCategory = () => {
         if(selected.category_id){
             v$.value.$validate()
@@ -204,7 +223,12 @@
         if(v$.value.$error){
             return
         }
-        store.dispatch('addcategory',selected).then(async()=>{
+        const formData = new FormData()
+        formData.append("image",selected.image)
+        formData.append("name",selected.name)
+        formData.append("id",selected.id)
+        formData.append("category_id",selected.category_id)
+        store.dispatch('addcategory',formData).then(async()=>{
             page.order = false
             await loadCategories()
         }).catch(err=>{

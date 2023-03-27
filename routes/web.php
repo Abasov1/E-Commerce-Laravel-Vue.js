@@ -18,9 +18,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/demo',[DemoController::class,'index']);
+Route::get('/showbrand/{slug}',[DemoController::class,'showbrand']);
 Route::post('/createcat',[DemoController::class,'createcat']);
 Route::post('/createmer',[DemoController::class,'createmer']);
 Route::post('/createbr',[DemoController::class,'createbr']);
 Route::post('/createpr',[DemoController::class,'createpr']);
 Route::post('/createinf',[DemoController::class,'createinf']);
+
 

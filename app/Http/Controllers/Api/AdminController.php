@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PostRequest;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Pimage;
 use App\Models\Merchant;
 use App\Models\Product;
 use App\Models\Information;
@@ -14,6 +15,9 @@ use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule as ValidationRule;
 use Illuminate\Validation\ValidationRuleParser;
+use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
+
 
 class AdminController extends Controller
 {
@@ -57,7 +61,7 @@ class AdminController extends Controller
                 'merchant_id' => $request->merchant_id,
                 'brand_id' => $request->brand_id,
                 'name' => $request->name,
-                'image' => 'default.png',
+                'slug' => Str::slug($request->name),
                 'price' => $request->price
             ]);
             $product = Product::where('id',$request->id)->first();
@@ -72,15 +76,31 @@ class AdminController extends Controller
                 'merchant_id' => $request->merchant_id,
                 'brand_id' => $request->brand_id,
                 'name' => $request->name,
-                'image' => 'default.png',
+                'slug' => Str::slug($request->name),
                 'price' => $request->price
             ]);
         }
-        foreach($request->inf as $inf){
+        if($request->hasFile('images')){
+            foreach($request->file('images') as $imaga){
+                $image = Image::make($imaga);
+                $image->fit(600, 600);
+                $ex = $imaga->getClientOriginalExtension();
+                $file = uniqid() .'.'. $ex;
+                $image->save(public_path('storage/'.$file));
+                Pimage::create([
+                    'image' => $file,
+                    'product_id' => $product->id
+                ]);
+            }
+        }else{
+            $file = 'default.png';
+        }
+        $infos = json_decode($request->input('inf'));
+        foreach($infos as $inf){
             $information = Information::create([
-                'product_id' => $product['id'],
-                'title' => $inf['title'],
-                'body' => $inf['body']
+                'product_id' => $product->id,
+                'title' => $inf->title,
+                'body' => $inf->body
             ]);
             $product->informations()->attach($information->id);
         }
@@ -95,6 +115,15 @@ class AdminController extends Controller
         }
     }
     public function addbrand(Request $request){
+        if($request->hasFile('image')){
+            $image = Image::make($request->file('image'));
+            $image->fit(600, 600);
+            $ex = $request->file('image')->getClientOriginalExtension();
+            $file = uniqid() .'.'. $ex;
+            $image->save(public_path('storage/'.$file));
+        }else{
+            $file = 'default.png';
+        }
         $request->validate([
             'name' => 'required|unique:brands,name'
         ],[
@@ -103,13 +132,18 @@ class AdminController extends Controller
         if($request->id){
             Brand::where('id',$request->id)->first()->update([
                 'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'image' => $file,
             ]);
+
             return response([
                 'message' => 'brand updated successfully'
             ]);
         }else{
             Brand::create([
                 'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'image' => $file
             ]);
             return response([
                 'message' => 'brand created successfully'
@@ -117,6 +151,15 @@ class AdminController extends Controller
         }
     }
     public function addmerchant(Request $request){
+        if($request->hasFile('image')){
+            $image = Image::make($request->file('image'));
+            $image->fit(600, 600);
+            $ex = $request->file('image')->getClientOriginalExtension();
+            $file = uniqid() .'.'. $ex;
+            $image->save(public_path('storage/'.$file));
+        }else{
+            $file = 'default.png';
+        }
         $request->validate([
             'name' => 'required|unique:merchants,name'
         ],[
@@ -125,6 +168,8 @@ class AdminController extends Controller
         if($request->id){
             Merchant::where('id',$request->id)->first()->update([
                 'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'image' => $file
             ]);
             return response([
                 'message' => 'Merchant updated successfully'
@@ -132,6 +177,8 @@ class AdminController extends Controller
         }else{
             Merchant::create([
                 'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'image' => $file
             ]);
             return response([
                 'message' => 'Merchant created successfully'
@@ -139,6 +186,15 @@ class AdminController extends Controller
         }
     }
     public function addcategory(Request $request){
+        if($request->hasFile('image')){
+            $image = Image::make($request->file('image'));
+            $image->fit(600, 600);
+            $ex = $request->file('image')->getClientOriginalExtension();
+            $file = uniqid() .'.'. $ex;
+            $image->save(public_path('storage/'.$file));
+        }else{
+            $file = 'default.png';
+        }
         if($request->id){
             $category = Category::where('id',$request->id)->first();
             $request->validate([
@@ -161,10 +217,14 @@ class AdminController extends Controller
                 $category->update([
                     'category_id' => $request->category_id,
                     'name' => $request->name,
+                    'slug' => Str::slug($request->name),
+                    'image' => $file
                 ]);
             }else{
                 $category->update([
                     'name' => $request->name,
+                    'slug' => Str::slug($request->name),
+                    'image' => $file
                 ]);
             }
             return response([
@@ -175,10 +235,14 @@ class AdminController extends Controller
                 Category::create([
                     'category_id' => $request->category_id,
                     'name' => $request->name,
+                    'slug' => Str::slug($request->name),
+                    'image' => $file
                 ]);
             }else{
                 Category::create([
                     'name' => $request->name,
+                    'slug' => Str::slug($request->name),
+                    'image' => $file
                 ]);
             }
             return response([
@@ -207,10 +271,12 @@ class AdminController extends Controller
                 }
             }else{
                 $brands = Brand::latest()->paginate($request->perPage,['*'],'page',$request->page);
+
             }
         }
         foreach($brands as $br){
             $br->date = Carbon::parse($br->created_at)->format('m/d/Y');
+            $br->prcount = $br->products->count();
         }
         $lastPage = $brands->lastPage();
         $count = count(Brand::all());
@@ -245,6 +311,8 @@ class AdminController extends Controller
         }
         foreach($merchants as $br){
             $br->date = Carbon::parse($br->created_at)->format('m/d/Y');
+            $br->prcount = $br->products->count();
+
         }
         $lastPage = $merchants->lastPage();
         $count = count(Merchant::all());
@@ -280,6 +348,7 @@ class AdminController extends Controller
         foreach($categories as $br){
             $br->date = Carbon::parse($br->created_at)->format('m/d/Y');
             $br->parent = Category::where('id',$br->category_id)->first();
+            $br->prcount = $br->products->count();
         }
         $lastPage = $categories->lastPage();
         $count = count(Category::all());
@@ -291,7 +360,7 @@ class AdminController extends Controller
     }
     public function loadproducts(Request $request){
         if($request->search){
-            $brandos = Product::with(['merchant','brand','category'])->where('name','LIKE','%' . $request->search . '%');
+            $brandos = Product::with(['merchant','brand','category','informations','images'])->where('name','LIKE','%' . $request->search . '%');
             if($request->order){
                 if($request->orderBy){
                     $products = $brandos->orderBy('name','asc')->paginate($request->perPage);
@@ -304,12 +373,12 @@ class AdminController extends Controller
         }else{
             if($request->order){
                 if($request->orderBy){
-                    $products = Product::with(['merchant','brand','category'])->orderBy('name','asc')->paginate($request->perPage);
+                    $products = Product::with(['merchant','brand','category','informations','images'])->orderBy('name','asc')->paginate($request->perPage);
                 }else{
-                    $products = Product::with(['merchant','brand','category'])->orderBy('name','desc')->paginate($request->perPage);
+                    $products = Product::with(['merchant','brand','category','informations','images'])->orderBy('name','desc')->paginate($request->perPage);
                 }
             }else{
-                $products = Product::with(['merchant','brand','category','informations'])->latest()->paginate($request->perPage,['*'],'page',$request->page);
+                $products = Product::with(['merchant','brand','category','informations','images'])->latest()->paginate($request->perPage,['*'],'page',$request->page);
             }
         }
         foreach($products as $br){
