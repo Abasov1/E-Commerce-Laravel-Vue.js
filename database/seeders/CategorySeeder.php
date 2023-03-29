@@ -2,21 +2,14 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-
-use App\Models\Brand;
 use App\Models\Category;
-use App\Models\Merchant;
-use App\Models\Pimage;
-use App\Models\Product;
-use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
-class DatabaseSeeder extends Seeder
+class CategorySeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      *
      * @return void
      */
@@ -51,7 +44,7 @@ class DatabaseSeeder extends Seeder
             'slug' => 'mouse-and-keyboards',
             'image' => 'mouseandkeyboards.jpg',
         ]);
-        $prcat = Category::create([
+        Category::create([
             'category_id' => $mouseandkeyboards->id,
             'name' => 'Keyboards',
             'slug' => 'keyboards',
@@ -97,41 +90,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'Dishwashers',
             'slug' => 'dishwashers',
             'image' => 'dishwashers.jpg',
-        ]);
-        User::create([
-            'name' => 'admin',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('admin123'),
-            'is_admin' => true,
-        ]);
-        $mr = Merchant::create([
-            'name' => 'example brand',
-            'slug' => 'example-merchant',
-            'image' => 'default.png',
-        ]);
-        $br = Brand::create([
-            'name' => 'example brand',
-            'slug' => 'example-brand',
-            'image' => 'default.jpg',
-        ]);
-        $product = Product::factory(30)->create([
-            'merchant_id' => $mr->id,
-            'category_id' => $prcat->id,
-            'brand_id' => $br->id,
-            'name' => 'example product',
-            'slug' => 'example-product',
-            'price' => '12313',
-        ]);
-        foreach($product as $pr){
-            Pimage::create([
-                'image' => 'default.jpg',
-                'product_id' => $pr->id,
-            ]);
-        }
-        Brand::factory(10)->create([
-            'name' => 'example brand',
-            'slug' => 'example-brand',
-            'image' => 'default.jpg',
         ]);
     }
 }

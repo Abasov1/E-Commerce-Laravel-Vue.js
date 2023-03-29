@@ -88,10 +88,10 @@ const store = createStore({
                         Authorization: 'Bearer '+localStorage.getItem('TOKEN')
                     }
                 }).then((response)=>{
-                    console.log(response.data.inf)
+                    alert(response.data.message)
                 })
             }catch(error){
-                console.log(error)
+                alert(error.response.data.message)
             }
         },
         addbrand: async({commit},selected) => {

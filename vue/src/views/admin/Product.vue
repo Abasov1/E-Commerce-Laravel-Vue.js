@@ -3,7 +3,8 @@
     <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span> Horizontal Layouts</h4>
     <div class="row">
         <div class="col-xxl">
-            <div class="card mb-4">
+            <div class="card mb-4 position-relative">
+                <div v-if="productSending" style="position:absolute;z-index:99999;width:100%;height:100%;background-color:white;opacity:50%;"></div>
             <div class="card-header d-flex align-items-center justify-content-between">
                 <h5 class="mb-0">Product input</h5> <small class="text-muted float-end">netersen gulenver</small>
             </div>
@@ -12,13 +13,22 @@
                     <div v-if="previewUrl" class="row mb-3">
                             <label class="col-sm-2 mt-auto mb-auto col-form-label" for="basic-default-name">Preview</label>
                             <div class="col-sm-10">
-                                <img :src="previewUrl">
+                                <div class="position-relative d-flex justify-content-center" style="width:30%;">
+                                    <img :src="previewUrl" style="width:80%;">
+                                    <a v-if="filePreview.imagescount > filePreview.page + 1" @click.prevent="nextImageUp" href="#" class="position-absolute top-50 end-0 translate-middle-y">
+                                            <i class="bx bxs-chevron-right" style="font-size: 2rem;"></i>
+                                        </a>
+                                    <a v-if="filePreview.page != 0" @click.prevent="previousImageUp" href="#" class="position-absolute top-50 start-0 translate-middle-y">
+                                        <i class="bx bxs-chevron-left" style="font-size: 2rem;"></i>
+                                    </a>
+                                </div>
+
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label for="formFile" class="col-sm-2 col-form-label" >Brand Image</label>
                             <div class="col-sm-10">
-                                <input multiple @change="setImage" class="form-control" type="file" id="formFile">
+                                <input ref="fileInput"  multiple @change="setImage" class="form-control" type="file" id="formFile">
                             </div>
                         </div>
                     <div class="row mb-3">
@@ -30,21 +40,21 @@
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="basic-default-company">Merchant <b v-if="selected.id && !v$.merchant_id.$error && !selected.merchant_id" style="color:yellow;"> - updating</b> <b v-if="v$.merchant_id.$error" style="color:rgb(255,62,29)"> - required</b> <b style="cursor:pointer;color:blue;" @click="resetMerchant" v-if="selected.merchant_id">reset</b></label>
                         <div class="col-sm-10">
-                        <input v-model='form.merchant' v-debounce:700ms="searchMerchant" type="text" class="form-control" :class="[v$.merchant_id.$error ? 'is-invalid' : '']" id="basic-default-company" placeholder="ACME Inc." />
+                        <input v-model='form.merchant' v-debounce:300ms="searchMerchant" type="text" class="form-control" :class="[v$.merchant_id.$error ? 'is-invalid' : '']" id="basic-default-company" placeholder="ACME Inc." />
                         <span v-if="!selected.merchant_id" @click="chooseMerchant">{{merchant.name}}</span>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="basic-default-email">Brand <b v-if="selected.id && !v$.brand_id.$error && !selected.brand_id" style="color:yellow;"> - updating</b> <b v-if="v$.brand_id.$error" style="color:rgb(255,62,29)"> - required</b> <b style="cursor:pointer;color:blue;" @click="resetBrand" v-if="selected.brand_id">reset</b></label>
                         <div class="col-sm-10">
-                        <input v-debounce:700ms="searchBrand" v-model="form.brand" type="text" class="form-control" :class="[v$.brand_id.$error ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
+                        <input v-debounce:300ms="searchBrand" v-model="form.brand" type="text" class="form-control" :class="[v$.brand_id.$error ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
                         <span v-if="!selected.brand_id" @click="chooseBrand">{{brand.name}}</span>
                     </div>
                     </div>
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="basic-default-phone">Category <b v-if="selected.id && !v$.category_id.$error && !selected.category_id" style="color:yellow;"> - updating</b> <b v-if="v$.category_id.$error" style="color:rgb(255,62,29)"> - required</b><b style="cursor:pointer;color:blue;" @click="resetCategory" v-if="selected.category_id">reset</b></label>
                         <div class="col-sm-10">
-                            <input v-model="form.category" v-debounce:700ms="searchCategory" type="text" class="form-control" :class="[v$.category_id.$error ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
+                            <input v-model="form.category" v-debounce:300ms="searchCategory" type="text" class="form-control" :class="[v$.category_id.$error ? 'is-invalid' : '']" id="basic-default-name" placeholder="John Doe" />
                             <span v-if="!selected.category_id" @click="chooseCategory">{{category.name}}</span>
                         </div>
                     </div>
@@ -76,7 +86,7 @@
                     </div>
                     <div class="row mb-3" style="display: flex;flex-wrap: wrap;justify-content: flex-start">
                         <div class="col-6" style="flex-basis: calc(100% / {{infoCount}});flex: 1 1 50%;" v-if="selected.inf" v-for="(inf,index) in selected.inf" :key="inf.title">
-                            <label>{{index}}. <b>{{inf.title}}: </b> {{inf.body}} <i @click="deleteInf(inf.title)" class="bx bxs-trash"></i><i @click='editInf(inf.title,inf.body)' class="bx bxs-edit"></i></label>
+                            <label><b>{{inf.title}}: </b> {{inf.body}} <i @click="deleteInf(inf.title)" class="bx bxs-trash"></i><i @click='editInf(inf.title,inf.body)' class="bx bxs-edit"></i></label>
                         </div>
                     </div>
                     <div class="row justify-content-end">
@@ -142,19 +152,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="product in products" :key="brand.id">
+                        <tr v-for="product in products" :key="product.id">
                             <td class="dt-checkboxes-cell">
                                 <input type="checkbox" class="dt-checkboxes form-check-input">
                             </td>
-                            <td style="overflow:hidden;">
+                            <td  @click="showProduct(product.name,product.category.name,product.merchant.name,product.brand.name,product.price,product.informations,product.images)" style="cursor:pointer;overflow:hidden;">
                                 <div class="d-flex justify-content-start align-items-center user-name">
                                     <div class="avatar-wrapper">
                                         <div class="avatar me-2">
-                                            <span class="avatar-initial rounded-circle bg-label-warning">{{product.name.charAt(0)}}</span>
+                                            <span v-if="product.images === 'default.png'" class="avatar-initial rounded-circle bg-label-warning">{{product.name.charAt(0)}}</span>
+                                            <img v-else :src="'http://127.0.0.1:8000/api/images/'+product.images[0].image" alt="Avatar" class="rounded-circle">
                                         </div>
                                     </div>
                                     <div class="d-flex flex-column" style="overflow:hidden;max-width:100px;">
-                                        <span  @click="showProduct(product.name,product.category.name,product.merchant.name,product.brand.name,product.price,product.informations,product.images)" style="cursor:pointer;" class="emp_name text-truncate">{{product.name}}</span>
+                                        <span class="emp_name text-truncate">{{product.name}}</span>
                                     </div>
                                 </div>
                             </td>
@@ -200,24 +211,41 @@
             </div>
         </div>
         <div v-if="previewProduct" class="container fixed-top fixed-bottom d-flex justify-content-center align-items-center">
-            <div class="card text-center position-relative " style="width:70%;height:70%">
+            <div class="card text-center position-relative shadow-lg" style="width:70%;height:80%">
                 <button @click="closePreview" type="button" class="close position-absolute top-0 end-0 m-3" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
                 <div class="card-body">
-                <h5 class="card-title">{{previewMaterial.name}}</h5>
-                <p class="card-text">This is my fixed card content.</p>
-                <div class="d-flex justify-content-left align-items-center" style="height: 100%; overflow-x: scroll;">
-                    <div class="position-relative">
-                    <img :src="'http://127.0.0.1:8000/api/images/'+previewMaterial.images[0].image" alt="Your Image" class="img-fluid">
-                    <a href="#" class="position-absolute top-50 end-0 translate-middle-y">
-                        <i class="bx bxs-chevron-right" style="font-size: 2rem;"></i>
-                    </a>
-                    <a href="#" class="position-absolute top-50 start-0 translate-middle-y">
-                        <i class="bx bxs-chevron-left" style="font-size: 2rem;"></i>
-                    </a>
+                    <h3 class="card-title">{{previewMaterial.name}}</h3>
+                    <div class="row" style="height: 50%;">
+                        <div class="col-6" style="height: 100%;">
+                            <div class="row d-flex justify-content-left align-items-start" style="height: 100%;">
+                                <div class="col-12 position-relative" style="width:90%;">
+                                    <img :src="'http://127.0.0.1:8000/api/images/'+previewMaterial.images[previewMaterial.page].image" style="width:80%;" alt="Your Image" class="img-fluid">
+
+                                    <a v-if="previewMaterial.page + 1 < previewMaterial.imagescount" @click.prevent="nextImage" href="#" class="position-absolute top-50 end-0 translate-middle-y">
+                                        <i class="bx bxs-chevron-right" style="font-size: 2rem;"></i>
+                                    </a>
+                                    <a v-if="previewMaterial.page != 0" @click.prevent="previousImage" href="#" class="position-absolute top-50 start-0 translate-middle-y">
+                                        <i class="bx bxs-chevron-left" style="font-size: 2rem;"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="d-flex justify-content-left align-items-start">Category: {{previewMaterial.category}}</h5>
+                            <h5 class="d-flex justify-content-left align-items-start">Brand: {{previewMaterial.brand}}</h5>
+                            <h5 class="d-flex justify-content-left align-items-start">Merchant: {{previewMaterial.merchant}}</h5>
+                            <h5 class="d-flex justify-content-left align-items-start">Price: {{previewMaterial.price}}</h5>
+                        </div>
                     </div>
-                </div>
+                    <h4 class="card-title">Information</h4>
+                    <div class="row">
+                        <div class="col-6" style="flex-basis: calc(100% / {{infoCount}});flex: 1 1 50%;" v-if="previewMaterial.inf" v-for="inf in previewMaterial.inf" :key="inf.title">
+                            <h5><b>{{inf.title}}: </b> {{inf.body}}</h5>
+                        </div>
+                        <div class="col-6"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -237,6 +265,8 @@ const category = ref('')
 const loopNumber = ref(0)
 const previewUrl = ref('')
 const previewProduct = ref(false)
+const productSending = ref(false)
+const fileInput = ref(null)
 const products = ref([])
 const infoCount = ref('')
 const pagesCount = ref('')
@@ -259,6 +289,13 @@ const page = reactive({
         category:'',
         price:'',
         inf:[],
+        images:null,
+        imagescount:null,
+        page:0
+    })
+    const filePreview = reactive({
+        page:0  ,
+        imagescount:0,
         images:null
     })
     const form = reactive({
@@ -344,11 +381,11 @@ const page = reactive({
         previewMaterial.name = name
         previewMaterial.category = categoryname
         previewMaterial.merchant = merchantname
-        previewMaterial.brandname = brandname
+        previewMaterial.brand = brandname
         previewMaterial.price = price
         previewMaterial.inf = informations
         previewMaterial.images = images
-        console.log(images)
+        previewMaterial.imagescount = images.length
     }
     const closePreview = () => {
         previewProduct.value = false
@@ -358,7 +395,31 @@ const page = reactive({
         previewMaterial.brandname = ''
         previewMaterial.price = ''
         previewMaterial.inf = ''
-        previewMaterial.images = ''
+        previewMaterial.images = null
+        previewMaterial.imagescount = null
+        previewMaterial.page = 0
+    }
+    const nextImage = () => {
+        if(previewMaterial.imagescount > previewMaterial.page + 1){
+            previewMaterial.page++
+        }
+    }
+    const previousImage = () => {
+        if(previewMaterial.page != 0){
+            previewMaterial.page--
+        }
+    }
+    const nextImageUp = () => {
+        if(filePreview.imagescount > filePreview.page + 1){
+            filePreview.page++
+            setImage({ target: { files: selected.images } });
+        }
+    }
+    const previousImageUp = () => {
+        if(filePreview.page != 0){
+            filePreview.page--
+            setImage({ target: { files: selected.images } });
+        }
     }
     const reset = () => {
         merchant.value = ""
@@ -377,6 +438,11 @@ const page = reactive({
         info.updating = false
         info.title = ""
         info.body = ""
+        fileInput.value.value = ""
+        selected.images = null
+        filePreview.imagescount = null
+        filePreview.page = 0
+        previewUrl.value = false
         v$.value.$reset()
         d$.value.$reset()
     }
@@ -388,12 +454,19 @@ const page = reactive({
     }
     const setImage = (event) => {
         selected.images = event.target.files
+        filePreview.imagescount = event.target.files.length
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewUrl.value = e.target.result;
+        };
+        reader.readAsDataURL(event.target.files[filePreview.page]);
     }
     const makeProduct = () => {
         v$.value.$validate()
         if(v$.value.$error){
             return
         }
+        productSending.value = true
         const formData = new FormData()
         for (let i = 0; i < selected.images.length; i++) {
           formData.append('images[]', selected.images[i]);
@@ -408,10 +481,14 @@ const page = reactive({
         formData.append('inf',infJson)
         if(window.confirm('Are you sure to make product')){
             store.dispatch('addproduct',formData).then(()=>{
+                reset()
+                productSending.value = false
                 loadProducts()
+            }).catch(err=>{
+                productSending.value = false
             })
         }else{
-            //
+            productSending.value = false
         }
     }
     const searchMerchant = async() => {

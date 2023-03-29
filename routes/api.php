@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\ApiUserController;
+use App\Http\Controllers\Api\FrontController;
 use Faker\Core\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -49,8 +50,6 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('loadcategories',[AdminController::class,'loadcategories']);
     Route::post('loadproducts',[AdminController::class,'loadproducts']);
 
-    //Show
-    Route::get('loadproduct',[AdminController::class,'loadproduct']);
 });
 Route::post('register',[ApiUserController::class,'register']);
 Route::post('login',[ApiUserController::class,'login']);
@@ -58,3 +57,22 @@ Route::get('/images/{filename}', function ($filename) {
     $path = storage_path('app/images/' . $filename);
     return response()->file($path);
 });
+Route::get('/images/categories/{filename}', function ($filename) {
+    $path = storage_path('app/images/categories/' . $filename);
+    return response()->file($path);
+});
+Route::get('/images/brands/{filename}', function ($filename) {
+    $path = storage_path('app/images/brands/' . $filename);
+    return response()->file($path);
+});
+Route::get('/images/products/{filename}', function ($filename) {
+    $path = storage_path('app/images/products/' . $filename);
+    return response()->file($path);
+});
+
+//Frontt
+Route::get('loadcats',[FrontController::class,'loadcategories']);
+Route::get('loadallcats',[FrontController::class,'loadallcategories']);
+Route::get('loadprs',[FrontController::class,'loadprs']);
+Route::get('loadbrs',[FrontController::class,'loadbrands']);
+
