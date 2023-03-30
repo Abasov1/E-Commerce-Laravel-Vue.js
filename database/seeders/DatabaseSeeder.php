@@ -51,19 +51,19 @@ class DatabaseSeeder extends Seeder
             'slug' => 'mouse-and-keyboards',
             'image' => 'mouseandkeyboards.jpg',
         ]);
-        $prcat = Category::create([
+        $keyboard = Category::create([
             'category_id' => $mouseandkeyboards->id,
             'name' => 'Keyboards',
             'slug' => 'keyboards',
             'image' => 'keyboards.jpg',
         ]);
-        Category::create([
+        $mouse = Category::create([
             'category_id' => $mouseandkeyboards->id,
             'name' => 'Mouses',
             'slug' => 'mouses',
             'image' => 'mouses.jpg',
         ]);
-        Category::create([
+        $mousepad = Category::create([
             'category_id' => $mouseandkeyboards->id,
             'name' => 'Mousepads',
             'slug' => 'mousepads',
@@ -80,7 +80,7 @@ class DatabaseSeeder extends Seeder
             'slug' => 'refrigerators',
             'image' => 'refrigerators.jpg',
         ]);
-        Category::create([
+        $houseprid = Category::create([
             'category_id' => $housestuff->id,
             'name' => 'Washing machines',
             'slug' => 'washing-machines',
@@ -114,17 +114,47 @@ class DatabaseSeeder extends Seeder
             'slug' => 'example-brand',
             'image' => 'default.jpg',
         ]);
-        $product = Product::factory(30)->create([
+        $randomize = [
+            [
+                'image'=>'keyboard.jpg',
+                'id'=>$keyboard->id
+            ],
+            [
+                'image'=>'mouse.jpg',
+                'id'=>$mouse->id
+            ],
+            [
+                'image'=>'mousepad.jpg',
+                'id'=>$mousepad->id
+            ]
+        ];
+        for($i=0;$i <= 30;$i++){
+            $rand = array_rand($randomize);
+            $randItem = $randomize[$rand];
+            $product = Product::create([
+                'merchant_id' => $mr->id,
+                'category_id' => $randItem['id'],
+                'brand_id' => $br->id,
+                'name' => 'example product',
+                'slug' => 'example-product',
+                'price' => '12313',
+            ]);
+            Pimage::create([
+                'image' => $randItem['image'],
+                'product_id' => $product->id,
+            ]);
+        }
+        $housepr = Product::factory(5)->create([
             'merchant_id' => $mr->id,
-            'category_id' => $prcat->id,
+            'category_id' => $houseprid->id,
             'brand_id' => $br->id,
             'name' => 'example product',
             'slug' => 'example-product',
             'price' => '12313',
         ]);
-        foreach($product as $pr){
+        foreach($housepr as $pr){
             Pimage::create([
-                'image' => 'default.jpg',
+                'image' => 'washingmachine.jpg',
                 'product_id' => $pr->id,
             ]);
         }

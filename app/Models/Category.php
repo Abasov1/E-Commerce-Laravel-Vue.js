@@ -18,6 +18,10 @@ class Category extends Model
         return $this->hasMany(Category::class);
     }
     public function products(){
+        if ($this->parent_id) {
+            $child_categories = $this->subcategories()->pluck('id')->toArray();
+            return Product::whereIn('category_id', $child_categories)->get();
+        }
         return $this->hasMany(Product::class);
     }
 }

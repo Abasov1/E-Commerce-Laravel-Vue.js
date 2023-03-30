@@ -10,6 +10,22 @@ use Illuminate\Http\Request;
 
 class FrontController extends Controller
 {
+    public function loadcategory($slug){
+        $category = Category::where('slug',$slug)->first();
+        $categories = Category::with('subcategories.subcategories')->where('category_id',$category->id)->get();
+        foreach($categories as $cr){
+            $cr->parent = Category::where('id',$cr->category_id)->first();
+            if(Category::where('id',$cr->parent->category_id)->exists()){
+                $cr->parent2 = Category::where('id',$cr->parent->category_id)->first();
+                if(Category::where('id',$cr->parent2->category_id)->exists()){
+                    $cr->parent3 = Category::where('id',$cr->parent2->category_id)->first();
+                }
+            }
+        }
+        return response([
+            'categories' => $categories
+        ]);
+    }
     public function loadcategories(){
         $categories = Category::with('subcategories.subcategories')->whereNull('category_id')->get();
         return response([
@@ -40,6 +56,25 @@ class FrontController extends Controller
             'recpr3' => $recpr3,
         ]);
     }
+    public function loadpras(Request $request){
+        $category = Category::where('id',$request->catid)->first();
+        if(Category::where('category_id',$category->id)->exists()){
+            $subcategory = Category::where('category_id',$category->id)->first();
+            if(Category::where('category_id',$subcategory->id)->exists()){
+                $ids  = Category::where('category_id',$category->id)->pluck('id')->toArray();
+                $products = Product::with(['merchant','brand','category','informations','images'])->whereIn('category_id',$ids)->paginate(20,['*'],'page',$request->page);
+            }else{
+                $ids  = Category::where('category_id',$category->id)->pluck('id')->toArray();
+                $products = Product::with(['merchant','brand','category','informations','images'])->whereIn('category_id',$ids)->paginate(20,['*'],'page',$request->page);
+            }
+        }else{
+            $products = Product::with(['merchant','brand','category','informations','images'])->where('category_id',$category->id)->paginate(20,['*'],'page',$request->page);
+        }
+        return response([
+            'products'=>$products,
+            'count'=>$products->lastPage()
+        ]);
+    }
     public function loadbrands(){
         $br1 = Brand::paginate(4,['*'],'page',1);
         $br2 = Brand::paginate(4,['*'],'page',2);
@@ -48,6 +83,12 @@ class FrontController extends Controller
             'br1' => $br1,
             'br2' => $br2,
             'br3' => $br3
+        ]);
+    }
+    public function loadbras(){
+        $brands = Brand::get();
+        return response([
+            'brands' => $brands
         ]);
     }
 }

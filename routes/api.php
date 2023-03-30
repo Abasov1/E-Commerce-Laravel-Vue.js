@@ -71,8 +71,11 @@ Route::get('/images/products/{filename}', function ($filename) {
 });
 
 //Frontt
+Route::get('loadcat/{slug}',[FrontController::class,'loadcategory']);
 Route::get('loadcats',[FrontController::class,'loadcategories']);
 Route::get('loadallcats',[FrontController::class,'loadallcategories']);
 Route::get('loadprs',[FrontController::class,'loadprs']);
+Route::post('loadpras',[FrontController::class,'loadpras']);
 Route::get('loadbrs',[FrontController::class,'loadbrands']);
+Route::get('loadbras',[FrontController::class,'loadbras']);
 
