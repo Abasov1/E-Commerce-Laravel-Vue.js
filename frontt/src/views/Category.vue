@@ -34,6 +34,7 @@ const props = defineProps({
     slug: String,
 })   
 onMounted(()=>{
+    window.scrollTo(0,0);
     store.dispatch('loadcategory',props.slug).then(()=>{
         show.value = true
     })

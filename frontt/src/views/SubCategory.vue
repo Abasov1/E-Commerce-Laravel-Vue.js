@@ -25,7 +25,7 @@
                 </div>
             </div>
         </div>
-        <Filter v-if="show" :catid="categories[0].parent.id"/>
+        <Filter v-if="show || dow" :catid="categories[0].parent.id" />
     </main>
 </template>
 <script setup>
@@ -33,14 +33,21 @@ import store from '../store'
 import { onMounted,ref,reactive,computed } from 'vue'
 import Filter from '../components/Filter.vue'
 const show = ref(false)
+const dow = ref(false)
 
 const props = defineProps({
     slug: String,
     parent:String
 })   
 onMounted(()=>{
+    window.scrollTo(0,0);
     store.dispatch('loadcategory',props.slug).then(()=>{
-        show.value = true
+        if(store.state.ctype !== 1){
+            show.value = true
+            dow.value = true
+        }else{
+            dow.value = true
+        }
     })
 })
 const categories = computed(()=>store.state.category)

@@ -36,7 +36,6 @@ $(window).on('load', function () {
         breakpoint: 767.98,
         hideTimeOut: 0
     });
-
     // initialization of svg injector module
     $.HSCore.components.HSSVGIngector.init('.js-svg-injector');
 });

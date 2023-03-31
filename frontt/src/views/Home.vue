@@ -335,7 +335,7 @@
                         <div class="row flex-nowrap flex-md-wrap overflow-auto overflow-md-visble">
                             <div v-if="allcats" v-for="cat in allcats" :key="cat.id" class="col-md-4 col-lg-3 col-xl-4 col-xl-2gdot4 mb-3 flex-shrink-0 flex-md-shrink-1">
                                 <div class="bg-white overflow-hidden shadow-on-hover h-100 d-flex align-items-center">
-                                    <a href="../shop/product-categories-7-column-full-width.html" class="d-block pr-2 pr-wd-6">
+                                    <router-link :to="getLink(cat)" href="../shop/product-categories-7-column-full-width.html" class="d-block pr-2 pr-wd-6">
                                         <div class="media align-items-center">
                                             <div class="pt-2">
                                                 <img class="img-fluid transform-rotate-15" :src="'http://127.0.0.1:8000/api/images/categories/'+cat.image" alt="Image Description">
@@ -344,7 +344,7 @@
                                                 <h6 class="mb-0 text-gray-90">{{cat.name}}</h6>
                                             </div>
                                         </div>
-                                    </a>
+                                    </router-link>
                                 </div>
                             </div>
                         </div>
@@ -412,6 +412,33 @@ onMounted(()=>{
     store.dispatch('loadproducts')
     store.dispatch('loadbrands')
 })
+const getLink = (cat) => {
+    if(cat.type === 1){
+        return{
+            name:'Category',
+            params:{
+                slug:cat.slug
+            }
+        }
+    }else if(cat.type === 2){
+        return{
+            name:'SubCategory',
+            params:{
+                parent:cat.parent.slug,
+                slug:cat.slug
+            }
+        }
+    }else if(cat.type === 3){
+        return{
+            name:'SubSubCategory',
+            params:{
+                fparent:cat.parent2.slug,
+                sparent:cat.parent.slug,
+                slug:cat.slug
+            }
+        }
+    }
+}
 const allcats = computed(()=>store.state.allcategories)
 const bestpr1 = computed(()=>store.state.prs.bestpr1)
 const bestpr2 = computed(()=>store.state.prs.bestpr2)

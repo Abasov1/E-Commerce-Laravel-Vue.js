@@ -13,18 +13,32 @@ class FrontController extends Controller
     public function loadcategory($slug){
         $category = Category::where('slug',$slug)->first();
         $categories = Category::with('subcategories.subcategories')->where('category_id',$category->id)->get();
+        if(Category::where('id',$category->category_id)->exists()){
+            $category->parent = Category::where('id',$category->category_id)->first();
+            if(Category::where('id',$category->parent->category_id)->exists()){
+                    $category->parent2 = Category::where('id',$category->parent->category_id)->first();
+                    $category->parent = Category::where('slug',$slug)->first();
+                    return response([
+                        'categories' => [$category]
+                    ]);
+            }elseif(!Category::where('category_id',$category->id)->exists()){
+                $category->parent = Category::where('slug',$slug)->first();
+                return response([
+                    'categories' => [$category],
+                    'type' => 1,
+                ]);
+            }
+        }
         foreach($categories as $cr){
             $cr->parent = Category::where('id',$cr->category_id)->first();
             if(Category::where('id',$cr->parent->category_id)->exists()){
                 $cr->parent2 = Category::where('id',$cr->parent->category_id)->first();
-                if(Category::where('id',$cr->parent2->category_id)->exists()){
-                    $cr->parent3 = Category::where('id',$cr->parent2->category_id)->first();
-                }
             }
         }
-        return response([
-            'categories' => $categories
-        ]);
+            return response([
+                'categories' =>$categories,
+                'type' => 2
+            ]);
     }
     public function loadcategories(){
         $categories = Category::with('subcategories.subcategories')->whereNull('category_id')->get();
@@ -34,6 +48,19 @@ class FrontController extends Controller
     }
     public function loadallcategories(){
         $categories = Category::get();
+        foreach($categories as $cr){
+            if(Category::where('id',$cr->category_id)->exists()){
+                $cr->parent = Category::where('id',$cr->category_id)->first();
+                if(Category::where('id',$cr->parent->category_id)->exists()){
+                    $cr->parent2 = Category::where('id',$cr->parent->category_id)->first();
+                    $cr->type = 3;
+                }else{
+                    $cr->type = 2;
+                }
+            }else{
+                $cr->type = 1;
+            }
+        }
         return response([
             'categories' => $categories
         ]);
@@ -58,17 +85,32 @@ class FrontController extends Controller
     }
     public function loadpras(Request $request){
         $category = Category::where('id',$request->catid)->first();
-        if(Category::where('category_id',$category->id)->exists()){
-            $subcategory = Category::where('category_id',$category->id)->first();
-            if(Category::where('category_id',$subcategory->id)->exists()){
-                $ids  = Category::where('category_id',$category->id)->pluck('id')->toArray();
-                $products = Product::with(['merchant','brand','category','informations','images'])->whereIn('category_id',$ids)->paginate(20,['*'],'page',$request->page);
+        if($request->brands){
+            if(Category::where('category_id',$category->id)->exists()){
+                $subcategory = Category::where('category_id',$category->id)->first();
+                if(Category::where('category_id',$subcategory->id)->exists()){
+                    $ids  = Category::where('category_id',$category->id)->pluck('id')->toArray();
+                    $products = Product::with(['merchant','brand','category','informations','images'])->whereIn('category_id',$ids)->whereIn('brand_id',$request->brands)->paginate(20,['*'],'page',$request->page);
+                }else{
+                    $ids  = Category::where('category_id',$category->id)->pluck('id')->toArray();
+                    $products = Product::with(['merchant','brand','category','informations','images'])->whereIn('category_id',$ids)->whereIn('brand_id',$request->brands)->paginate(20,['*'],'page',$request->page);
+                }
             }else{
-                $ids  = Category::where('category_id',$category->id)->pluck('id')->toArray();
-                $products = Product::with(['merchant','brand','category','informations','images'])->whereIn('category_id',$ids)->paginate(20,['*'],'page',$request->page);
+                $products = Product::with(['merchant','brand','category','informations','images'])->where('category_id',$category->id)->whereIn('brand_id',$request->brands)->paginate(20,['*'],'page',$request->page);
             }
         }else{
-            $products = Product::with(['merchant','brand','category','informations','images'])->where('category_id',$category->id)->paginate(20,['*'],'page',$request->page);
+            if(Category::where('category_id',$category->id)->exists()){
+                $subcategory = Category::where('category_id',$category->id)->first();
+                if(Category::where('category_id',$subcategory->id)->exists()){
+                    $ids  = Category::where('category_id',$category->id)->pluck('id')->toArray();
+                    $products = Product::with(['merchant','brand','category','informations','images'])->whereIn('category_id',$ids)->paginate(20,['*'],'page',$request->page);
+                }else{
+                    $ids  = Category::where('category_id',$category->id)->pluck('id')->toArray();
+                    $products = Product::with(['merchant','brand','category','informations','images'])->whereIn('category_id',$ids)->paginate(20,['*'],'page',$request->page);
+                }
+            }else{
+                $products = Product::with(['merchant','brand','category','informations','images'])->where('category_id',$category->id)->paginate(20,['*'],'page',$request->page);
+            }
         }
         return response([
             'products'=>$products,

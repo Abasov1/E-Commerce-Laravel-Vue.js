@@ -109,23 +109,36 @@ class DatabaseSeeder extends Seeder
             'slug' => 'example-merchant',
             'image' => 'default.png',
         ]);
-        $br = Brand::create([
-            'name' => 'example brand',
-            'slug' => 'example-brand',
+        $br1 = Brand::create([
+            'name' => 'Samsung',
+            'slug' => 'samsung',
+            'image' => 'default.jpg',
+        ]);
+        $br2 = Brand::create([
+            'name' => 'NVIDIA',
+            'slug' => 'nvidia',
+            'image' => 'default.jpg',
+        ]);
+        $br3 = Brand::create([
+            'name' => 'RYZEN',
+            'slug' => 'ryzen',
             'image' => 'default.jpg',
         ]);
         $randomize = [
             [
                 'image'=>'keyboard.jpg',
-                'id'=>$keyboard->id
+                'id'=>$keyboard->id,
+                'brid'=>$br1->id
             ],
             [
                 'image'=>'mouse.jpg',
-                'id'=>$mouse->id
+                'id'=>$mouse->id,
+                'brid'=>$br2->id
             ],
             [
                 'image'=>'mousepad.jpg',
-                'id'=>$mousepad->id
+                'id'=>$mousepad->id,
+                'brid'=>$br3->id
             ]
         ];
         for($i=0;$i <= 30;$i++){
@@ -134,10 +147,10 @@ class DatabaseSeeder extends Seeder
             $product = Product::create([
                 'merchant_id' => $mr->id,
                 'category_id' => $randItem['id'],
-                'brand_id' => $br->id,
+                'brand_id' => $randItem['brid'],
                 'name' => 'example product',
                 'slug' => 'example-product',
-                'price' => '12313',
+                'price' => rand(600, 3000)
             ]);
             Pimage::create([
                 'image' => $randItem['image'],
@@ -147,10 +160,10 @@ class DatabaseSeeder extends Seeder
         $housepr = Product::factory(5)->create([
             'merchant_id' => $mr->id,
             'category_id' => $houseprid->id,
-            'brand_id' => $br->id,
+            'brand_id' => $br1->id,
             'name' => 'example product',
             'slug' => 'example-product',
-            'price' => '12313',
+            'price' => rand(600, 3000)
         ]);
         foreach($housepr as $pr){
             Pimage::create([
@@ -158,10 +171,5 @@ class DatabaseSeeder extends Seeder
                 'product_id' => $pr->id,
             ]);
         }
-        Brand::factory(10)->create([
-            'name' => 'example brand',
-            'slug' => 'example-brand',
-            'image' => 'default.jpg',
-        ]);
     }
 }

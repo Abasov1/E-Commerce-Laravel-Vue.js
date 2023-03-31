@@ -3,6 +3,7 @@ import axios from 'axios'
 const store = createStore({
     state:{
         category:{},
+        ctype:null,
         categories:{},
         allcategories:{},
         prs:{
@@ -30,6 +31,9 @@ const store = createStore({
         },
         setCategory(state,categories){
             state.categories = categories
+        },
+        setType(state,type){
+            state.ctype = type
         },
         setAllCategories(state,categories){
             state.allcategories = categories
@@ -75,6 +79,7 @@ const store = createStore({
         loadcategory: async ({commit},slug) => {
             await axios.get('http://127.0.0.1:8000/api/loadcat/'+slug).then((response)=>{
                 commit('setCat',response.data.categories)
+                commit('setType',response.data.type)
             });
         },
         loadallcategories: async ({commit}) => {

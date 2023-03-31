@@ -30,6 +30,7 @@
 import store from '../store'
 import { onMounted,ref,reactive,computed } from 'vue'
 onMounted(()=>{
+    window.scrollTo(0,0);
     store.dispatch('loadcategories')
 })
 const categories = computed(()=>store.state.categories)

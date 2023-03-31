@@ -11,22 +11,15 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'HomeLayout',
-      redirect:'/home',
-      component: HomeLayout,
-      children:[
-        {
-            path: '/home',
-            name: 'Home',
-            component: Home,
-        }
-      ]
-    },
-    {
-      path: '/',
       name: 'ProductLayout',
       component: ProductLayout,
+      redirect:'/home',
       children:[
+        {
+          path: '/home',
+          name: 'Home',
+          component: Home,
+        },
         {
           path: '/categories/:fparent/:sparent/:slug',
           name: 'SubSubCategory',

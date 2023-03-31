@@ -3,7 +3,7 @@
                 <div class="row mb-8">
                     <div class="d-none d-xl-block col-xl-3 col-wd-2gdot5">
                         <!-- List -->
-                        <div class="mb-8 border border-width-2 border-color-3 borders-radius-6">
+                        <div v-if="categories[0].parent.name != categories[0].name" ref="comeBackTop" class="mb-8 border border-width-2 border-color-3 borders-radius-6">
                             <!-- List -->
                             <ul v-if="categories" id="sidebarNav" class="list-unstyled mb-0 sidebar-navbar">
                                 <li>
@@ -27,21 +27,21 @@
                                 <!-- Checkboxes -->
                                 <div v-if="showBras" v-for="bra in brands" :key="bra.id" class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="brandAdidas">
-                                        <label class="custom-control-label" for="brandAdidas">{{bra.name}}
+                                        <input v-model="brandCheckbox" :value="bra.id" type="checkbox" class="custom-control-input" :id="'asdf'+bra.id">
+                                        <label class="custom-control-label" :for="'asdf'+bra.id">{{bra.name}}
                                         </label>
                                     </div>
                                 </div>
                                 <div v-if="showQras" v-for="bra in brands" :key="bra.id" class="collapse" id="collapseBrand">
                                     <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
                                         <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="categoryShorts">
-                                            <label class="custom-control-label" for="categoryShorts">{{bra.name}}</label>
+                                            <input v-model="brandCheckbox" :value="bra.id" type="checkbox" class="custom-control-input" :id="'asdfg'+bra.id">
+                                            <label class="custom-control-label" :for="'asdfg'+bra.id">{{bra.name}}</label>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- Link -->
-                                <a class="link link-collapse small font-size-13 text-gray-27 d-inline-flex mt-2" data-toggle="collapse" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseBrand">
+                                <a  v-if="brands.lenght > 4" class="link link-collapse small font-size-13 text-gray-27 d-inline-flex mt-2" data-toggle="collapse" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseBrand">
                                     <span class="link__icon text-gray-27 bg-white">
                                         <span class="link__icon-inner">+</span>
                                     </span>
@@ -49,101 +49,6 @@
                                     <span @click.prevent="showLessBrands" v-if="showQras" class="link-collapse__default">Show less</span>
                                 </a>
                                 <!-- End Link -->
-                            </div>
-                            <div class="border-bottom pb-4 mb-4">
-                                <h4 class="font-size-14 mb-3 font-weight-bold">Color</h4>
-
-                                <!-- Checkboxes -->
-                                <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="categoryTshirt">
-                                        <label class="custom-control-label" for="categoryTshirt">Black <span class="text-gray-25 font-size-12 font-weight-normal"> (56)</span></label>
-                                    </div>
-                                </div>
-                                <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="categoryShoes">
-                                        <label class="custom-control-label" for="categoryShoes">Black Leather <span class="text-gray-25 font-size-12 font-weight-normal"> (56)</span></label>
-                                    </div>
-                                </div>
-                                <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="categoryAccessories">
-                                        <label class="custom-control-label" for="categoryAccessories">Black with Red <span class="text-gray-25 font-size-12 font-weight-normal"> (56)</span></label>
-                                    </div>
-                                </div>
-                                <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="categoryTops">
-                                        <label class="custom-control-label" for="categoryTops">Gold <span class="text-gray-25 font-size-12 font-weight-normal"> (56)</span></label>
-                                    </div>
-                                </div>
-                                <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="categoryBottom">
-                                        <label class="custom-control-label" for="categoryBottom">Spacegrey <span class="text-gray-25 font-size-12 font-weight-normal"> (56)</span></label>
-                                    </div>
-                                </div>
-                                <!-- End Checkboxes -->
-
-                                <!-- View More - Collapse -->
-                                <div class="collapse" id="collapseColor">
-                                    <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="categoryShorts">
-                                            <label class="custom-control-label" for="categoryShorts">Turquoise <span class="text-gray-25 font-size-12 font-weight-normal"> (56)</span></label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="categoryHats">
-                                            <label class="custom-control-label" for="categoryHats">White <span class="text-gray-25 font-size-12 font-weight-normal"> (56)</span></label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" id="categorySocks">
-                                            <label class="custom-control-label" for="categorySocks">White with Gold <span class="text-gray-25 font-size-12 font-weight-normal"> (56)</span></label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End View More - Collapse -->
-
-                                <!-- Link -->
-                                <a class="link link-collapse small font-size-13 text-gray-27 d-inline-flex mt-2" data-toggle="collapse" href="#collapseColor" role="button" aria-expanded="false" aria-controls="collapseColor">
-                                    <span class="link__icon text-gray-27 bg-white">
-                                        <span class="link__icon-inner">+</span>
-                                    </span>
-                                    <span class="link-collapse__default">Show more</span>
-                                    <span class="link-collapse__active">Show less</span>
-                                </a>
-                                <!-- End Link -->
-                            </div>
-                            <div class="range-slider">
-                                <h4 class="font-size-14 mb-3 font-weight-bold">Price</h4>
-                                <!-- Range Slider -->
-                                <input class="js-range-slider" type="text"
-                                data-extra-classes="u-range-slider u-range-slider-indicator u-range-slider-grid"
-                                data-type="double"
-                                data-grid="false"
-                                data-hide-from-to="true"
-                                data-prefix="$"
-                                data-min="0"
-                                data-max="3456"
-                                data-from="0"
-                                data-to="3456"
-                                data-result-min="#rangeSliderExample3MinResult"
-                                data-result-max="#rangeSliderExample3MaxResult">
-                                <!-- End Range Slider -->
-                                <div class="mt-1 text-gray-111 d-flex mb-4">
-                                    <span class="mr-0dot5">Price: </span>
-                                    <span>$</span>
-                                    <span id="rangeSliderExample3MinResult" class=""></span>
-                                    <span class="mx-0dot5"> — </span>
-                                    <span>$</span>
-                                    <span id="rangeSliderExample3MaxResult" class=""></span>
-                                </div>
-                                <button type="submit" class="btn px-4 btn-primary-dark-w py-2 rounded-lg">Filter</button>
                             </div>
                         </div>
                     </div>
@@ -176,26 +81,53 @@
                             <div class="d-flex">
                                 <form v-if="sortDropdown" method="get">
                                     <!-- Select -->
-                                    <div @click="sortDropdown = false" class="dropdown bootstrap-select js-select dropdown-select max-width-200 max-width-160-sm right-dropdown-0 px-2 px-xl-0 show"><select class="js-select selectpicker dropdown-select max-width-200 max-width-160-sm right-dropdown-0 px-2 px-xl-0" data-style="btn-sm bg-white font-weight-normal py-2 border text-gray-20 bg-lg-down-transparent border-lg-down-0" tabindex="-98">
-                                        <option value="one" selected="">Default sorting</option>
+                                    <div @click="sortDropdown = false" class="dropdown bootstrap-select js-select dropdown-select max-width-200 max-width-160-sm right-dropdown-0 px-2 px-xl-0 show">
+                                        <select class="js-select selectpicker dropdown-select max-width-200 max-width-160-sm right-dropdown-0 px-2 px-xl-0" data-style="btn-sm bg-white font-weight-normal py-2 border text-gray-20 bg-lg-down-transparent border-lg-down-0" tabindex="-98">
+                                        <option value="one" selected="">Default sorting </option>
                                         <option value="two">Sort by popularity</option>
                                         <option value="three">Sort by average rating</option>
                                         <option value="four">Sort by latest</option>
                                         <option value="five">Sort by price: low to high</option>
                                         <option value="six">Sort by price: high to low</option>
-                                    </select><button type="button" class="btn dropdown-toggle btn-sm bg-white font-weight-normal py-2 border text-gray-20 bg-lg-down-transparent border-lg-down-0" data-toggle="dropdown" role="button" title="Default sorting" aria-expanded="true"><div class="filter-option"><div class="filter-option-inner"><div class="filter-option-inner-inner">Default sorting</div></div> </div></button><div class="dropdown-menu show" role="combobox" x-placement="bottom-start" style="max-height: 296.172px; overflow: hidden; min-height: 139px; position: absolute; transform: translate3d(0px, 39px, 0px); top: 0px; left: 0px; will-change: transform;"><div class="inner show" role="listbox" aria-expanded="true" tabindex="-1" style="max-height: 264.172px; overflow-y: auto; min-height: 107px;"><ul class="dropdown-menu inner show"><li class="selected active"><a role="option" class="dropdown-item selected active" aria-disabled="false" tabindex="0" aria-selected="true"><span class=" bs-ok-default check-mark"></span><span class="text">Default sorting</span></a></li><li><a role="option" class="dropdown-item" aria-disabled="false" tabindex="0" aria-selected="false"><span class=" bs-ok-default check-mark"></span><span class="text">Sort by popularity</span></a></li><li><a role="option" class="dropdown-item" aria-disabled="false" tabindex="0" aria-selected="false"><span class=" bs-ok-default check-mark"></span><span class="text">Sort by average rating</span></a></li><li><a role="option" class="dropdown-item" aria-disabled="false" tabindex="0" aria-selected="false"><span class=" bs-ok-default check-mark"></span><span class="text">Sort by latest</span></a></li><li><a role="option" class="dropdown-item" aria-disabled="false" tabindex="0" aria-selected="false"><span class=" bs-ok-default check-mark"></span><span class="text">Sort by price: low to high</span></a></li><li><a role="option" class="dropdown-item" aria-disabled="false" tabindex="0" aria-selected="false"><span class=" bs-ok-default check-mark"></span><span class="text">Sort by price: high to low</span></a></li></ul></div></div></div>
+                                        </select>
+                                        <button type="button" class="btn dropdown-toggle btn-sm bg-white font-weight-normal py-2 border text-gray-20 bg-lg-down-transparent border-lg-down-0" data-toggle="dropdown" role="button" title="Default sorting" aria-expanded="true">
+                                            <div class="filter-option">
+                                                <div class="filter-option-inner">
+                                                    <div class="filter-option-inner-inner">Default sorting<i class="bi bi-caret-down"></i></div>
+                                                </div> 
+                                            </div>
+                                        </button>
+                                        <div class="dropdown-menu show" role="combobox" x-placement="bottom-start" style="max-height: 296.172px; overflow: hidden; min-height: 139px; position: absolute; transform: translate3d(0px, 39px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                            <div class="inner show" role="listbox" aria-expanded="true" tabindex="-1" style="max-height: 264.172px; overflow-y: auto; min-height: 107px;">
+                                                <ul class="dropdown-menu inner show">
+                                                    <li class="selected active">
+                                                        <a role="option" class="dropdown-item selected active" aria-disabled="false" tabindex="0" aria-selected="true">
+                                                            <span class=" bs-ok-default check-mark"></span><span class="text">Default sorting</span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a role="option" class="dropdown-item" aria-disabled="false" tabindex="0" aria-selected="false">
+                                                            <span class=" bs-ok-default check-mark"></span>
+                                                            <span class="text">Sort by popularity</span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <!-- End Select -->
                                 </form>
                                 <form v-else method="get">
                                     <!-- Select -->
-                                    <div @click="sortDropdown = true" class="dropdown bootstrap-select js-select dropdown-select max-width-200 max-width-160-sm right-dropdown-0 px-2 px-xl-0"><select class="js-select selectpicker dropdown-select max-width-200 max-width-160-sm right-dropdown-0 px-2 px-xl-0" data-style="btn-sm bg-white font-weight-normal py-2 border text-gray-20 bg-lg-down-transparent border-lg-down-0" tabindex="-98">
-                                        <option value="one" selected="">Default sorting</option>
-                                        <option value="two">Sort by popularity</option>
-                                        <option value="three">Sort by average rating</option>
-                                        <option value="four">Sort by latest</option>
-                                        <option value="five">Sort by price: low to high</option>
-                                        <option value="six">Sort by price: high to low</option>
-                                    </select><button type="button" class="btn dropdown-toggle btn-sm bg-white font-weight-normal py-2 border text-gray-20 bg-lg-down-transparent border-lg-down-0" data-toggle="dropdown" role="button" title="Default sorting"><div class="filter-option"><div class="filter-option-inner"><div class="filter-option-inner-inner">Default sorting</div></div> </div></button><div class="dropdown-menu " role="combobox"><div class="inner show" role="listbox" aria-expanded="false" tabindex="-1"><ul class="dropdown-menu inner show"></ul></div></div></div>
+                                    <div @click="sortDropdown = true" class="dropdown bootstrap-select js-select dropdown-select max-width-200 max-width-160-sm right-dropdown-0 px-2 px-xl-0">
+                                        <button type="button" class="btn dropdown-toggle btn-sm bg-white font-weight-normal py-2 border text-gray-20 bg-lg-down-transparent border-lg-down-0" data-toggle="dropdown" role="button" title="Default sorting">
+                                            <div class="filter-option">
+                                                <div class="filter-option-inner">
+                                                    <div class="filter-option-inner-inner">Default sorting</div>
+                                                </div> 
+                                            </div>
+                                        </button>
+                                    </div>
                                     <!-- End Select -->
                                 </form>
                             </div>
@@ -221,14 +153,14 @@
                                                             <div class="text-gray-100">{{pr.price}}</div>
                                                         </div>
                                                         <div class="d-none d-xl-block prodcut-add-cart">
-                                                            <a href="../shop/single-product-fullwidth.html" class="btn-add-cart btn-primary transition-3d-hover"><i class="ec ec-add-to-cart"></i></a>
+                                                            <a href="../shop/single-product-fullwidth.html" class="btn-add-cart btn-primary transition-3d-hover"><i class="bi bi-cart"></i></a>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="product-item__footer">
                                                     <div class="border-top pt-2 flex-center-between flex-wrap">
-                                                        <a href="../shop/compare.html" class="text-gray-6 font-size-13"><i class="ec ec-compare mr-1 font-size-15"></i> Compare</a>
-                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="ec ec-favorites mr-1 font-size-15"></i> Wishlist</a>
+                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="bi bi-heart mr-1 font-size-15"></i> Wishlist</a>
+                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="bi bi-bag mr-1 font-size-15"></i> Cart</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -259,17 +191,25 @@
 import store from '../store'
 import { onMounted,ref,reactive,computed,watch } from 'vue'
 const brands = ref([])
+const brandCheckbox = ref([])
+watch(()=>brandCheckbox.value,()=>{
+    formData.brands = brandCheckbox.value
+    formData.page = 1
+    loadProducts()
+
+})
 const products = ref([])
 const show = ref(false)
 const showBras = ref(false)
 const showQras = ref(false)
 const sortDropdown = ref(false)
 const perPageDropdown = ref(false)
-
+const comeBackTop = ref(null)
 const props = defineProps({
-    catid:String
+    catid:String,
 });
 const formData = reactive({
+    brands:null,
     page:1,
     catid:props.catid
 });
@@ -294,8 +234,9 @@ const showLessBrands = () => {
 }
 const changePage = (n) => {
     formData.page = n
+    products.value = null
     loadProducts()
-    window.scrollTo(1000    , 0);
+    comeBackTop.value.scrollIntoView();
 
 }
 const loadProducts = () => {
@@ -307,3 +248,5 @@ const categories = computed(()=>store.state.category)
 
 
 </script>
+<style scoped>
+</style>
