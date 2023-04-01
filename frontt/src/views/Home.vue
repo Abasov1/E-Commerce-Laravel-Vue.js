@@ -364,7 +364,7 @@
                                     <div class="product-item__outer h-100">
                                         <div class="product-item__inner row no-gutters">
                                             <div class="col-12 col-lg-12 product-media-center">
-                                                <a href="../shop/single-product-fullwidth.html" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/brands/'+br.image" alt="Image Description"></a>
+                                                <router-link :to="{name:'Brand',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/brands/'+br.image" alt="Image Description"></router-link>
                                             </div>
                                         </div>
                                     </div>
@@ -377,7 +377,7 @@
                                     <div class="product-item__outer h-100">
                                         <div class="product-item__inner row no-gutters">
                                             <div class="col-12 col-lg-12 product-media-center">
-                                                <a href="../shop/single-product-fullwidth.html" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/brands/'+br.image" alt="Image Description"></a>
+                                                <router-link :to="{name:'Brand',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/brands/'+br.image" alt="Image Description"></router-link>
                                             </div>
                                         </div>
                                     </div>
@@ -390,7 +390,54 @@
                                     <div class="product-item__outer h-100">
                                         <div class="product-item__inner row no-gutters">
                                             <div class="col-12 col-lg-12 product-media-center">
-                                                <a href="../shop/single-product-fullwidth.html" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/brands/'+br.image" alt="Image Description"></a>
+                                                <router-link :to="{name:'Brand',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/brands/'+br.image" alt="Image Description"></router-link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-top-2">
+                    <dv class=" d-flex justify-content-between border-bottom border-color-1 flex-md-nowrap flex-wrap border-sm-bottom-0">
+                        <h3 class="section-title mb-0 pb-2 font-size-22">Merchants</h3>
+                    </dv>
+                    <div class="js-slick-carousel u-slick u-slick--gutters-2 overflow-hidden u-slick-overflow-visble pt-3 pb-6"
+                        data-pagi-classes="text-center right-0 bottom-1 left-0 u-slick__pagination u-slick__pagination--long mb-0 z-index-n1 mt-4">
+                        <div class="js-slide">
+                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
+                                <li v-if="merchant1" v-for="br in merchant1" :key="br.id" class="col-wd-2 col-md-3 d-flex justify-content-center" :class=[]>
+                                    <div class="product-item__outer h-100">
+                                        <div class="product-item__inner row no-gutters">
+                                            <div class="col-12 col-lg-12 product-media-center">
+                                                <router-link :to="{name:'Merchant',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/merchants/'+br.image" alt="Image Description"></router-link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="js-slide">
+                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
+                                <li v-if="merchant2" v-for="br in merchant2" :key="br.id" class="col-wd-2 col-md-3 d-flex justify-content-center">
+                                    <div class="product-item__outer h-100">
+                                        <div class="product-item__inner row no-gutters">
+                                            <div class="col-12 col-lg-12 product-media-center">
+                                                <router-link :to="{name:'Merchant',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/merchants/'+br.image" alt="Image Description"></router-link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="js-slide">
+                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
+                                <li v-if="merchant3" v-for="br in merchant3" :key="br.id" class="col-wd-2 col-md-3 d-flex justify-content-center" >
+                                    <div class="product-item__outer h-100">
+                                        <div class="product-item__inner row no-gutters">
+                                            <div class="col-12 col-lg-12 product-media-center">
+                                                <router-link :to="{name:'Merchant',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/merchants/'+br.image" alt="Image Description"></router-link>
                                             </div>
                                         </div>
                                     </div>
@@ -410,7 +457,8 @@ import { onMounted,ref,reactive,computed } from 'vue'
 onMounted(()=>{
     store.dispatch('loadallcategories')
     store.dispatch('loadproducts')
-    store.dispatch('loadbrands')
+    store.dispatch('loadbrands',false)
+    store.dispatch('loadmerchants',false)
 })
 const getLink = (cat) => {
     if(cat.type === 1){
@@ -449,6 +497,9 @@ const recpr3 = computed(()=>store.state.prs.recpr3)
 const brand1 = computed(()=>store.state.brands.brand1)
 const brand2 = computed(()=>store.state.brands.brand2)
 const brand3 = computed(()=>store.state.brands.brand3)
+const merchant1 = computed(()=>store.state.merchants.merchant1)
+const merchant2 = computed(()=>store.state.merchants.merchant2)
+const merchant3 = computed(()=>store.state.merchants.merchant3)
 </script>
 <style scoped>
 

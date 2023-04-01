@@ -3,67 +3,50 @@
                 <div class="row mb-8">
                     <div class="d-none d-xl-block col-xl-3 col-wd-2gdot5">
                         <!-- List -->
-                       
+                        <div v-if="categories" ref="comeBackTop" class="mb-8 border border-width-2 border-color-3 borders-radius-6">
+                            <!-- List -->
+                            <ul id="sidebarNav" class="list-unstyled mb-0 sidebar-navbar">
+                                <li v-for="category in categories">
+                                    <a class="dropdown-current active" href="#">{{category.parent.name}}<span class="text-gray-25 font-size-12 font-weight-normal"></span></a>
+
+                                    <ul class="list-unstyled dropdown-list">
+                                        <li v-for="cat in categories" :key="cat.id"><a v-if="cat.category_id == category.parent.id" @click.prevent="formData.category && formData.category === cat.id ? formData.category = null : formData.category = cat.id" class="dropdown-item" :style="[cat.id === formData.category ? 'color:yellow' : '']" href="#">{{cat.name}}</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <!-- End List -->
+                        </div>
                         <!-- Filter -->
                         <div class="mb-6">
                             <div class="border-bottom border-color-1 mb-5">
                                 <h3 class="section-title section-title__sm mb-0 pb-2 font-size-18">Filters</h3>
                             </div>
                             <div class="border-bottom pb-4 mb-4">
-                                <h4 class="font-size-14 mb-3 font-weight-bold">Brands</h4>
+                                <h4 class="font-size-14 mb-3 font-weight-bold">Merchants</h4>
 
                                 <!-- Checkboxes -->
-                                <div v-if="showBras" v-for="bra in brands" :key="bra.id" class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
+                                <div v-if="showBras" v-for="bra in merchants" :key="bra.id" class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
                                     <div class="custom-control custom-checkbox">
-                                        <input v-model="brandCheckbox" :value="bra.id" type="checkbox" class="custom-control-input" :id="'asdf'+bra.id">
+                                        <input v-model="merchantCheckbox" :value="bra.id" type="checkbox" class="custom-control-input" :id="'asdf'+bra.id">
                                         <label class="custom-control-label" :for="'asdf'+bra.id">{{bra.name}}
                                         </label>
                                     </div>
                                 </div>
-                                <div v-if="showQras" v-for="bra in brands" :key="bra.id" class="collapse" id="collapseBrand">
+                                <div v-if="showQras" v-for="bra in merchants" :key="bra.id" class="collapse" id="collapseBrand">
                                     <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
                                         <div class="custom-control custom-checkbox">
-                                            <input v-model="brandCheckbox" :value="bra.id" type="checkbox" class="custom-control-input" :id="'asdfg'+bra.id">
+                                            <input v-model="merchantCheckbox" :value="bra.id" type="checkbox" class="custom-control-input" :id="'asdfg'+bra.id">
                                             <label class="custom-control-label" :for="'asdfg'+bra.id">{{bra.name}}</label>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- Link -->
-                                <a v-if="store.state.brands.bras.length > 3" class="link link-collapse small font-size-13 text-gray-27 d-inline-flex mt-2" data-toggle="collapse" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseBrand">
+                                <a v-if="store.state.merchants.mras.length > 4" class="link link-collapse small font-size-13 text-gray-27 d-inline-flex mt-2" data-toggle="collapse" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseBrand">
                                     <span class="link__icon text-gray-27 bg-white">
                                         <span class="link__icon-inner">+</span>
                                     </span>
-                                    <span @click.prevent="showMoreBrands" v-if="!showQras" class="link-collapse__default">Show All</span>
-                                    <span @click.prevent="showLessBrands" v-if="showQras" class="link-collapse__default">Show less</span>
-                                </a>
-                                <!-- End Link -->
-                            </div>
-                            <div class="border-bottom pb-4 mb-4">
-                                <h4 class="font-size-14 mb-3 font-weight-bold" @click="niyee">Merchants</h4>
-
-                                <!-- Checkboxes -->
-                                <div v-if="showMras" v-for="bra in merchants" :key="bra.id" class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
-                                    <div class="custom-control custom-checkbox">
-                                        <input v-model="merchantCheckbox" :value="bra.id" type="checkbox" class="custom-control-input" :id="'merr'+bra.id">
-                                        <label class="custom-control-label" :for="'merr'+bra.id">{{bra.name}}
-                                        </label>
-                                    </div>
-                                </div>
-                                <div v-if="showNras" v-for="bra in merchants" :key="bra.id" class="collapse" id="collapseBrand">
-                                    <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
-                                        <div class="custom-control custom-checkbox">
-                                            <input v-model="merchantCheckbox" :value="bra.id" type="checkbox" class="custom-control-input" :id="'merch'+bra.id">
-                                            <label class="custom-control-label" :for="'merch'+bra.id">{{bra.name}}</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Link -->
-                                <a v-if="store.state.merchants.mras.length > 3" class="link link-collapse small font-size-13 text-gray-27 d-inline-flex mt-2" data-toggle="collapse" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseBrand">
-                                    <span class="link__icon text-gray-27 bg-white">
-                                        <span class="link__icon-inner">+</span>
-                                    </span>
-                                    <span @click.prevent="showMoreMerchants" v-if="!showNras" class="link-collapse__default">Show All</span>
-                                    <span @click.prevent="showLessMerchants" v-if="showNras" class="link-collapse__default">Show less</span>
+                                    <span @click.prevent="showMoreMerchants" v-if="!showQras" class="link-collapse__default">Show All</span>
+                                    <span @click.prevent="showLessMerchants" v-if="showQras" class="link-collapse__default">Show less</span>
                                 </a>
                                 <!-- End Link -->
                             </div>
@@ -72,7 +55,7 @@
                     <div class="col-xl-9 col-wd-9gdot5">
                         <!-- Shop-control-bar Title -->
                         <div class="d-block d-md-flex flex-center-between mb-3">
-                            <h3 class="font-size-25 mb-2 mb-md-0">{{categories[0].parent.name}}</h3>
+                            <h3 v-if="brand != null" class="font-size-25 mb-2 mb-md-0">{{brand.name}}'s Products</h3>
                             <p class="font-size-14 text-gray-90 mb-0">Showing 1–25 of 56 results</p>
                         </div>
                         <!-- End shop-control-bar Title -->
@@ -207,70 +190,53 @@
 <script setup>
 import store from '../store'
 import { onMounted,ref,reactive,computed,watch } from 'vue'
-const brands = ref([])
-const brandCheckbox = ref([])
-watch(()=>brandCheckbox.value,()=>{
-    formData.brands = brandCheckbox.value
-    formData.page = 1
-    loadProducts()
-
-})
+const categories = ref(false)
 const merchants = ref([])
 const merchantCheckbox = ref([])
 watch(()=>merchantCheckbox.value,()=>{
     formData.merchants = merchantCheckbox.value
+    console.log(formData.merchants)
     formData.page = 1
     loadProducts()
-
 })
 const products = ref([])
 const show = ref(false)
 const showBras = ref(false)
 const showQras = ref(false)
-const showMras = ref(false)
-const showNras = ref(false)
 const sortDropdown = ref(false)
 const perPageDropdown = ref(false)
 const comeBackTop = ref(null)
 const props = defineProps({
-    catid:String,
+    slug:String,
 });
 const formData = reactive({
-    brands:null,
     merchants:null,
+    category:null,
     page:1,
-    catid:props.catid
+    brid:null
 });
-onMounted(()=>{
-    store.dispatch('loadbras',store.state.category[0].parent.id).then(()=>{
-        brands.value = store.state.brands.bras.slice(0,3)
-        showBras.value = true
-    })
-    store.dispatch('loadmras',store.state.category[0].parent.id).then(()=>{
-        merchants.value = store.state.merchants.mras.slice(0,3)
-        showMras.value = true
-    })
+watch(()=>formData.category,()=>{
+    formData.page = 1
     loadProducts()
 })
-const showMoreBrands = () => {
+onMounted(()=>{
+    store.dispatch('loadbrand',props.slug).then(()=>{
+        formData.brid = store.state.brand.id
         showBras.value = true
-        brands.value = store.state.brands.bras
+        merchants.value = store.state.merchants.mras.slice(0,4)
+        categories.value = store.state.categories
+        loadProducts()
+    })
+})
+const showMoreMerchants = () => {
+        showBras.value = true
+        merhants.value = store.state.merchants.mras
         showQras.value = true   
 }
-const showLessBrands = () => {
-        showQras.value = false
-        brands.value = store.state.brands.bras.slice(0,3)
-        showBras.value = true
-}
-const showMoreMerchants = () => {
-        showMras.value = true
-        merchants.value = store.state.merchants.mras
-        showNras.value = true   
-}
 const showLessMerchants = () => {
-        showNras.value = false
-        merchants.value = store.state.merchants.mras.slice(0,3)
-        showMras.value = true
+        showQras.value = false
+        merhants.value = store.state.merchants.mras.slice(0,4)
+        showBras.value = true
 }
 const changePage = (n) => {
     formData.page = n
@@ -280,11 +246,11 @@ const changePage = (n) => {
 
 }
 const loadProducts = () => {
-    store.dispatch('loadpras',formData).then(()=>{
+    store.dispatch('loadbrpras',formData).then(()=>{
         products.value = store.state.prs.pras.products
     })
 }
-const categories = computed(()=>store.state.category)
+const brand = computed(()=>store.state.brand)
 
 </script>
 <style scoped>

@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeLayout from '../components/HomeLayout.vue'
 import ProductLayout from '../components/ProductLayout.vue'
 import Home from '../views/Home.vue'
+import Merchant from '../views/Merchant.vue'
+import Brand from '../views/Brand.vue'
 import Categories from '../views/Categories.vue'
 import Category from '../views/Category.vue'
 import SubCategory from '../views/SubCategory.vue'
@@ -19,6 +20,18 @@ const router = createRouter({
           path: '/home',
           name: 'Home',
           component: Home,
+        },
+        {
+          path: '/merchant/:slug',
+          name: 'Merchant',
+          component: Merchant,
+          props:true
+        },
+        {
+          path: '/brand/:slug',
+          name: 'Brand',
+          component: Brand,
+          props:true
         },
         {
           path: '/categories/:fparent/:sparent/:slug',

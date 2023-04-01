@@ -57,25 +57,22 @@ Route::get('/images/{filename}', function ($filename) {
     $path = storage_path('app/images/' . $filename);
     return response()->file($path);
 });
-Route::get('/images/categories/{filename}', function ($filename) {
-    $path = storage_path('app/images/categories/' . $filename);
+Route::get('/images/{type}/{filename}', function ($type,$filename) {
+    $path = storage_path('app/images/' .$type . '/' . $filename);
     return response()->file($path);
 });
-Route::get('/images/brands/{filename}', function ($filename) {
-    $path = storage_path('app/images/brands/' . $filename);
-    return response()->file($path);
-});
-Route::get('/images/products/{filename}', function ($filename) {
-    $path = storage_path('app/images/products/' . $filename);
-    return response()->file($path);
-});
-
 //Frontt
 Route::get('loadcat/{slug}',[FrontController::class,'loadcategory']);
 Route::get('loadcats',[FrontController::class,'loadcategories']);
 Route::get('loadallcats',[FrontController::class,'loadallcategories']);
 Route::get('loadprs',[FrontController::class,'loadprs']);
 Route::post('loadpras',[FrontController::class,'loadpras']);
-Route::get('loadbrs',[FrontController::class,'loadbrands']);
-Route::get('loadbras',[FrontController::class,'loadbras']);
+Route::post('loadmrpras',[FrontController::class,'loadmrpras']);
+Route::post('loadbrpras',[FrontController::class,'loadbrpras']);
+Route::get('loadbr/{slug}',[FrontController::class,'loadbrand']);
+Route::get('loadbrs/{id}',[FrontController::class,'loadbrands']);
+Route::get('loadbras/{id}',[FrontController::class,'loadbras']);
+Route::get('loadmrs/{id}',[FrontController::class,'loadmerchants']);
+Route::get('loadmer/{slug}',[FrontController::class,'loadmerchant']);
+Route::get('loadmras/{id}',[FrontController::class,'loadmras']);
 
