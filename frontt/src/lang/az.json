@@ -1,0 +1,135 @@
+{
+    "welcome": "Xos gelmisen",
+    "recently_viewed": "Əvvəl baxdıqlarınız",
+    "filters":"Filterlər",
+    "categories":"Kateqoriyalar",
+    "brands":"Brendlər",
+    "merchants":"Satıcılar",
+    "top_categories_this_week":"Bu həftənin ən yaxşı kateqoriyaları",
+    "search_result":"\"{index}\" üçün axtarış nəticələri",
+    "show_all":"Hamsını göstər",
+    "show_more":"Daha çox göstər",
+    "show_less":"Daha az göstər",
+    "language": "Dil seçin",
+    "register_or_sign_in":"Qeydiyyatdan keç və ya Daxil ol",
+    "wishlist":"Bəyənilənlər",
+    "cart":"Səbət",
+    "add_cart":"Səbətə əlavə elə",
+    "already_in_cart":"Səbətə əlavə olundu",
+    "loading":"Yüklənir...",
+    "spesifications":"Xüsusiyyətlər",
+    "availability":"Anbarda {x} ədəd var",
+    "replacable":"{x} məhsulları",
+    "reviews":"Rəylər",
+    "required":"Tələb olunur",
+    "messages":{
+        "notloggedin":"Bu qismi görmək üçün daxil olmalısınız"
+    },
+    "search_bar":{
+        "placeholder":"Məhsulları axtarın",
+        "brand":"Brend",
+        "merchant":"Satıcı",
+        "no_result":"Nəticə tapılmadı"
+    },
+    "filter":{
+        "newest":"Ən yeni",
+        "oldest":"Ən köhnə",
+        "h_first":"Bahalıdan ucuza",
+        "l_first":"Ucuzdan bahalıya"
+    },
+    "review":{
+        "review":"Rəy",
+        "add":"Rəy əlavə edin",
+        "update":"Rəyinizi yeniləyin",
+        "your":"Rəyiniz",
+        "overall":"Ümumilikdə",
+        "delete":"Rəyinizi silin"
+    },
+    "wish":{
+        "title":"Bəyəndiklərim",
+        "product":"Məhsul",
+        "price":"Qiymət",
+        "no_item":"Bəyənilən məhsul yoxdur"
+    },
+    "carto":{
+        "title":"Səbətim",
+        "product":"Məhsul",
+        "price":"Qiymət",
+        "quantity":"Miqdar",
+        "total":"Ümumi",
+        "proceed":"Sifariş et",
+        "no_item":"Səbətdə məhsul yoxdur"
+    },
+    "checkout":{
+        "title":"Ödəniş",
+        "details":"Ödəniş detalları",
+        "address":"Küçə ünvanı",
+        "city":"Şəhər",
+        "state":"Qəsəbə",
+        "zip":"İndex kodu",
+        "c_info":"Kart məlumatları",
+        "your":"Sifarişiniz",
+        "place":"Ödəməni yerinə yetir",
+        "purchased":"Satın alınmış məhsullar",
+        "n_purchased":"Heç bir məhsul satın alınmayıb",
+        "validations":{
+            "a_required":"Küçə ünvanı önəmlidir",
+            "c_required":"Şəhər önəmlidir",
+            "s_required":"Qəsəbə önəmlidir",
+            "z_required":"İndex kodu önəmlidir",
+            "z_match":"İndex kodu uyğun gəlmir",
+            "card_required":"Kart məlumatlarını doldurmağınız vacibdir"
+        }
+    },
+    "auth":{
+        "placeholders":{
+            "name":"Ad",
+            "email":"Email Hesabınız",
+            "password":"Şifrə",
+            "password_confirmation":"Şifrə Təsdiqlənməsi"
+        },
+        "labels":{
+            "name":"Ad",
+            "email":"Email",
+            "password":"Şifrə",
+            "password_confirmation":"Şifrə Təsdiqlənməsi"
+        },
+        "login":{
+            "greeting":"Xoş gəlmisiniz",
+            "title":"Hesabnınızı idarə etmək üçün daxil olun",
+            "forgot_password":"Şifrəni unutmusuz?",
+            "button":"Daxil olun",
+            "bot_text":"Hesabınız yoxdur?",
+            "sign_up":"Qeydiyyatdan keçin",
+            "validations":{
+                "e_required":"Email vacibdir",
+                "e_valid":"Düzgün email hesabı əlavə edin",
+                "e_exists":"Bu email hesabı tapılmadı",
+                "p_required":"Şifrə vacibdir",
+                "p_wrong":"Şifrə düzgün deyil"
+            }
+        },
+        "register":{
+            "greeting":"Xoş gəlmisiniz",
+            "title":"Başlamaq üçün qeydiyyatdan keçin",
+            "button":"Qeydiyyatdan keç",
+            "bot_text":"Hesabınız var?",
+            "sign_up":"Daxil olun",
+            "validations":{
+                "n_required":"Ad vacibdir",
+                "n_min":"Ad üçün ən azı 6 simvoldan istifadə eliyə bilərsiz",
+                "n_max":"Ad üçün maksimum 20 simvoldan istifadə eliyə bilərsiz",
+                "n_exists":"Bu ad artıq istifadədədir",
+                "e_required":"Email vacibdir",
+                "e_valid":"Düzgün email hesabı əlavə edin",
+                "e_exists":"Bu email hesabı artıq istifadədədir",
+                "p_required":"Şifrə vacibdir",
+                "p_min":"Şifrə üçün ən azı 6 simvoldan istifadə eliyə bilərsiz",
+                "p_max":"Şifrə üçün maksimum 20 simvoldan istifadə eliyə bilərsiz",
+                "vp_required":"Şifrə təsdiqlənməsi vacibdir",
+                "vp_wrong":"Şifrə təsdiqlənməsi doğru deyil"
+            }
+        },
+        "logout":"Hesabdan çıxış elə"
+    }
+}

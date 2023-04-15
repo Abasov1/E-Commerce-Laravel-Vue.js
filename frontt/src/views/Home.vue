@@ -109,231 +109,16 @@
             <!-- End Slider Section -->
             <!-- End Products-4-1-4 -->
             <div class="container">
-                <!-- Prodcut-cards-carousel -->
-                <div class="space-top-2">
-                    <dv class=" d-flex justify-content-between border-bottom border-color-1 flex-md-nowrap flex-wrap border-sm-bottom-0">
-                        <h3 class="section-title mb-0 pb-2 font-size-22">Bestsellers</h3>
-                    </dv>
-                    <div class="js-slick-carousel u-slick u-slick--gutters-2 overflow-hidden u-slick-overflow-visble pt-3 pb-6"
-                        data-pagi-classes="text-center right-0 bottom-1 left-0 u-slick__pagination u-slick__pagination--long mb-0 z-index-n1 mt-4">
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="bestpr1" v-for="pr in bestpr1" :key="pr.id" class="col-wd-3 col-md-4 product-item product-item__card pb-2 mb-2 pb-md-0 mb-md-0 border-bottom border-md-bottom-0">
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner p-md-3 row no-gutters">
-                                            <div class="col col-lg-auto product-media-left">
-                                                <a href="../shop/single-product-fullwidth.html" class="max-width-150 d-block"><img class="img-fluid" :src="'http://127.0.0.1:8000/api/images/products/'+pr.images[0].image" alt="Image Description"></a>
-                                            </div>
-                                            <div class="col product-item__body pl-2 pl-lg-3 mr-xl-2 mr-wd-1">
-                                                <div class="mb-4">
-                                                    <div class="mb-2"><a href="../shop/product-categories-7-column-full-width.html" class="font-size-12 text-gray-5">{{pr.category.name}}</a></div>
-                                                    <h5 class="product-item__title"><a href="../shop/single-product-fullwidth.html" class="text-blue font-weight-bold">{{pr.name}}</a></h5>
-                                                </div>
-                                                <div class="flex-center-between mb-3">
-                                                    <div class="prodcut-price">
-                                                        <div class="text-gray-100">{{pr.price}}</div>
-                                                    </div>
-                                                    <div class="d-none d-xl-block prodcut-add-cart">
-                                                        <a href="../shop/single-product-fullwidth.html" class="btn-add-cart btn-primary transition-3d-hover"><i class="ec ec-add-to-cart"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-item__footer">
-                                                    <div class="border-top pt-2 flex-center-between flex-wrap">
-                                                        <a href="../shop/compare.html" class="text-gray-6 font-size-13"><i class="ec ec-compare mr-1 font-size-15"></i> Compare</a>
-                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="ec ec-favorites mr-1 font-size-15"></i> Wishlist</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="bestpr2" v-for="pr in bestpr2" :key="pr.id" class="col-wd-3 col-md-4 product-item product-item__card pb-2 mb-2 pb-md-0 mb-md-0 border-bottom border-md-bottom-0">
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner p-md-3 row no-gutters">
-                                            <div class="col col-lg-auto product-media-left">
-                                                <a href="../shop/single-product-fullwidth.html" class="max-width-150 d-block"><img class="img-fluid" :src="'http://127.0.0.1:8000/api/images/products/'+pr.images[0].image" alt="Image Description"></a>
-                                            </div>
-                                            <div class="col product-item__body pl-2 pl-lg-3 mr-xl-2 mr-wd-1">
-                                                <div class="mb-4">
-                                                    <div class="mb-2"><a href="../shop/product-categories-7-column-full-width.html" class="font-size-12 text-gray-5">{{pr.category.name}}</a></div>
-                                                    <h5 class="product-item__title"><a href="../shop/single-product-fullwidth.html" class="text-blue font-weight-bold">{{pr.name}}</a></h5>
-                                                </div>
-                                                <div class="flex-center-between mb-3">
-                                                    <div class="prodcut-price">
-                                                        <div class="text-gray-100">{{pr.price}}</div>
-                                                    </div>
-                                                    <div class="d-none d-xl-block prodcut-add-cart">
-                                                        <a href="../shop/single-product-fullwidth.html" class="btn-add-cart btn-primary transition-3d-hover"><i class="ec ec-add-to-cart"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-item__footer">
-                                                    <div class="border-top pt-2 flex-center-between flex-wrap">
-                                                        <a href="../shop/compare.html" class="text-gray-6 font-size-13"><i class="ec ec-compare mr-1 font-size-15"></i> Compare</a>
-                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="ec ec-favorites mr-1 font-size-15"></i> Wishlist</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="bestpr3" v-for="pr in bestpr3" :key="pr.id" class="col-wd-3 col-md-4 product-item product-item__card pb-2 mb-2 pb-md-0 mb-md-0 border-bottom border-md-bottom-0">
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner p-md-3 row no-gutters">
-                                            <div class="col col-lg-auto product-media-left">
-                                                <a href="../shop/single-product-fullwidth.html" class="max-width-150 d-block"><img class="img-fluid" :src="'http://127.0.0.1:8000/api/images/products/'+pr.images[0].image" alt="Image Description"></a>
-                                            </div>
-                                            <div class="col product-item__body pl-2 pl-lg-3 mr-xl-2 mr-wd-1">
-                                                <div class="mb-4">
-                                                    <div class="mb-2"><a href="../shop/product-categories-7-column-full-width.html" class="font-size-12 text-gray-5">{{pr.category.name}}</a></div>
-                                                    <h5 class="product-item__title"><a href="../shop/single-product-fullwidth.html" class="text-blue font-weight-bold">{{pr.name}}</a></h5>
-                                                </div>
-                                                <div class="flex-center-between mb-3">
-                                                    <div class="prodcut-price">
-                                                        <div class="text-gray-100">{{pr.price}}</div>
-                                                    </div>
-                                                    <div class="d-none d-xl-block prodcut-add-cart">
-                                                        <a href="../shop/single-product-fullwidth.html" class="btn-add-cart btn-primary transition-3d-hover"><i class="ec ec-add-to-cart"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-item__footer">
-                                                    <div class="border-top pt-2 flex-center-between flex-wrap">
-                                                        <a href="../shop/compare.html" class="text-gray-6 font-size-13"><i class="ec ec-compare mr-1 font-size-15"></i> Compare</a>
-                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="ec ec-favorites mr-1 font-size-15"></i> Wishlist</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Prodcut-cards-carousel -->
-                <!-- Recently viewed -->
-                <div class="space-top-2">
-                    <dv class=" d-flex justify-content-between border-bottom border-color-1 flex-md-nowrap flex-wrap border-sm-bottom-0">
-                        <h3 class="section-title mb-0 pb-2 font-size-22">Recently viewed</h3>
-                    </dv>
-                    <div class="js-slick-carousel u-slick u-slick--gutters-2 overflow-hidden u-slick-overflow-visble pt-3 pb-6"
-                        data-pagi-classes="text-center right-0 bottom-1 left-0 u-slick__pagination u-slick__pagination--long mb-0 z-index-n1 mt-4">
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="recpr1" v-for="pr in recpr1" :key="pr.id" class="col-wd-3 col-md-4 product-item product-item__card pb-2 mb-2 pb-md-0 mb-md-0 border-bottom border-md-bottom-0">
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner p-md-3 row no-gutters">
-                                            <div class="col col-lg-auto product-media-left">
-                                                <a href="../shop/single-product-fullwidth.html" class="max-width-150 d-block"><img class="img-fluid" :src="'http://127.0.0.1:8000/api/images/products/'+pr.images[0].image" alt="Image Description"></a>
-                                            </div>
-                                            <div class="col product-item__body pl-2 pl-lg-3 mr-xl-2 mr-wd-1">
-                                                <div class="mb-4">
-                                                    <div class="mb-2"><a href="../shop/product-categories-7-column-full-width.html" class="font-size-12 text-gray-5">{{pr.category.name}}</a></div>
-                                                    <h5 class="product-item__title"><a href="../shop/single-product-fullwidth.html" class="text-blue font-weight-bold">{{pr.name}}</a></h5>
-                                                </div>
-                                                <div class="flex-center-between mb-3">
-                                                    <div class="prodcut-price">
-                                                        <div class="text-gray-100">{{pr.price}}</div>
-                                                    </div>
-                                                    <div class="d-none d-xl-block prodcut-add-cart">
-                                                        <a href="../shop/single-product-fullwidth.html" class="btn-add-cart btn-primary transition-3d-hover"><i class="ec ec-add-to-cart"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-item__footer">
-                                                    <div class="border-top pt-2 flex-center-between flex-wrap">
-                                                        <a href="../shop/compare.html" class="text-gray-6 font-size-13"><i class="ec ec-compare mr-1 font-size-15"></i> Compare</a>
-                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="ec ec-favorites mr-1 font-size-15"></i> Wishlist</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="recpr2" v-for="pr in recpr2" :key="pr.id" class="col-wd-3 col-md-4 product-item product-item__card pb-2 mb-2 pb-md-0 mb-md-0 border-bottom border-md-bottom-0">
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner p-md-3 row no-gutters">
-                                            <div class="col col-lg-auto product-media-left">
-                                                <a href="../shop/single-product-fullwidth.html" class="max-width-150 d-block"><img class="img-fluid" :src="'http://127.0.0.1:8000/api/images/products/'+pr.images[0].image" alt="Image Description"></a>
-                                            </div>
-                                            <div class="col product-item__body pl-2 pl-lg-3 mr-xl-2 mr-wd-1">
-                                                <div class="mb-4">
-                                                    <div class="mb-2"><a href="../shop/product-categories-7-column-full-width.html" class="font-size-12 text-gray-5">{{pr.category.name}}</a></div>
-                                                    <h5 class="product-item__title"><a href="../shop/single-product-fullwidth.html" class="text-blue font-weight-bold">{{pr.name}}</a></h5>
-                                                </div>
-                                                <div class="flex-center-between mb-3">
-                                                    <div class="prodcut-price">
-                                                        <div class="text-gray-100">{{pr.price}}</div>
-                                                    </div>
-                                                    <div class="d-none d-xl-block prodcut-add-cart">
-                                                        <a href="../shop/single-product-fullwidth.html" class="btn-add-cart btn-primary transition-3d-hover"><i class="ec ec-add-to-cart"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-item__footer">
-                                                    <div class="border-top pt-2 flex-center-between flex-wrap">
-                                                        <a href="../shop/compare.html" class="text-gray-6 font-size-13"><i class="ec ec-compare mr-1 font-size-15"></i> Compare</a>
-                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="ec ec-favorites mr-1 font-size-15"></i> Wishlist</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="recpr3" v-for="pr in recpr3" :key="pr.id" class="col-wd-3 col-md-4 product-item product-item__card pb-2 mb-2 pb-md-0 mb-md-0 border-bottom border-md-bottom-0">
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner p-md-3 row no-gutters">
-                                            <div class="col col-lg-auto product-media-left">
-                                                <a href="../shop/single-product-fullwidth.html" class="max-width-150 d-block"><img class="img-fluid" :src="'http://127.0.0.1:8000/api/images/products/'+pr.images[0].image" alt="Image Description"></a>
-                                            </div>
-                                            <div class="col product-item__body pl-2 pl-lg-3 mr-xl-2 mr-wd-1">
-                                                <div class="mb-4">
-                                                    <div class="mb-2"><a href="../shop/product-categories-7-column-full-width.html" class="font-size-12 text-gray-5">{{pr.category.name}}</a></div>
-                                                    <h5 class="product-item__title"><a href="../shop/single-product-fullwidth.html" class="text-blue font-weight-bold">{{pr.name}}</a></h5>
-                                                </div>
-                                                <div class="flex-center-between mb-3">
-                                                    <div class="prodcut-price">
-                                                        <div class="text-gray-100">{{pr.price}}</div>
-                                                    </div>
-                                                    <div class="d-none d-xl-block prodcut-add-cart">
-                                                        <a href="../shop/single-product-fullwidth.html" class="btn-add-cart btn-primary transition-3d-hover"><i class="ec ec-add-to-cart"></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="product-item__footer">
-                                                    <div class="border-top pt-2 flex-center-between flex-wrap">
-                                                        <a href="../shop/compare.html" class="text-gray-6 font-size-13"><i class="ec ec-compare mr-1 font-size-15"></i> Compare</a>
-                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="ec ec-favorites mr-1 font-size-15"></i> Wishlist</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                <!-- Recently Viewed -->
+                <RecentlyViewed />
                 <!-- Top Categories -->
-                <div class="mb-6 bg-gray-7 py-6">
+                <div  v-if="allcats" class="mb-6 bg-white py-6">
                     <div class="container">
                         <div class=" d-flex justify-content-between border-bottom border-color-1 flex-lg-nowrap flex-wrap border-md-down-top-0 border-md-down-bottom-0 mb-5">
-                            <h3 class="section-title mb-0 pb-2 font-size-22">Top Categories this Weekk</h3>
+                            <h3 @click="dejj" class="section-title mb-0 pb-2 font-size-22">{{store.state.user.language.top_categories_this_week}}</h3>
                         </div>
                         <div class="row flex-nowrap flex-md-wrap overflow-auto overflow-md-visble">
-                            <div v-if="allcats" v-for="cat in allcats" :key="cat.id" class="col-md-4 col-lg-3 col-xl-4 col-xl-2gdot4 mb-3 flex-shrink-0 flex-md-shrink-1">
+                            <div v-for="cat in allcats" :key="cat.id" class="col-md-4 col-lg-3 col-xl-4 col-xl-2gdot4 mb-3 flex-shrink-0 flex-md-shrink-1 shadow-sm">
                                 <div class="bg-white overflow-hidden shadow-on-hover h-100 d-flex align-items-center">
                                     <router-link :to="getLink(cat)" href="../shop/product-categories-7-column-full-width.html" class="d-block pr-2 pr-wd-6">
                                         <div class="media align-items-center">
@@ -350,116 +135,48 @@
                         </div>
                     </div>
                 </div>
-                <!-- End Recently viewed -->
                 <!-- Brand Carousel -->
-                <div class="space-top-2">
-                    <dv class=" d-flex justify-content-between border-bottom border-color-1 flex-md-nowrap flex-wrap border-sm-bottom-0">
-                        <h3 class="section-title mb-0 pb-2 font-size-22">Brands</h3>
-                    </dv>
-                    <div class="js-slick-carousel u-slick u-slick--gutters-2 overflow-hidden u-slick-overflow-visble pt-3 pb-6"
-                        data-pagi-classes="text-center right-0 bottom-1 left-0 u-slick__pagination u-slick__pagination--long mb-0 z-index-n1 mt-4">
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="brand1" v-for="br in brand1" :key="br.id" class="col-wd-2 col-md-3 d-flex justify-content-center" :class=[]>
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner row no-gutters">
-                                            <div class="col-12 col-lg-12 product-media-center">
-                                                <router-link :to="{name:'Brand',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/brands/'+br.image" alt="Image Description"></router-link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="brand2" v-for="br in brand2" :key="br.id" class="col-wd-2 col-md-3 d-flex justify-content-center">
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner row no-gutters">
-                                            <div class="col-12 col-lg-12 product-media-center">
-                                                <router-link :to="{name:'Brand',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/brands/'+br.image" alt="Image Description"></router-link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="brand3" v-for="br in brand3" :key="br.id" class="col-wd-2 col-md-3 d-flex justify-content-center" >
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner row no-gutters">
-                                            <div class="col-12 col-lg-12 product-media-center">
-                                                <router-link :to="{name:'Brand',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/brands/'+br.image" alt="Image Description"></router-link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="space-top-2">
-                    <dv class=" d-flex justify-content-between border-bottom border-color-1 flex-md-nowrap flex-wrap border-sm-bottom-0">
-                        <h3 class="section-title mb-0 pb-2 font-size-22">Merchants</h3>
-                    </dv>
-                    <div class="js-slick-carousel u-slick u-slick--gutters-2 overflow-hidden u-slick-overflow-visble pt-3 pb-6"
-                        data-pagi-classes="text-center right-0 bottom-1 left-0 u-slick__pagination u-slick__pagination--long mb-0 z-index-n1 mt-4">
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="merchant1" v-for="br in merchant1" :key="br.id" class="col-wd-2 col-md-3 d-flex justify-content-center" :class=[]>
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner row no-gutters">
-                                            <div class="col-12 col-lg-12 product-media-center">
-                                                <router-link :to="{name:'Merchant',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/merchants/'+br.image" alt="Image Description"></router-link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="merchant2" v-for="br in merchant2" :key="br.id" class="col-wd-2 col-md-3 d-flex justify-content-center">
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner row no-gutters">
-                                            <div class="col-12 col-lg-12 product-media-center">
-                                                <router-link :to="{name:'Merchant',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/merchants/'+br.image" alt="Image Description"></router-link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="js-slide">
-                            <ul class="row list-unstyled products-group no-gutters mb-0 overflow-visible">
-                                <li v-if="merchant3" v-for="br in merchant3" :key="br.id" class="col-wd-2 col-md-3 d-flex justify-content-center" >
-                                    <div class="product-item__outer h-100">
-                                        <div class="product-item__inner row no-gutters">
-                                            <div class="col-12 col-lg-12 product-media-center">
-                                                <router-link :to="{name:'Merchant',params:{slug:br.slug}}" class="max-width-150 d-block"><img width="50" class="img-fluid" :src="'http://127.0.0.1:8000/api/images/merchants/'+br.image" alt="Image Description"></router-link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- End Brand Carousel -->
+                <BrandCarousel />
+                <!-- Merchant Carousel -->
+                <MerchantCarousel />
             </div>
         </main>
 </template>
 
 <script setup>
 import store from '../store'
-import { onMounted,ref,reactive,computed } from 'vue'
+import { onMounted,ref,reactive,computed,watch } from 'vue'
+import RecentlyViewed from '../components/RecentlyViewed.vue'
+import BrandCarousel from '../components/BrandCarousel.vue'
+import MerchantCarousel from '../components/MerchantCarousel.vue'
+const allcats = ref(false)
 onMounted(()=>{
-    store.dispatch('loadallcategories')
-    store.dispatch('loadproducts')
-    store.dispatch('loadbrands',false)
-    store.dispatch('loadmerchants',false)
+    document.title = 'Electro'
+    store.dispatch('loadallcategories').then(()=>{
+        allcats.value = store.state.allcategories
+        setCategories()
+    })
 })
+watch(()=>store.state.user.language,()=>{
+    if(allcats.value){
+        setCategories()
+    }
+})
+const setCategories = () => {
+    if (localStorage.getItem('lang') === 'az'){
+        allcats.value.forEach(item => {
+            item.name = item.translations[0].name
+        });
+    }else if (localStorage.getItem('lang') === 'en'){
+        allcats.value.forEach(item => {
+            item.name = item.translations[1].name
+        });
+    }else if (localStorage.getItem('lang') === 'ru'){
+        allcats.value.forEach(item => {
+            item.name = item.translations[2].name
+        });
+    }
+}
 const getLink = (cat) => {
     if(cat.type === 1){
         return{
@@ -487,19 +204,6 @@ const getLink = (cat) => {
         }
     }
 }
-const allcats = computed(()=>store.state.allcategories)
-const bestpr1 = computed(()=>store.state.prs.bestpr1)
-const bestpr2 = computed(()=>store.state.prs.bestpr2)
-const bestpr3 = computed(()=>store.state.prs.bestpr3)
-const recpr1 = computed(()=>store.state.prs.recpr1)
-const recpr2 = computed(()=>store.state.prs.recpr2)
-const recpr3 = computed(()=>store.state.prs.recpr3)
-const brand1 = computed(()=>store.state.brands.brand1)
-const brand2 = computed(()=>store.state.brands.brand2)
-const brand3 = computed(()=>store.state.brands.brand3)
-const merchant1 = computed(()=>store.state.merchants.merchant1)
-const merchant2 = computed(()=>store.state.merchants.merchant2)
-const merchant3 = computed(()=>store.state.merchants.merchant3)
 </script>
 <style scoped>
 

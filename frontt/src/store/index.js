@@ -1,39 +1,49 @@
 import {createStore} from 'vuex';
 import axios from 'axios'
+import router from '../router'
+import az from '../lang/az.json'
+import en from '../lang/en.json'
+import ru from '../lang/ru.json'
 const store = createStore({
     state:{
+        user:{
+            data:{},
+            isLoggedIn:false,
+            review:false,
+            language:az
+        },
+        loading:true,
         category:{},
         ctype:null,
         categories:{},
-        allcategories:{},
+        allcategories:false,
         prs:{
             pras:{
                 products:{},
                 count:false
             },
-            bestpr1:{},
-            bestpr2:{},
-            bestpr3:{},
-            recpr1:{},
-            recpr2:{},
-            recpr3:{}
+            recentlyviewed:{}
         },
         brand:{},
         brands:{
             bras:{},
-            brand1:{},
-            brand2:{},
-            brand3:{}
+            carousel:false,
         },
         merchant:{},
         merchants:{
             mras:{},
-            merchant1:{},
-            merchant2:{},
-            merchant3:{}
-        }
+            carousel:false,
+        },
+        results:false,
+        allresults:false,
+        soldData:false
     },
     mutations:{
+        setUser(state,user){
+            state.user.data = user
+            state.user.isLoggedIn = true
+            state.loading = false
+        },
         setCat(state,categories){
             state.category = categories
         },
@@ -49,6 +59,9 @@ const store = createStore({
         setPras(state,products){
             state.prs.pras.products = products
         },
+        setProduct(state,product){
+            state.prs.product = product
+        },
         setCount(state,count){
             state.prs.pras.count = count
         },
@@ -58,50 +71,133 @@ const store = createStore({
         setBrand(state,brand){
             state.brand = brand
         },
-        bestPr1(state,pr1){
-            state.prs.bestpr1 = pr1
+        recentlyViewed(state,products){
+            state.prs.recentlyviewed = products
         },
-        bestPr2(state,pr2){
-            state.prs.bestpr2 = pr2
+        brandCarousel(state,brands){
+            state.brands.carousel = brands
         },
-        bestPr3(state,pr3){
-            state.prs.bestpr3 = pr3
-        },
-        recPr1(state,pr1){
-            state.prs.recpr1 = pr1
-        },
-        recPr2(state,pr2){
-            state.prs.recpr2 = pr2
-        },
-        recPr3(state,pr3){
-            state.prs.recpr3 = pr3
-        },
-        br1(state,br1){
-            state.brands.brand1 = br1
-        },
-        br2(state,br2){
-            state.brands.brand2 = br2
-        },
-        br3(state,br3){
-            state.brands.brand3 = br3
-        },
-        mr1(state,mr1){
-            state.merchants.merchant1 = mr1
-        },
-        mr2(state,mr2){
-            state.merchants.merchant2 = mr2
-        },
-        mr3(state,mr3){
-            state.merchants.merchant3 = mr3
+        merchantCarousel(state,merchants){
+            state.merchants.carousel = merchants
         },
         setFilterBrands(state,brands){
             state.brands.bras = brands
         },
         setFilterMerchants(state,merchants){
             state.merchants.mras = merchants
+        },
+        endload(state){
+            state.user.data = {}
+            state.user.isLoggedIn = false
+            state.loading = false
+        },
+        setResult(state,data){
+            state.results = data
+        },
+        setAllResults(state,data){
+            state.allresults = data
+        },
+        setReview(state,review){
+            state.user.review = review
+        },
+        changeLang(state,lang){
+            if(lang === 'en'){
+                state.user.language = en
+                localStorage.setItem('lang',lang)
+            }else if(lang === 'az'){
+                state.user.language = az
+                localStorage.setItem('lang',lang)
+            }else if(lang === 'ru'){
+                state.user.language = ru
+                localStorage.setItem('lang',lang)
+            }
+        },
+        setSoldData(state,data){
+            state.soldData = data
+        },
+        clearCart(state){
+            state.user.data.cart = []
         }
     },
     actions:{
+        register: async ({commit},user) => {
+            await axios.post('http://127.0.0.1:8000/api/register',user).then((response)=>{
+                commit('setUser',response.data.user)
+                localStorage.setItem('TOKEN',response.data.token)
+            })
+        },
+        login: async ({commit},user) => {
+            await axios.post('http://127.0.0.1:8000/api/login',user)
+            .then((response) => {
+                commit('setUser',response.data.user);
+                commit()
+                localStorage.setItem('TOKEN',response.data.token)
+            })
+        },
+        logout: async ({commit}) => {
+            await axios.post('http://127.0.0.1:8000/api/logout',null,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response) => {
+                window.location.reload()
+            })
+        },
+        addWish: async ({commit},id) => {
+            await axios.post('http://127.0.0.1:8000/api/addwish/'+id,null,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response) => {
+                commit('setUser',response.data.user);
+            })
+        },
+        addCart: async ({commit},id) => {
+            await axios.post('http://127.0.0.1:8000/api/addcart/'+id,null,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response) => {
+                commit('setUser',response.data.user);
+            })
+        },
+        changeQuantity: async ({commit},form) => {
+            await axios.post('http://127.0.0.1:8000/api/changeq',form,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response) => {
+                commit('setUser',response.data.user);
+            })
+        },
+        loadUser: async({commit}) => {
+            try{
+               await axios.post('http://127.0.0.1:8000/api/fryoxla',null,{
+                    headers: {
+                        Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                    }
+                }).then((response)=>{
+                    commit('setUser',response.data.user)
+                })
+            }catch(error){
+                commit('endload')
+            }
+        },
+        brandCarousel: async ({commit}) => {
+            await axios.get('http://127.0.0.1:8000/api/brandcarousel').then((response)=>{
+                commit('brandCarousel',response.data.brands.data)
+            });
+        },
+        merchantCarousel: async ({commit}) => {
+            await axios.get('http://127.0.0.1:8000/api/merchantcarousel').then((response)=>{
+                commit('merchantCarousel',response.data.merchants.data)
+            });
+        },
+        recentlyViewed: async ({commit}) => {
+            await axios.get('http://127.0.0.1:8000/api/recentlyviewed').then((response)=>{
+                commit('recentlyViewed',response.data.rec.data)
+            });
+        },
         loadcategory: async ({commit},slug) => {
             await axios.get('http://127.0.0.1:8000/api/loadcat/'+slug).then((response)=>{
                 commit('setCat',response.data.categories)
@@ -123,14 +219,9 @@ const store = createStore({
                 commit('setFiltCat',response.data.categories)
             });
         },
-        loadproducts: async ({commit}) => {
-            await axios.get('http://127.0.0.1:8000/api/loadprs').then((response)=>{
-                commit('bestPr1',response.data.bestpr1.data)
-                commit('bestPr2',response.data.bestpr2.data)
-                commit('bestPr3',response.data.bestpr3.data)
-                commit('recPr1',response.data.recpr1.data)
-                commit('recPr2',response.data.recpr2.data)
-                commit('recPr3',response.data.recpr3.data)
+        loadproduct: async ({commit},slug) => {
+            await axios.get('http://127.0.0.1:8000/api/loadpr/'+slug).then((response)=>{
+                commit('setProduct',response.data.product)
             });
         },
         loadpras: async ({commit},formData) => {
@@ -151,30 +242,16 @@ const store = createStore({
                 commit('setCount',response.data.count)
             });
         },
-        loadbrands: async ({commit},id) => {
-            await axios.get('http://127.0.0.1:8000/api/loadbrs/'+id).then((response)=>{
-                commit('br1',response.data.br1.data)
-                commit('br2',response.data.br2.data)
-                commit('br3',response.data.br3.data)
-            });
-        },
         loadbrand: async ({commit},slug) => {
             await axios.get('http://127.0.0.1:8000/api/loadbr/'+slug).then((response)=>{
                 commit('setBrand',response.data.brand)
-                commit('setCategory',response.data.categories)
+                commit('setCategory',response.data.parents)
                 commit('setFilterMerchants',response.data.merchants)
             });
         },
         loadbras: async ({commit},id) => {
             await axios.get('http://127.0.0.1:8000/api/loadbras/'+id).then((response)=>{
                 commit('setFilterBrands',response.data.brands)
-            });
-        },
-        loadmerchants: async ({commit},id) => {
-            await axios.get('http://127.0.0.1:8000/api/loadmrs/'+id).then((response)=>{
-                commit('mr1',response.data.mr1.data)
-                commit('mr2',response.data.mr2.data)
-                commit('mr3',response.data.mr3.data)
             });
         },
         loadmerchant: async ({commit},slug) => {
@@ -189,7 +266,43 @@ const store = createStore({
                 commit('setFilterMerchants',response.data.merchants)
             });
         },
-
+        search: async ({commit},data) => {
+            await axios.post('http://127.0.0.1:8000/api/search',data).then((response)=>{
+                commit('setResult',response.data.data)
+            });
+        },
+        searchAll: async ({commit},data) => {
+            await axios.post('http://127.0.0.1:8000/api/searchall',data).then((response)=>{
+                commit('setAllResults',response.data.data)
+            });
+        },
+        addReview: async ({commit},formData) => {
+            await axios.post('http://127.0.0.1:8000/api/addreview',formData,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response)=>{
+                commit('setProduct',response.data.product)
+            });
+        },
+        loadReview: async ({commit},kartof) => {
+            await axios.post('http://127.0.0.1:8000/api/loadreview',kartof,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response)=>{
+                commit('setReview',response.data.review)
+            });
+        },
+        soldProducts: async ({commit},formData) => {
+            await axios.post('http://127.0.0.1:8000/api/soldprs',formData,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response) => {
+                commit('setSoldData',response.data.data);
+            })
+        },
     },
     getters:{},
     modules:{}

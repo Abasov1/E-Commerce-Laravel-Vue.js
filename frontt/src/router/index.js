@@ -1,25 +1,75 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ProductLayout from '../components/ProductLayout.vue'
+import RecentlyViewed from '../components/RecentlyViewed.vue'
+import Test from '../components/Test.vue'
 import Home from '../views/Home.vue'
+import Search from '../views/Search.vue'
+import WishList from '../views/WishList.vue'
+import Cart from '../views/Cart.vue'
+import Checkout from '../views/Checkout.vue'
+import Sold from '../views/Sold.vue'
 import Merchant from '../views/Merchant.vue'
 import Brand from '../views/Brand.vue'
+import Product from '../views/Product.vue'
 import Categories from '../views/Categories.vue'
 import Category from '../views/Category.vue'
 import SubCategory from '../views/SubCategory.vue'
 import SubSubCategory from '../views/SubSubCategory.vue'
+import store from '../store'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/:catchAll(.*)',
+      redirect:'/',
+    },
+    {
+      path: '/test',
+      name: 'Test',
+      component: Test,
+    },
+    {
+      path: '/home',
       name: 'ProductLayout',
       component: ProductLayout,
-      redirect:'/home',
+      redirect:'/',
       children:[
         {
-          path: '/home',
+          path: '/',
           name: 'Home',
           component: Home,
+        },
+        {
+          path: '/search/:index',
+          name: 'Search',
+          component: Search,
+          props:true
+        },
+        {
+          path: '/wishlist',
+          name: 'WishList',
+          component: WishList,
+        },
+        {
+          path: '/cart',
+          name: 'Cart',
+          component: Cart,
+        },
+        {
+          path: '/checkout',
+          name: 'Checkout',
+          component: Checkout,
+        },
+        {
+          path: '/sold',
+          name: 'Sold',
+          component: Sold,
+        },
+        {
+          path: '/product/:slug',
+          name: 'Product',
+          component: Product,
+          props:true
         },
         {
           path: '/merchant/:slug',
@@ -60,5 +110,12 @@ const router = createRouter({
     },
   ]
 })
+// router.beforeEach((to,from,next) => {
+//         store.dispatch('loadUser').then(()=>{
+//             next()
+//         })
+//     }
+
+//  )
 
 export default router

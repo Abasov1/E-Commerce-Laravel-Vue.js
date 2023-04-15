@@ -1,17 +1,19 @@
 <template>
+    <main id="content" role="main" class="cart-page">
             <div class="container">
                 <div class="row mb-8">
                     <div class="d-none d-xl-block col-xl-3 col-wd-2gdot5">
+                        <div style="display:none" ref="comeBackTop"></div>
                         <!-- List -->
-                        <div v-if="categories" ref="comeBackTop" class="mb-8 border border-width-2 border-color-3 borders-radius-6">
+                        <div v-if="categories && categories[0].length != 0" ref="comeBackTop" class="mb-8 border border-width-2 border-color-3 borders-radius-6">
                             <!-- List -->
                             <ul id="sidebarNav" class="list-unstyled mb-0 sidebar-navbar">
-                                <li v-for="category in categories">
-                                    <a class="dropdown-current active" href="#">{{category.parent.name}}<span class="text-gray-25 font-size-12 font-weight-normal"></span></a>
+                                <li v-for="category in categories[0]" :key="category.id">
+                                        <a class="dropdown-current active" href="#">{{category.name}}<span class="text-gray-25 font-size-12 font-weight-normal"></span></a>
 
-                                    <ul class="list-unstyled dropdown-list">
-                                        <li v-for="cat in categories" :key="cat.id"><a v-if="cat.category_id == category.parent.id" @click.prevent="formData.category && formData.category === cat.id ? formData.category = null : formData.category = cat.id" class="dropdown-item" :style="[cat.id === formData.category ? 'color:yellow' : '']" href="#">{{cat.name}}</a></li>
-                                    </ul>
+                                        <ul class="list-unstyled dropdown-list">
+                                            <li v-for="cat in category.subcategories" :key="cat.id"><a v-if="categories[1].includes(cat.id)" @click.prevent="formData.category && formData.category === cat.id ? formData.category = null : formData.category = cat.id" class="dropdown-item" :style="[cat.id === formData.category ? 'color:yellow' : '']" href="#">{{cat.name}}</a></li>
+                                        </ul>
                                 </li>
                             </ul>
                             <!-- End List -->
@@ -19,10 +21,10 @@
                         <!-- Filter -->
                         <div class="mb-6">
                             <div class="border-bottom border-color-1 mb-5">
-                                <h3 class="section-title section-title__sm mb-0 pb-2 font-size-18">Filters</h3>
+                                <h3 class="section-title section-title__sm mb-0 pb-2 font-size-18">{{store.state.user.language.filters}}</h3>
                             </div>
                             <div class="border-bottom pb-4 mb-4">
-                                <h4 class="font-size-14 mb-3 font-weight-bold">Merchants</h4>
+                                <h4 class="font-size-14 mb-3 font-weight-bold">{{store.state.user.language.merchants}}</h4>
 
                                 <!-- Checkboxes -->
                                 <div v-if="showBras" v-for="bra in merchants" :key="bra.id" class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
@@ -45,8 +47,8 @@
                                     <span class="link__icon text-gray-27 bg-white">
                                         <span class="link__icon-inner">+</span>
                                     </span>
-                                    <span @click.prevent="showMoreMerchants" v-if="!showQras" class="link-collapse__default">Show All</span>
-                                    <span @click.prevent="showLessMerchants" v-if="showQras" class="link-collapse__default">Show less</span>
+                                    <span @click.prevent="showMoreMerchants" v-if="!showQras" class="link-collapse__default">{{store.state.user.language.show_all}}</span>
+                                    <span @click.prevent="showLessMerchants" v-if="showQras" class="link-collapse__default">{{store.state.user.language.show_less}}</span>
                                 </a>
                                 <!-- End Link -->
                             </div>
@@ -55,7 +57,7 @@
                     <div class="col-xl-9 col-wd-9gdot5">
                         <!-- Shop-control-bar Title -->
                         <div class="d-block d-md-flex flex-center-between mb-3">
-                            <h3 v-if="brand != null" class="font-size-25 mb-2 mb-md-0">{{brand.name}}'s Products</h3>
+                            <h3 v-if="brand != null" class="font-size-25 mb-2 mb-md-0">{{replacable}}</h3>
                             <p class="font-size-14 text-gray-90 mb-0">Showing 1–25 of 56 results</p>
                         </div>
                         <!-- End shop-control-bar Title -->
@@ -74,99 +76,30 @@
                                     data-unfold-animation-in="fadeInLeft"
                                     data-unfold-animation-out="fadeOutLeft"
                                     data-unfold-duration="500">
-                                    <i class="fas fa-sliders-h"></i> <span class="ml-1" id="topik">Filters</span>
+                                    <i class="fas fa-sliders-h"></i> <span class="ml-1" id="topik">{{store.state.user.language.filters}}</span>
                                 </a>
                                 <!-- End Account Sidebar Toggle Button -->
                             </div>
                             <div class="d-flex">
-                                <form v-if="sortDropdown" method="get">
-                                    <!-- Select -->
-                                    <div @click="sortDropdown = false" class="dropdown bootstrap-select js-select dropdown-select max-width-200 max-width-160-sm right-dropdown-0 px-2 px-xl-0 show">
-                                        <select class="js-select selectpicker dropdown-select max-width-200 max-width-160-sm right-dropdown-0 px-2 px-xl-0" data-style="btn-sm bg-white font-weight-normal py-2 border text-gray-20 bg-lg-down-transparent border-lg-down-0" tabindex="-98">
-                                        <option value="one" selected="">Default sorting </option>
-                                        <option value="two">Sort by popularity</option>
-                                        <option value="three">Sort by average rating</option>
-                                        <option value="four">Sort by latest</option>
-                                        <option value="five">Sort by price: low to high</option>
-                                        <option value="six">Sort by price: high to low</option>
-                                        </select>
-                                        <button type="button" class="btn dropdown-toggle btn-sm bg-white font-weight-normal py-2 border text-gray-20 bg-lg-down-transparent border-lg-down-0" data-toggle="dropdown" role="button" title="Default sorting" aria-expanded="true">
-                                            <div class="filter-option">
-                                                <div class="filter-option-inner">
-                                                    <div class="filter-option-inner-inner">Default sorting<i class="bi bi-caret-down"></i></div>
-                                                </div> 
-                                            </div>
-                                        </button>
-                                        <div class="dropdown-menu show" role="combobox" x-placement="bottom-start" style="max-height: 296.172px; overflow: hidden; min-height: 139px; position: absolute; transform: translate3d(0px, 39px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                            <div class="inner show" role="listbox" aria-expanded="true" tabindex="-1" style="max-height: 264.172px; overflow-y: auto; min-height: 107px;">
-                                                <ul class="dropdown-menu inner show">
-                                                    <li class="selected active">
-                                                        <a role="option" class="dropdown-item selected active" aria-disabled="false" tabindex="0" aria-selected="true">
-                                                            <span class=" bs-ok-default check-mark"></span><span class="text">Default sorting</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a role="option" class="dropdown-item" aria-disabled="false" tabindex="0" aria-selected="false">
-                                                            <span class=" bs-ok-default check-mark"></span>
-                                                            <span class="text">Sort by popularity</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- End Select -->
-                                </form>
-                                <form v-else method="get">
-                                    <!-- Select -->
-                                    <div @click="sortDropdown = true" class="dropdown bootstrap-select js-select dropdown-select max-width-200 max-width-160-sm right-dropdown-0 px-2 px-xl-0">
-                                        <button type="button" class="btn dropdown-toggle btn-sm bg-white font-weight-normal py-2 border text-gray-20 bg-lg-down-transparent border-lg-down-0" data-toggle="dropdown" role="button" title="Default sorting">
-                                            <div class="filter-option">
-                                                <div class="filter-option-inner">
-                                                    <div class="filter-option-inner-inner">Default sorting</div>
-                                                </div> 
-                                            </div>
-                                        </button>
-                                    </div>
-                                    <!-- End Select -->
-                                </form>
+                                <select v-model="formData.orderBy">
+                                    <option value="1">{{store.state.user.language.filter.newest}}</option>
+                                    <option value="2">{{store.state.user.language.filter.oldest}}</option>
+                                    <option value="3">{{store.state.user.language.filter.h_first}}</option>
+                                    <option value="4">{{store.state.user.language.filter.l_first}}</option>
+                                    <option value="5">A-Z</option>
+                                    <option value="6">Z-A</option>
+                                </select>
                             </div>
-                            
+
                         </div>
                         <!-- End Shop-control-bar -->
                         <!-- Shop Body -->
                         <!-- Tab Content -->
-                        <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade pt-2 show active" id="pills-one-example1" role="tabpanel" aria-labelledby="pills-one-example1-tab" data-target-group="groups">
-                                <ul class="row list-unstyled products-group no-gutters">
-                                    <li v-if="products" v-for="pr in products" :key="pr.id" class="col-6 col-md-3 col-wd-2gdot4 product-item">
-                                        <div class="product-item__outer h-100">
-                                            <div class="product-item__inner px-xl-4 p-3">
-                                                <div class="product-item__body pb-xl-2">
-                                                    <div class="mb-2"><a href="../shop/product-categories-7-column-full-width.html" class="font-size-12 text-gray-5">{{pr.category.name}}</a></div>
-                                                    <h5 class="mb-1 product-item__title"><a href="../shop/single-product-fullwidth.html" class="text-blue font-weight-bold">{{pr.name}}</a></h5>
-                                                    <div class="mb-2">
-                                                        <a href="../shop/single-product-fullwidth.html" class="d-block text-center"><img class="img-fluid" :src="'http://127.0.0.1:8000/api/images/products/'+pr.images[0].image" alt="Image Description"></a>
-                                                    </div>
-                                                    <div class="flex-center-between mb-1">
-                                                        <div class="prodcut-price">
-                                                            <div class="text-gray-100">{{pr.price}}</div>
-                                                        </div>
-                                                        <div class="d-none d-xl-block prodcut-add-cart">
-                                                            <a href="../shop/single-product-fullwidth.html" class="btn-add-cart btn-primary transition-3d-hover"><i class="bi bi-cart"></i></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="product-item__footer">
-                                                    <div class="border-top pt-2 flex-center-between flex-wrap">
-                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="bi bi-heart mr-1 font-size-15"></i> Wishlist</a>
-                                                        <a href="../shop/wishlist.html" class="text-gray-6 font-size-13"><i class="bi bi-bag mr-1 font-size-15"></i> Cart</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade pt-2 show active row">
+                                <div class="row ml-2" style="background-color: rgba(99, 50, 60, 0);">
+                                    <Product v-if="products && !store.state.loading" v-for="pr in products" :key="pr.id" :pr="pr" />
+                                </div>
                             </div>
                         </div>
                         <!-- End Tab Content -->
@@ -179,20 +112,29 @@
                                 <li v-if="formData.page > 2" class="page-item"><a class="page-link" href="#">...</a></li>
                                 <li v-if="store.state.prs.pras.count" v-for="n in store.state.prs.pras.count" :key="n" class="page-item" @click.prevent="changePage(n)" v-show="n != 1&& n > formData.page-2  && formData.page + 2 > n"><a class="page-link" :class="n === formData.page ? 'current' : ''" href="#">{{n}}</a></li>
                                 <li v-if="store.state.prs.pras.count - 2 > formData.page" class="page-item"><a class="page-link" href="#">...</a></li>
-                                <li v-if="store.state.prs.pras.count" class="page-item" @click.prevent="changePage(store.state.prs.pras.count)" v-show="formData.page + 2 < store.state.prs.pras.count"><a class="page-link" href="#">{{store.state.prs.pras.count}}</a></li>
+                                <li v-if="store.state.prs.pras.count" class="page-item" @click.prevent="changePage(store.state.prs.pras.count)" v-show="formData.page + 2 <= store.state.prs.pras.count"><a class="page-link" href="#">{{store.state.prs.pras.count}}</a></li>
                             </ul>
                         </nav>
                         <!-- End Shop Pagination -->
                     </div>
                 </div>
             </div>
+        </main>
 </template>
 <script setup>
+const props = defineProps({
+    slug:String
+})
 import store from '../store'
-import { onMounted,ref,reactive,computed,watch } from 'vue'
+import Product from '../components/Product.vue'
+import { onMounted,ref,reactive,computed,watch,getCurrentInstance,onBeforeUnmount} from 'vue'
+import {useRouter} from 'vue-router'
+const router = useRouter()
 const categories = ref(false)
+const bruh = ref([])
 const merchants = ref([])
 const merchantCheckbox = ref([])
+const replacable = ref(false)
 watch(()=>merchantCheckbox.value,()=>{
     formData.merchants = merchantCheckbox.value
     console.log(formData.merchants)
@@ -206,32 +148,82 @@ const showQras = ref(false)
 const sortDropdown = ref(false)
 const perPageDropdown = ref(false)
 const comeBackTop = ref(null)
-const props = defineProps({
-    slug:String,
-});
 const formData = reactive({
     merchants:null,
     category:null,
     page:1,
-    brid:null
-});
+    brid:null,
+    orderBy:'1'
+})
 watch(()=>formData.category,()=>{
     formData.page = 1
     loadProducts()
 })
+watch(()=>formData.orderBy,()=>{
+    formData.page = 1
+    loadProducts()
+})
 onMounted(()=>{
+    comeBackTop.value.scrollIntoView();
+    document.title = store.state.user.language.loading
+    replacable.value = store.state.user.language.loading
     store.dispatch('loadbrand',props.slug).then(()=>{
+        replacable.value = store.state.user.language.replacable.replace('{x}',store.state.brand.name)
+        document.title = replacable.value
         formData.brid = store.state.brand.id
         showBras.value = true
         merchants.value = store.state.merchants.mras.slice(0,4)
         categories.value = store.state.categories
+        setCategory()
         loadProducts()
     })
 })
+watch(()=>store.state.user.language,()=>{
+    if(categories.value){
+        setCategory()
+    }
+    if(products.value){
+        setPrName()
+    }
+    if(store.state.brand.name){
+        replacable.value = store.state.user.language.replacable.replace('{x}',store.state.brand.name)
+        document.title = replacable.value
+    }
+})
+const setCategory = () =>{
+        if (localStorage.getItem('lang') === 'az'){
+            categories.value[0].forEach(item => {
+                item.name = item.translations[0].name
+                if(item.subcategories){
+                    item.subcategories.forEach(subcat => {
+                        subcat.name = subcat.translations[0].name
+                    });
+                }
+            });
+        }else if (localStorage.getItem('lang') === 'en'){
+            categories.value[0].forEach(item => {
+                item.name = item.translations[1].name
+                if(item.subcategories){
+                    item.subcategories.forEach(subcat => {
+                        subcat.name = subcat.translations[1].name
+                    });
+                }
+            });
+        }else if (localStorage.getItem('lang') === 'ru'){
+            categories.value[0].forEach(item => {
+                item.name = item.translations[2].name
+                if(item.subcategories){
+                    item.subcategories.forEach(subcat => {
+                        subcat.name = subcat.translations[2].name
+                    });
+                }
+            });
+        }
+}
 const showMoreMerchants = () => {
         showBras.value = true
         merhants.value = store.state.merchants.mras
-        showQras.value = true   
+        showQras.value = true
 }
 const showLessMerchants = () => {
         showQras.value = false
@@ -243,15 +235,43 @@ const changePage = (n) => {
     products.value = null
     loadProducts()
     comeBackTop.value.scrollIntoView();
-
 }
 const loadProducts = () => {
     store.dispatch('loadbrpras',formData).then(()=>{
         products.value = store.state.prs.pras.products
+        setPrName()
     })
+}
+const setPrName = () =>{
+    if (localStorage.getItem('lang') === 'az'){
+        products.value.forEach(item => {
+            item.name = item.translations[0].name
+        });
+    }else if (localStorage.getItem('lang') === 'en'){
+        products.value.forEach(item => {
+            item.name = item.translations[1].name
+        });
+    }else if (localStorage.getItem('lang') === 'ru'){
+        products.value.forEach(item => {
+            item.name = item.translations[2].name
+        });
+    }
+}
+const att = (id) => {
+    if(bruh.value.includes(id)){
+        return false
+    }else{
+        bruh.value.push(id)
+        return true;
+    }
+}
+const noldu = (id) => {
+    if(bruh.value.includes(id)){
+        return false
+    }else{
+        return true
+    }
 }
 const brand = computed(()=>store.state.brand)
 
 </script>
-<style scoped>
-</style>

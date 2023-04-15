@@ -1,8 +1,8 @@
 <template>
     <main id="content" role="main">
-        <div class="mb-6 bg-gray-7 py-6">
-            <div v-if="show" class="container">
-                <router-link :to="{name:'Categories'}" class="my-link text-black">Categories </router-link> > 
+        <div v-if="show" class="mb-6 bg-gray-7 py-6">
+            <div class="container">
+                <router-link :to="{name:'Categories'}" class="my-link text-black">{{store.state.user.language.categories}} </router-link> >
                 <router-link :to="{name:'Category',params:{slug:categories[0].parent2.slug}}" class="my-link text-black">{{categories[0].parent2.name}}</router-link> > {{categories[0].parent.name}}
                 <div class="mt-2 d-flex justify-content-between border-bottom border-color-1 flex-lg-nowrap flex-wrap border-md-down-top-0 border-md-down-bottom-0 mb-5">
                     <h3 class="section-title mb-0 pb-2 font-size-22">{{categories[0].parent.name}}</h3>
@@ -30,18 +30,20 @@
 </template>
 <script setup>
 import store from '../store'
-import { onMounted,ref,reactive,computed } from 'vue'
+import { onMounted,ref,reactive,computed,watch } from 'vue'
 import Filter from '../components/Filter.vue'
 const show = ref(false)
 const dow = ref(false)
-
+const categories = ref(false)
 const props = defineProps({
     slug: String,
     parent:String
-})   
+})
 onMounted(()=>{
     window.scrollTo(0,0);
     store.dispatch('loadcategory',props.slug).then(()=>{
+        categories.value = store.state.category
+        setCategories()
         if(store.state.ctype !== 1){
             show.value = true
             dow.value = true
@@ -50,6 +52,40 @@ onMounted(()=>{
         }
     })
 })
-const categories = computed(()=>store.state.category)
+watch(()=>store.state.user.language,()=>{
+    if(categories.value){
+        setCategories()
+    }
+})
+const setCategories = () => {
+    if (localStorage.getItem('lang') === 'az'){
+        categories.value[0].parent.name = categories.value[0].parent.translations[0].name
+        document.title = categories.value[0].parent.name
+        if(categories.value[0].parent2){
+            categories.value[0].parent2.name = categories.value[0].parent2.translations[0].name
+        }
+        categories.value.forEach(item => {
+            item.name = item.translations[0].name
+        });
+    }else if (localStorage.getItem('lang') === 'en'){
+        categories.value[0].parent.name = categories.value[0].parent.translations[1].name
+        document.title = categories.value[0].parent.name
+        if(categories.value[0].parent2){
+            categories.value[0].parent2.name = categories.value[0].parent2.translations[1].name
+        }
+        categories.value.forEach(item => {
+            item.name = item.translations[1].name
+        });
+    }else if (localStorage.getItem('lang') === 'ru'){
+        categories.value[0].parent.name = categories.value[0].parent.translations[2].name
+        document.title = categories.value[0].parent.name
+        if(categories.value[0].parent2){
+            categories.value[0].parent2.name = categories.value[0].parent2.translations[2].name
+        }
+        categories.value.forEach(item => {
+            item.name = item.translations[2].name
+        });
+    }
+}
 
 </script>

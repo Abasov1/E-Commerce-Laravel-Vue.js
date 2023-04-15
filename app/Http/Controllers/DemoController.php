@@ -74,4 +74,8 @@ class DemoController extends Controller
         $brand = Brand::where('slug',$slug)->first();
         return view('brand',get_defined_vars());
     }
+    public function why(){
+        $products = Product::with('images')->whereTranslationLike('name','%a%')->first();
+        return $products->translate('en');
+    }
 }

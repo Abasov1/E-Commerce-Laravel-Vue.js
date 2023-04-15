@@ -2,9 +2,9 @@
     <main id="content" role="main">
         <div class="mb-6 bg-gray-7 py-6">
             <div class="container">
-                Categories
+                {{store.state.user.language.categories}}
                 <div class=" d-flex justify-content-between border-bottom border-color-1 flex-lg-nowrap flex-wrap border-md-down-top-0 border-md-down-bottom-0 mb-5">
-                    <h3 class="section-title mb-0 pb-2 font-size-22">Categories</h3>
+                    <h3 class="section-title mb-0 pb-2 font-size-22">{{store.state.user.language.categories}}</h3>
                 </div>
                 <div class="row flex-nowrap flex-md-wrap overflow-auto overflow-md-visble">
                     <div v-if="categories" v-for="cat in categories" :key="cat.id" class="col-md-4 col-lg-3 col-xl-4 col-xl-2gdot4 mb-3 flex-shrink-0 flex-md-shrink-1">
@@ -16,7 +16,7 @@
                                     </div>
                                     <div class="ml-3 media-body">
                                         <h6 class="mb-0 text-gray-90">{{cat.name}}</h6>
-                                    </div>  
+                                    </div>
                                 </div>
                             </router-link>
                         </div>
@@ -28,11 +28,35 @@
 </template>
 <script setup>
 import store from '../store'
-import { onMounted,ref,reactive,computed } from 'vue'
+import { onMounted,ref,reactive,computed,watch } from 'vue'
+const categories = ref(false)
 onMounted(()=>{
     window.scrollTo(0,0);
-    store.dispatch('loadcategories')
+    document.title = store.state.user.language.categories
+    store.dispatch('loadcategories').then(()=>{
+        categories.value = store.state.categories
+        setCategories()
+    })
 })
-const categories = computed(()=>store.state.categories)
+watch(()=>store.state.user.language,()=>{
+    if(categories.value){
+        setCategories()
+    }
+})
+const setCategories = () => {
+    if (localStorage.getItem('lang') === 'az'){
+        categories.value.forEach(item => {
+            item.name = item.translations[0].name
+        });
+    }else if (localStorage.getItem('lang') === 'en'){
+        categories.value.forEach(item => {
+            item.name = item.translations[1].name
+        });
+    }else if (localStorage.getItem('lang') === 'ru'){
+        categories.value.forEach(item => {
+            item.name = item.translations[2].name
+        });
+    }
+}
 
 </script>

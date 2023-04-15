@@ -84,6 +84,14 @@ class ApiUserController extends Controller
             'admin' => false
         ]);
     }
+    public function fryoxla(){
+        $user = Auth::user();
+        $user->wishlist = $user->wproducts()->get();
+        $user->cart = $user->cproducts()->get();
+        return response([
+            'user' => $user,
+        ]);
+    }
     public function showimage(){
     $pngPath = public_path('storage/aha.png');
 

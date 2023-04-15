@@ -6,12 +6,16 @@ namespace Database\Seeders;
 
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\Information;
 use App\Models\Merchant;
 use App\Models\Pimage;
 use App\Models\Product;
+use App\Models\ProductInformation;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,82 +26,131 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $computersparent = Category::create([
-            'name' => 'Laptops and other computer technologies',
+        $data1 = [
+            'az' => ['name'=>'Komputerlər və notbuklar'],
+            'en' => ['name'=>'Laptops and other computer technologies'],
+            'ru' => ['name'=>'Ноутбуки и другие компьютерные технологии'],
             'slug' => 'laptops-and-other-computer-technologies',
             'image' => 'computerparent.jpg',
-        ]);
-        Category::create([
+        ];
+        $computersparent = Category::create($data1);
+        $data2 = [
             'category_id' => $computersparent->id,
-            'name' => 'Computers',
+            'az' => ['name'=>'Komputerlər'],
+            'en' => ['name'=>'Computers'],
+            'ru' => ['name'=>'Компьютеры'],
             'slug' => 'computers',
-            'image' => 'computers.jpg',
-        ]);
-        Category::create([
+            'image' => 'computers.jpg'
+        ];
+        Category::create($data2);
+        $data3 = [
             'category_id' => $computersparent->id,
-            'name' => 'Laptops',
+            'az' => ['name'=>'Notbuklar'],
+            'en' => ['name'=>'Laptops'],
+            'ru' => ['name'=>'Ноутбуки'],
             'slug' => 'laptops',
-            'image' => 'laptops.jpg',
-        ]);
-        Category::create([
+            'image' => 'laptops.jpg'
+        ];
+        Category::create($data3);
+        $data4 = [
             'category_id' => $computersparent->id,
-            'name' => 'Monitors',
+            'az' => ['name'=>'Monitorlar'],
+            'en' => ['name'=>'Monitors'],
+            'ru' => ['name'=>'Мониторы'],
             'slug' => 'monitors',
-            'image' => 'monitors.jpg',
-        ]);
-        $mouseandkeyboards = Category::create([
+            'image' => 'monitors.jpg'
+        ];
+        Category::create($data4);
+        $data5 = [
             'category_id' => $computersparent->id,
-            'name' => 'Mouse and keyboards',
+            'az' => ['name'=>'Siçan və klavişlər'],
+            'en' => ['name'=>'Mouse and keyboards'],
+            'ru' => ['name'=>'Мышь и клавиатуры'],
             'slug' => 'mouse-and-keyboards',
-            'image' => 'mouseandkeyboards.jpg',
-        ]);
-        $keyboard = Category::create([
+            'image' => 'mouseandkeyboards.jpg'
+        ];
+        $mouseandkeyboards = Category::create($data5);
+        $data6 = [
             'category_id' => $mouseandkeyboards->id,
-            'name' => 'Keyboards',
+            'az' => ['name'=>'Klavişlər'],
+            'en' => ['name'=>'Keyboards'],
+            'ru' => ['name'=>'Клавиатуры'],
             'slug' => 'keyboards',
-            'image' => 'keyboards.jpg',
-        ]);
-        $mouse = Category::create([
+            'image' => 'keyboards.jpg'
+        ];
+        $keyboard = Category::create($data6);
+        $data7 = [
             'category_id' => $mouseandkeyboards->id,
-            'name' => 'Mouses',
+            'az' => ['name'=>'Siçanlar'],
+            'en' => ['name'=>'Mouses'],
+            'ru' => ['name'=>'Мыши'],
             'slug' => 'mouses',
-            'image' => 'mouses.jpg',
-        ]);
-        $mousepad = Category::create([
+            'image' => 'mouses.jpg'
+        ];
+        $mouse = Category::create($data7);
+        $infoIds = [];
+        for($i=0;$i <= 15;$i++){
+            $info = Information::create([
+                'category_id' => $mouse->id,
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət '.$i],
+                'en' => ['title' => 'Spesification in English '.$i],
+                'ru' => ['title' => 'Спецификация на русском языке '.$i],
+            ]);
+            array_push($infoIds,$info->id);
+        }
+        $data8 = [
             'category_id' => $mouseandkeyboards->id,
-            'name' => 'Mousepads',
+            'az' => ['name'=>'Mouse altlıqları'],
+            'en' => ['name'=>'Mousepads'],
+            'ru' => ['name'=>'Коврики для мыши'],
             'slug' => 'mousepads',
-            'image' => 'mousepads.jpg',
-        ]);
-        $housestuff = Category::create([
-            'name' => 'Household appliances',
+            'image' => 'mousepads.jpg'
+        ];
+        $mousepad = Category::create($data8);
+        $data9 = [
+            'az' => ['name'=>'Məişət əşyaları'],
+            'en' => ['name'=>'Household appliances'],
+            'ru' => ['name'=>'Бытовая техника'],
             'slug' => 'household-appliances',
-            'image' => 'households.jpg',
-        ]);
-        Category::create([
+            'image' => 'households.jpg'
+        ];
+        $housestuff = Category::create($data9);
+        $data10 = [
             'category_id' => $housestuff->id,
-            'name' => 'Refrigerators',
+            'az' => ['name'=>'Soyuducular'],
+            'en' => ['name'=>'Refrigerators'],
+            'ru' => ['name'=>'Холодильники'],
             'slug' => 'refrigerators',
             'image' => 'refrigerators.jpg',
-        ]);
-        $houseprid = Category::create([
+        ];
+        Category::create($data10);
+        $data11 = [
             'category_id' => $housestuff->id,
-            'name' => 'Washing machines',
+            'az' => ['name'=>'Paltaryuyan maşınlar'],
+            'en' => ['name'=>'Washing machines'],
+            'ru' => ['name'=>'Стиральные машины'],
             'slug' => 'washing-machines',
-            'image' => 'washingmachines.jpg',
-        ]);
-        Category::create([
+            'image' => 'washingmachines.jpg'
+        ];
+        $houseprid = Category::create($data11);
+        $data12 = [
             'category_id' => $housestuff->id,
-            'name' => 'Drying machines',
+            'az' => ['name'=>'Qurutma maşınları'],
+            'en' => ['name'=>'Drying machines'],
+            'ru' => ['name'=>'Сушильные машины'],
             'slug' => 'drying-machines',
             'image' => 'dryingmachines.jpg',
-        ]);
-        Category::create([
+        ];
+        Category::create($data12);
+        $data13 = [
             'category_id' => $housestuff->id,
-            'name' => 'Dishwashers',
+            'az' => ['name'=>'Qabyuyan maşınlar'],
+            'en' => ['name'=>'Dishwashers'],
+            'ru' => ['name'=>'Посудомоечные машины'],
             'slug' => 'dishwashers',
             'image' => 'dishwashers.jpg',
-        ]);
+        ];
+        Category::create($data13);
         User::create([
             'name' => 'admin',
             'email' => 'admin@gmail.com',
@@ -186,34 +239,61 @@ class DatabaseSeeder extends Seeder
                 'mrid'=>$mr4->id
             ],
         ];
-        for($i=0;$i <= 50;$i++){
+        for($i=0;$i <= 5;$i++){
             $rand = array_rand($randomize);
             $randItem = $randomize[$rand];
             $product = Product::create([
                 'merchant_id' => $randItem['mrid'],
                 'category_id' => $randItem['id'],
                 'brand_id' => $randItem['brid'],
-                'name' => 'example product',
-                'slug' => 'example-product',
-                'price' => rand(600, 3000)
+                'az' => ['name'=> 'Məhsulun Azərbaycan dilində adı '.$i],
+                'en' => ['name'=> 'Product name in English '.$i],
+                'ru' => ['name'=> 'Название продукта на русском языке '.$i],
+                'slug' => 'product-name-in-english-'.$i,
+                'price' => rand(600, 3000),
+                'quantity' => rand(5, 20)
             ]);
             Pimage::create([
                 'image' => $randItem['image'],
                 'product_id' => $product->id,
             ]);
+            for($n=0;$n <= 7;$n++){
+                $randa = array_rand($randomize);
+                $randItema = $randomize[$randa];
+                Pimage::create([
+                    'image' => $randItema['image'],
+                    'product_id' => $product->id,
+                ]);
+            }
         }
-        $housepr = Product::factory(20)->create([
+        $exaproduct = Product::create([
             'merchant_id' => $randomize[rand(0,4)]['mrid'],
-            'category_id' => $houseprid->id,
+            'category_id' => $mouse->id,
             'brand_id' => $br1->id,
-            'name' => 'example product',
-            'slug' => 'example-product',
-            'price' => rand(600, 3000)
+            'az' => ['name'=> 'Nümunə'],
+            'en' => ['name'=> 'Sample'],
+            'ru' => ['name'=> 'Образец'],
+            'slug' => 'sample',
+            'price' => rand(600, 3000),
+            'quantity' => rand(5, 20)
         ]);
-        foreach($housepr as $pr){
+        $da = 0;
+        foreach($infoIds as $infoId){
+            ProductInformation::create([
+                'product_id' => $exaproduct->id,
+                'information_id' => $infoId,
+                'az' => ['body'=>'Örnək xüsusiyyət '.$da],
+                'en' => ['body'=>'Example specification '.$da],
+                'ru' => ['body'=>'Пример спецификации '.$da],
+            ]);
+            $da++;
+        }
+        for($t=0;$t <= 7;$t++){
+            $randa = array_rand($randomize);
+            $randItema = $randomize[$randa];
             Pimage::create([
-                'image' => 'washingmachine.jpg',
-                'product_id' => $pr->id,
+                'image' => $randItema['image'],
+                'product_id' => $exaproduct->id,
             ]);
         }
         Brand::factory(10)->create([

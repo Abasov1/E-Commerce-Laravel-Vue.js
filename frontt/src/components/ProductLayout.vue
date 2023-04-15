@@ -21,26 +21,11 @@
                                      <div class="d-flex align-items-center">
                                          <!-- Language -->
                                          <div class="position-relative">
-                                             <a id="languageDropdownInvoker" class="dropdown-nav-link dropdown-toggle d-flex align-items-center u-header-topbar__nav-link font-weight-normal" href="javascript:;" role="button"
-                                                 aria-controls="languageDropdown"
-                                                 aria-haspopup="true"
-                                                 aria-expanded="false"
-                                                 data-unfold-event="hover"
-                                                 data-unfold-target="#languageDropdown"
-                                                 data-unfold-type="css-animation"
-                                                 data-unfold-duration="300"
-                                                 data-unfold-delay="300"
-                                                 data-unfold-hide-on-scroll="true"
-                                                 data-unfold-animation-in="slideInUp"
-                                                 data-unfold-animation-out="fadeOut">
-                                                 <span class="d-inline-block d-sm-none">US</span>
-                                                 <span class="d-none d-sm-inline-flex align-items-center"><i class="bi bi-dollar mr-1"></i> Dollar (US)</span>
-                                             </a>
-
-                                             <div id="languageDropdown" class="dropdown-menu dropdown-unfold" aria-labelledby="languageDropdownInvoker">
-                                                 <a class="dropdown-item active" href="javascript:;">English</a>
-                                                 <a class="dropdown-item" href="javascript:;">Deutsch</a>
-                                                 <a class="dropdown-item" href="javascript:;">Español‎</a>
+                                             <div @click="langDropdown = !langDropdown" style="cursor:pointer;">{{store.state.user.language.language}}<i class="bi bi-caret-down"></i></div>
+                                             <div v-if="langDropdown" @click="langDropdown = !langDropdown" style="position:absolute;background-color:white;min-width:inherit;z-index:50001">
+                                                 <a class="dropdown-item active" href="javascript:;" @click.prevent="changeLang('az')">Az</a>
+                                                 <a class="dropdown-item active" href="javascript:;" @click.prevent="changeLang('en')">En</a>
+                                                 <a class="dropdown-item active" href="javascript:;" @click.prevent="changeLang('ru')">Ru</a>
                                              </div>
                                          </div>
                                          <!-- End Language -->
@@ -59,7 +44,10 @@
                                          data-unfold-animation-in="fadeInRight"
                                          data-unfold-animation-out="fadeOutRight"
                                          data-unfold-duration="500">
-                                         <i class="bi bi-user mr-1"></i> Register <span class="text-gray-50">or</span> Sign in
+                                         <i class="bi bi-person mr-1"></i>
+                                         <span v-if="store.state.loading">{{store.state.user.language.loading}}</span>
+                                         <span v-if="!store.state.loading && store.state.user.isLoggedIn">{{store.state.user.data.name}}</span>
+                                         <span v-if="!store.state.loading && !store.state.user.isLoggedIn">{{store.state.user.language.register_or_sign_in}}</span>
                                      </a>
                                      <!-- End Account Sidebar Toggle Button -->
                                  </li>
@@ -69,7 +57,6 @@
                  </div>
              </div>
              <!-- End Topbar -->
-
              <!-- Logo-Search-header-icons -->
              <div class="py-2 py-xl-5 bg-primary-down-lg">
                  <div class="container my-0dot5 my-xl-0">
@@ -79,7 +66,7 @@
                              <!-- Nav -->
                              <nav class="navbar navbar-expand u-header__navbar py-0 justify-content-xl-between max-width-270 min-width-270">
                                  <!-- Logo -->
-                                 <a href="http://localhost:5173/home" class="order-1 order-xl-0 navbar-brand u-header__navbar-brand u-header__navbar-brand-center" aria-label="Electro">
+                                 <router-link :to="{name:'Home'}" class="order-1 order-xl-0 navbar-brand u-header__navbar-brand u-header__navbar-brand-center" aria-label="Electro">
                                      <svg version="1.1" x="0px" y="0px" width="175.748px" height="42.52px" viewBox="0 0 175.748 42.52" enable-background="new 0 0 175.748 42.52" style="margin-bottom: 0;">
                                          <ellipse class="ellipse-bg" fill-rule="evenodd" clip-rule="evenodd" fill="#FDD700" cx="170.05" cy="36.341" rx="5.32" ry="5.367"></ellipse>
                                          <path fill-rule="evenodd" clip-rule="evenodd" fill="#333E48" d="M30.514,0.71c-0.034,0.003-0.066,0.008-0.056,0.056
@@ -119,7 +106,7 @@
                                              c5.976-0.568,9.574-3.936,11.816-8.354c-0.141-0.271-0.221-0.604-0.336-0.902C92.929,31.364,90.843,30.485,88.812,29.55z">
                                          </path>
                                      </svg>
-                                 </a>
+                                 </router-link>
                                  <!-- End Logo -->
 
                                  <!-- Fullscreen Toggle Button -->
@@ -450,19 +437,7 @@
                          </div>
                          <!-- End Logo-offcanvas-menu -->
                          <!-- Search Bar -->
-                         <div class="col d-none d-xl-block">
-                             <form class="js-focus-state">
-                                 <label class="sr-only" for="searchproduct">Search</label>
-                                 <div class="input-group">
-                                     <input type="email" class="form-control py-2 pl-5 font-size-15 border-right-0 height-40 border-width-2 rounded-left-pill border-primary" name="email" id="searchproduct-item" placeholder="Search for Products" aria-label="Search for Products" aria-describedby="searchProduct1" required>
-                                     <div class="input-group-append">
-                                         <button class="btn btn-primary height-40 py-2 px-3 rounded-right-pill" type="button" id="searchProduct1">
-                                             <span class="bi bi-search font-size-16"></span>
-                                         </button>
-                                     </div>
-                                 </div>
-                             </form>
-                         </div>
+                         <SearchBar />
                          <!-- End Search Bar -->
                          <!-- Header Icons -->
                             <div class="col col-xl-auto text-right text-xl-left pl-0 pl-xl-3 position-static">
@@ -498,9 +473,9 @@
                                                 <!-- End Input -->
                                             </li>
                                             <!-- End Search -->
-                                            <li class="col d-none d-xl-block"><a href="../shop/compare.html" class="text-gray-90" data-toggle="tooltip" data-placement="top" title="Compare"><i class="font-size-22 bi bi-compare"></i></a></li>
-                                            <li class="col d-none d-xl-block"><a href="../shop/wishlist.html" class="text-gray-90" data-toggle="tooltip" data-placement="top" title="Favorites"><i class="font-size-22 bi bi-heart"></i></a></li>
-                                            <li class="col d-none d-xl-block"><a href="../shop/wishlist.html" class="text-gray-90" data-toggle="tooltip" data-placement="top" title="Favorites"><i class="font-size-22 bi bi-bag"></i></a></li>
+                                            <li class="col d-none d-xl-block"><router-link :to="{name:'WishList'}" class="text-gray-90" :title="store.state.user.language.wishlist"><i class="font-size-22 bi bi-heart"></i></router-link></li>
+                                            <li class="col d-none d-xl-block"><router-link :to="{name:'Cart'}" class="text-gray-90" :title="store.state.user.language.cart"><i class="font-size-22 bi bi-cart"></i></router-link></li>
+                                            <li class="col d-none d-xl-block"><router-link :to="{name:'Sold'}" class="text-gray-90" title="Checkout"><i class="font-size-22 bi bi-currency-dollar"></i></router-link></li>
                                     </ul>
                                 </div>
                             </div>
@@ -538,36 +513,44 @@
                                             <div class="card-body p-0">
                                                 <nav class="js-mega-menu navbar navbar-expand-xl u-header__navbar u-header__navbar--no-space hs-menu-initialized">
                                                     <div id="navBar" class="collapse navbar-collapse u-header__navbar-collapse">
-                                                        <ul class="navbar-nav u-header__navbar-nav">
-                                                            <!-- Nav Item MegaMenu -->
-                                                            <li v-if="categories" v-for="category in categories" :key="category.id" class="nav-item hs-has-mega-menu u-header__nav-item"
+                                                        <!-- <ul class="navbar-nav u-header__navbar-nav" style="z-index:15">
+                                                            <li v-if="categories" v-for="category in categories" :key="category.id"  style="z-index:15" class="nav-item hs-has-mega-menu u-header__nav-item" :class="[showMegaMenu === category.id ? 'hs-mega-menu-opened' : '']"
                                                                 data-event="hover"
                                                                 data-animation-in="slideInUp"
                                                                 data-animation-out="fadeOut"
                                                                 data-position="left">
-                                                                <a id="basicMegaMenu" class="nav-link u-header__nav-link u-header__nav-link-toggle" href="javascript:;" aria-haspopup="true"  @mouseover="closeMenu" aria-expanded="false">{{category.name}}</a>
+                                                                <router-link id="basicMegaMenu" class="nav-link u-header__nav-link u-header__nav-link-toggle" :to="{name:'Category',params:{slug:category.slug}}" aria-haspopup="true"  @mouseover="closeMenu" aria-expanded="false">{{category.name}}</router-link>
 
-                                                                <!-- Nav Item - Mega Menu -->
-                                                                <div class="hs-mega-menu vmm-tfw u-header__sub-menu slideInUp shadow-lg" style="height:400px;" :style="[submenuActive ? '' : 'width:300px;']" aria-labelledby="basicMegaMenu">
+                                                                <div class="hs-mega-menu vmm-tfw u-header__sub-menu slideInUp shadow-lg" :class="[showMegaMenu === category.id ? 'slideInUp' : '']" style="height:400px;" :style="[submenuActive ? '' : 'width:300px;'],[showMegaMenu === category.id ? 'display:block' : '']" aria-labelledby="basicMegaMenu">
                                                                     <div class="row u-header__mega-menu-wrapper">
                                                                         <div class="col mb-3 mb-sm-0">
                                                                             <ul class="u-header__sub-menu-nav-group mb-3">
-                                                                                <li v-for="subcategory in category.subcategories" :key="subcategory.id" @mouseover="closeIf(subcategory)"><a @mouseover="toggleMenu(subcategory)" class="nav-link u-header__sub-menu-nav-link" href="javascript:;">{{subcategory.name}}</a></li>
+                                                                                <li v-for="subcategory in category.subcategories" :key="subcategory.id" @mouseover="closeIf(subcategory)"><router-link @mouseover="toggleMenu(subcategory)" class="nav-link u-header__sub-menu-nav-link" :to="{name:'SubCategory',params:{parent:category.slug,slug:subcategory.slug}}">{{subcategory.name}}</router-link></li>
                                                                             </ul>
                                                                         </div>
                                                                         <div v-if="submenuActive" class="col mb-3 mb-sm-0">
                                                                             <ul class="u-header__sub-menu-nav-group mb-3">
-                                                                                <li v-for="subcategory in submenuActive"><a class="nav-link u-header__sub-menu-nav-link" href="javascript:;">{{subcategory.name}}</a></li>
+                                                                                <li v-for="subcategory in subMenuItems[0]"><router-link class="nav-link u-header__sub-menu-nav-link" :to="{name:'SubSubCategory',params:{fparent:category.slug,sparent:subMenuItems[1],slug:subcategory.slug}}">{{subcategory.name}}</router-link></li>
                                                                             </ul>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <!-- End Nav Item - Mega Menu -->
                                                             </li>
+                                                        </ul> -->
 
-                                                        </ul>
                                                     </div>
                                                 </nav>
+                                                <div @mouseleave="[subcat = false,subsubcat = false]" style="width:300%;height:400px;">
+                                                    <div style="width:33.5%;height:100%;background-color:white;display:inline-block;vertical-align:top;">
+                                                        <router-link v-if="categories" v-for="category in categories" :key="category.id" :to="{name:'Category',params:{slug:category.slug}}" class="based" @mouseover="toggleSub(category)"> {{category.name}}</router-link>
+                                                    </div>
+                                                    <div v-if="subcat" style="width:33%;height:100%;background-color:white;display:inline-block;vertical-align:top;">
+                                                        <router-link v-for="sub in subcat" :key="sub.id" @mouseover="toggleSab(sub)" :to="{name:'SubCategory',params:{parent:subcatparent.slug,slug:sub.slug}}" class="based">{{sub.name}}</router-link>
+                                                    </div>
+                                                    <div v-if="subsubcat" style="width:33%;height:100%;background-color:white;display:inline-block;vertical-align:top;">
+                                                        <router-link v-for="sab in subsubcat" :key="sab.id" :to="{name:'SubSubCategory',params:{fparent:subcatparent.slug,sparent:subsubcatparent.slug,slug:sab.slug}}" class="based">{{sab.name}}</router-link>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -715,7 +698,7 @@
      <!-- ========== END HEADER ========== -->
 
      <!-- ========== MAIN CONTENT ========== -->
-     <router-view>
+     <router-view :key="this.$route.fullPath">
 
      </router-view>
      <!-- ========== END MAIN CONTENT ========== -->
@@ -927,298 +910,123 @@
 
      <!-- ========== SECONDARY CONTENTS ========== -->
      <!-- Account Sidebar Navigation -->
-     <aside id="sidebarContent" class="u-sidebar u-sidebar__lg" aria-labelledby="sidebarNavToggler">
-         <div class="u-sidebar__scroller">
-             <div class="u-sidebar__container">
-                 <div class="js-scrollbar u-header-sidebar__footer-offset pb-3">
-                     <!-- Toggle Button -->
-                     <div class="d-flex align-items-center pt-4 px-7">
-                         <button type="button" class="close ml-auto"
-                             aria-controls="sidebarContent"
-                             aria-haspopup="true"
-                             aria-expanded="false"
-                             data-unfold-event="click"
-                             data-unfold-hide-on-scroll="false"
-                             data-unfold-target="#sidebarContent"
-                             data-unfold-type="css-animation"
-                             data-unfold-animation-in="fadeInRight"
-                             data-unfold-animation-out="fadeOutRight"
-                             data-unfold-duration="500">
-                             <i class="bi bi-close-remove"></i>
-                         </button>
-                     </div>
-                     <!-- End Toggle Button -->
-
-                     <!-- Content -->
-                     <div class="js-scrollbar u-sidebar__body">
-                         <div class="u-sidebar__content u-header-sidebar__content">
-                             <form class="js-validate">
-                                 <!-- Login -->
-                                 <div id="login" data-target-group="idForm">
-                                     <!-- Title -->
-                                     <header class="text-center mb-7">
-                                     <h2 class="h4 mb-0">Welcome Back!</h2>
-                                     <p>Login to manage your account.</p>
-                                     </header>
-                                     <!-- End Title -->
-
-                                     <!-- Form Group -->
-                                     <div class="form-group">
-                                         <div class="js-form-message js-focus-state">
-                                             <label class="sr-only" for="signinEmail">Email</label>
-                                             <div class="input-group">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text" id="signinEmailLabel">
-                                                         <span class="bi bi-user"></span>
-                                                     </span>
-                                                 </div>
-                                                 <input type="email" class="form-control" name="email" id="signinEmail" placeholder="Email" aria-label="Email" aria-describedby="signinEmailLabel" required
-                                                 data-msg="Please enter a valid email address."
-                                                 data-error-class="u-has-error"
-                                                 data-success-class="u-has-success">
-                                             </div>
-                                         </div>
-                                     </div>
-                                     <!-- End Form Group -->
-
-                                     <!-- Form Group -->
-                                     <div class="form-group">
-                                         <div class="js-form-message js-focus-state">
-                                           <label class="sr-only" for="signinPassword">Password</label>
-                                           <div class="input-group">
-                                             <div class="input-group-prepend">
-                                                 <span class="input-group-text" id="signinPasswordLabel">
-                                                     <span class="bi bi-lock"></span>
-                                                 </span>
-                                             </div>
-                                             <input type="password" class="form-control" name="password" id="signinPassword" placeholder="Password" aria-label="Password" aria-describedby="signinPasswordLabel" required
-                                                data-msg="Your password is invalid. Please try again."
-                                                data-error-class="u-has-error"
-                                                data-success-class="u-has-success">
-                                           </div>
-                                         </div>
-                                     </div>
-                                     <!-- End Form Group -->
-
-                                     <div class="d-flex justify-content-end mb-4">
-                                         <a class="js-animation-link small link-muted" href="javascript:;"
-                                            data-target="#forgotPassword"
-                                            data-link-group="idForm"
-                                            data-animation-in="slideInUp">Forgot Password?</a>
-                                     </div>
-
-                                     <div class="mb-2">
-                                         <button type="submit" class="btn btn-block btn-sm btn-primary transition-3d-hover">Login</button>
-                                     </div>
-
-                                     <div class="text-center mb-4">
-                                         <span class="small text-muted">Do not have an account?</span>
-                                         <a class="js-animation-link small text-dark" href="javascript:;"
-                                            data-target="#signup"
-                                            data-link-group="idForm"
-                                            data-animation-in="slideInUp">Signup
-                                         </a>
-                                     </div>
-
-                                     <div class="text-center">
-                                         <span class="u-divider u-divider--xs u-divider--text mb-4">OR</span>
-                                     </div>
-
-                                     <!-- Login Buttons -->
-                                     <div class="d-flex">
-                                         <a class="btn btn-block btn-sm btn-soft-facebook transition-3d-hover mr-1" href="javascript:;">
-                                           <span class="fab fa-facebook-square mr-1"></span>
-                                           Facebook
-                                         </a>
-                                         <a class="btn btn-block btn-sm btn-soft-google transition-3d-hover ml-1 mt-0" href="javascript:;">
-                                           <span class="fab fa-google mr-1"></span>
-                                           Google
-                                         </a>
-                                     </div>
-                                     <!-- End Login Buttons -->
-                                 </div>
-
-                                 <!-- Signup -->
-                                 <div id="signup" style="display: none; opacity: 0;" data-target-group="idForm">
-                                     <!-- Title -->
-                                     <header class="text-center mb-7">
-                                     <h2 class="h4 mb-0">Welcome to Electro.</h2>
-                                     <p>Fill out the form to get started.</p>
-                                     </header>
-                                     <!-- End Title -->
-
-                                     <!-- Form Group -->
-                                     <div class="form-group">
-                                         <div class="js-form-message js-focus-state">
-                                             <label class="sr-only" for="signupEmail">Email</label>
-                                             <div class="input-group">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text" id="signupEmailLabel">
-                                                         <span class="bi bi-user"></span>
-                                                     </span>
-                                                 </div>
-                                                 <input type="email" class="form-control" name="email" id="signupEmail" placeholder="Email" aria-label="Email" aria-describedby="signupEmailLabel" required
-                                                 data-msg="Please enter a valid email address."
-                                                 data-error-class="u-has-error"
-                                                 data-success-class="u-has-success">
-                                             </div>
-                                         </div>
-                                     </div>
-                                     <!-- End Input -->
-
-                                     <!-- Form Group -->
-                                     <div class="form-group">
-                                         <div class="js-form-message js-focus-state">
-                                             <label class="sr-only" for="signupPassword">Password</label>
-                                             <div class="input-group">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text" id="signupPasswordLabel">
-                                                         <span class="bi bi-lock"></span>
-                                                     </span>
-                                                 </div>
-                                                 <input type="password" class="form-control" name="password" id="signupPassword" placeholder="Password" aria-label="Password" aria-describedby="signupPasswordLabel" required
-                                                 data-msg="Your password is invalid. Please try again."
-                                                 data-error-class="u-has-error"
-                                                 data-success-class="u-has-success">
-                                             </div>
-                                         </div>
-                                     </div>
-                                     <!-- End Input -->
-
-                                     <!-- Form Group -->
-                                     <div class="form-group">
-                                         <div class="js-form-message js-focus-state">
-                                         <label class="sr-only" for="signupConfirmPassword">Confirm Password</label>
-                                             <div class="input-group">
-                                             <div class="input-group-prepend">
-                                                 <span class="input-group-text" id="signupConfirmPasswordLabel">
-                                                     <span class="bi bi-key"></span>
-                                                 </span>
-                                             </div>
-                                             <input type="password" class="form-control" name="confirmPassword" id="signupConfirmPassword" placeholder="Confirm Password" aria-label="Confirm Password" aria-describedby="signupConfirmPasswordLabel" required
-                                             data-msg="Password does not match the confirm password."
-                                             data-error-class="u-has-error"
-                                             data-success-class="u-has-success">
-                                             </div>
-                                         </div>
-                                     </div>
-                                     <!-- End Input -->
-
-                                     <div class="mb-2">
-                                         <button type="submit" class="btn btn-block btn-sm btn-primary transition-3d-hover">Get Started</button>
-                                     </div>
-
-                                     <div class="text-center mb-4">
-                                         <span class="small text-muted">Already have an account?</span>
-                                         <a class="js-animation-link small text-dark" href="javascript:;"
-                                             data-target="#login"
-                                             data-link-group="idForm"
-                                             data-animation-in="slideInUp">Login
-                                         </a>
-                                     </div>
-
-                                     <div class="text-center">
-                                         <span class="u-divider u-divider--xs u-divider--text mb-4">OR</span>
-                                     </div>
-
-                                     <!-- Login Buttons -->
-                                     <div class="d-flex">
-                                         <a class="btn btn-block btn-sm btn-soft-facebook transition-3d-hover mr-1" href="javascript:;">
-                                             <span class="fab fa-facebook-square mr-1"></span>
-                                             Facebook
-                                         </a>
-                                         <a class="btn btn-block btn-sm btn-soft-google transition-3d-hover ml-1 mt-0" href="javascript:;">
-                                             <span class="fab fa-google mr-1"></span>
-                                             Google
-                                         </a>
-                                     </div>
-                                     <!-- End Login Buttons -->
-                                 </div>
-                                 <!-- End Signup -->
-
-                                 <!-- Forgot Password -->
-                                 <div id="forgotPassword" style="display: none; opacity: 0;" data-target-group="idForm">
-                                     <!-- Title -->
-                                     <header class="text-center mb-7">
-                                         <h2 class="h4 mb-0">Recover Password.</h2>
-                                         <p>Enter your email address and an email with instructions will be sent to you.</p>
-                                     </header>
-                                     <!-- End Title -->
-
-                                     <!-- Form Group -->
-                                     <div class="form-group">
-                                         <div class="js-form-message js-focus-state">
-                                             <label class="sr-only" for="recoverEmail">Your email</label>
-                                             <div class="input-group">
-                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text" id="recoverEmailLabel">
-                                                         <span class="bi bi-user"></span>
-                                                     </span>
-                                                 </div>
-                                                 <input type="email" class="form-control" name="email" id="recoverEmail" placeholder="Your email" aria-label="Your email" aria-describedby="recoverEmailLabel" required
-                                                 data-msg="Please enter a valid email address."
-                                                 data-error-class="u-has-error"
-                                                 data-success-class="u-has-success">
-                                             </div>
-                                         </div>
-                                     </div>
-                                     <!-- End Form Group -->
-
-                                     <div class="mb-2">
-                                         <button type="submit" class="btn btn-block btn-sm btn-primary transition-3d-hover">Recover Password</button>
-                                     </div>
-
-                                     <div class="text-center mb-4">
-                                         <span class="small text-muted">Remember your password?</span>
-                                         <a class="js-animation-link small" href="javascript:;"
-                                            data-target="#login"
-                                            data-link-group="idForm"
-                                            data-animation-in="slideInUp">Login
-                                         </a>
-                                     </div>
-                                 </div>
-                                 <!-- End Forgot Password -->
-                             </form>
-                         </div>
-                     </div>
-                     <!-- End Content -->
-                 </div>
-             </div>
-         </div>
-     </aside>
+        <Auth />
 </template>
 
 <script setup>
 import store from '../store'
 import router from '../router'
+import Auth from './Auth.vue'
+import SearchBar from './SearchBar.vue'
 import { onMounted,ref,reactive,computed,watch } from 'vue'
+const categories = ref(false)
+const subcat = ref(false)
+const subcatparent = ref(false)
+const subsubcat = ref(false)
+const subsubcatparent = ref(false)
+const translated = ref(false)
+const langDropdown = ref(false)
 const goHome = async () => {
     await router.push({name:'Home'})
     location.reload()
 }
 onMounted(()=>{
-    store.dispatch('loadcategories')
-})
-const submenuActive = ref(false)
-const toggleMenu = (subcategory) => {
-    if(subcategory.subcategories != ''){
-        submenuActive.value = subcategory.subcategories
+    if(router.currentRoute.value.name === 'Home'){
+        uqabuqa()
     }
+})
+const uqabuqa = () => {
+    store.dispatch('loadcategories').then(()=>{
+            setCategory()
+        })
 }
-const closeMenu = () => {
-    submenuActive.value = false
-}
-const closeIf = (subcat) => {
-    if(submenuActive.value){
-        if(subcat.subcategories === ''){
-            submenuActive.value = false
-        }else if(subcat.subcategories != submenuActive.value){
-            submenuActive.value = false
+watch(()=>router.currentRoute.value.name,()=>{
+    if(router.currentRoute.value.name === 'Home'){
+        uqabuqa()
+    }
+})
+watch(()=>store.state.user.language,()=>{
+    if(router.currentRoute.value.name === 'Home' || router.currentRoute.value.name === 'ProductLayout'){
+        if(categories.value){
+            setCategory()
         }
     }
+})
+const setCategory = () =>{
+    categories.value = store.state.categories
+        if (localStorage.getItem('lang') === 'az'){
+            categories.value.forEach(item => {
+                item.name = item.translations[0].name
+                if(item.subcategories){
+                    item.subcategories.forEach(subcat => {
+                        subcat.name = subcat.translations[0].name
+                        if(subcat.subcategories){
+                            subcat.subcategories.forEach(subsubcat => {
+                                subsubcat.name = subsubcat.translations[0].name
+                            })
+                        }
+                    });
+                }
+            });
+        }else if (localStorage.getItem('lang') === 'en'){
+            categories.value.forEach(item => {
+                item.name = item.translations[1].name
+                if(item.subcategories){
+                    item.subcategories.forEach(subcat => {
+                        subcat.name = subcat.translations[1].name
+                        if(subcat.subcategories){
+                            subcat.subcategories.forEach(subsubcat => {
+                                subsubcat.name = subsubcat.translations[1].name
+                            })
+                        }
+                    });
+                }
+            });
+        }else if (localStorage.getItem('lang') === 'ru'){
+            categories.value.forEach(item => {
+                item.name = item.translations[2].name
+                if(item.subcategories){
+                    item.subcategories.forEach(subcat => {
+                        subcat.name = subcat.translations[2].name
+                        if(subcat.subcategories){
+                            subcat.subcategories.forEach(subsubcat => {
+                                subsubcat.name = subsubcat.translations[2].name
+                            })
+                        }
+                    });
+                }
+            });
+        }
 }
-const categories = computed(()=>store.state.categories)
+const changeLang = (lang) =>{
+    store.commit('changeLang',lang)
+}
+const toggleSub = (cat) => {
+    subsubcat.value = null
+    subsubcatparent.value = null
+    if(cat.subcategories){
+        subcat.value = cat.subcategories
+        subcatparent.value = cat
+    }
+}
+const toggleSab = (cat) => {
+    if(cat.subcategories.length != 0){
+        subsubcat.value = cat.subcategories
+        subsubcatparent.value = cat
+    }else{
+        subsubcat.value = null
+        subsubcatparent.value = null
+    }
+}
 </script>
 <style scoped>
-
+.based{
+    padding:10px 15px;
+    display:block;
+    color:black;
+    background-color:white;
+}
+.based:hover{
+    background-color:rgb(245,245,245);
+}
 </style>

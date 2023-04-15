@@ -19,6 +19,7 @@ Route::get('/', function () {
 });
 Route::get('/demo',[DemoController::class,'index']);
 Route::get('/showbrand/{slug}',[DemoController::class,'showbrand']);
+Route::get('/why',[DemoController::class,'why']);
 Route::post('/createcat',[DemoController::class,'createcat']);
 Route::post('/createmer',[DemoController::class,'createmer']);
 Route::post('/createbr',[DemoController::class,'createbr']);

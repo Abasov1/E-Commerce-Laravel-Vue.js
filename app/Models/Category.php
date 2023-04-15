@@ -4,24 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Astrotomic\Translatable\Translatable;
 class Category extends Model
 {
     use HasFactory;
+    use Translatable;
+    public $translatedAttributes = ['name'];
     protected $fillable = [
         'category_id',
-        'name',
         'slug',
         'image'
     ];
     public function subcategories(){
         return $this->hasMany(Category::class);
     }
+    public function informations(){
+        return $this->hasMany(Information::class);
+    }
     public function products(){
-        if ($this->parent_id) {
-            $child_categories = $this->subcategories()->pluck('id')->toArray();
-            return Product::whereIn('category_id', $child_categories)->get();
-        }
         return $this->hasMany(Product::class);
     }
 }

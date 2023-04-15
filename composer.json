@@ -6,8 +6,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "astrotomic/laravel-translatable": "^11.12",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.7",
+        "laravel/cashier": "^14.11",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7"

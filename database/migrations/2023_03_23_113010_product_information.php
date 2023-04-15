@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('information_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
     public function down()
