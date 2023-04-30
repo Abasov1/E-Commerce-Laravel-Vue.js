@@ -110,12 +110,5 @@ const router = createRouter({
     },
   ]
 })
-// router.beforeEach((to,from,next) => {
-//         store.dispatch('loadUser').then(()=>{
-//             next()
-//         })
-//     }
-
-//  )
 
 export default router

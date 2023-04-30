@@ -12,6 +12,8 @@ use App\Models\Pimage;
 use App\Models\Product;
 use App\Models\ProductInformation;
 use App\Models\User;
+use App\Models\Role;
+use App\Models\Slider;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -26,13 +28,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $admin = Role::create([
+            'name' => 'admin'
+        ]);
+        Role::create([
+            'name' => 'moderator'
+        ]);
+        SLider::factory(4)->create([
+            'az_image' => 'az_default.jpg',
+            'en_image' => 'en_default.jpg',
+            'ru_image' => 'ru_default.jpg'
+        ]);
         $data1 = [
             'az' => ['name'=>'Komputerlər və notbuklar'],
             'en' => ['name'=>'Laptops and other computer technologies'],
             'ru' => ['name'=>'Ноутбуки и другие компьютерные технологии'],
             'slug' => 'laptops-and-other-computer-technologies',
             'image' => 'computerparent.jpg',
-        ];
+        ]; 
         $computersparent = Category::create($data1);
         $data2 = [
             'category_id' => $computersparent->id,
@@ -151,12 +164,12 @@ class DatabaseSeeder extends Seeder
             'image' => 'dishwashers.jpg',
         ];
         Category::create($data13);
-        User::create([
+        $user = User::create([
             'name' => 'admin',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('admin123'),
-            'is_admin' => true,
         ]);
+        $user->roles()->attach($admin->id);
         $mr1 = Merchant::create([
             'name' => 'Bazar store',
             'slug' => 'bazar-store',

@@ -68,7 +68,6 @@
                         <!-- Shop-control-bar Title -->
                         <div class="d-block d-md-flex flex-center-between mb-3">
                             <h3 v-if="formData.index" class="font-size-25 mb-2 mb-md-0">{{searchresult}}</h3>
-                            <p class="font-size-14 text-gray-90 mb-0">Showing 1–25 of 56 results</p>
                         </div>
                         <!-- End shop-control-bar Title -->
                         <!-- Shop-control-bar -->
@@ -96,8 +95,6 @@
                                     <option value="2">{{store.state.user.language.filter.oldest}}</option>
                                     <option value="3">{{store.state.user.language.filter.h_first}}</option>
                                     <option value="4">{{store.state.user.language.filter.l_first}}</option>
-                                    <option value="5">A-Z</option>
-                                    <option value="6">Z-A</option>
                                 </select>
                             </div>
 
@@ -121,7 +118,6 @@
                         <!-- End Shop Body -->
                         <!-- Shop Pagination -->
                         <nav class="d-md-flex justify-content-between align-items-center border-top pt-3" aria-label="Page navigation example">
-                            <div class="text-center text-md-left mb-3 mb-md-0">Showing 1–25 of 56 results</div>
                             <ul class="pagination mb-0 pagination-shop justify-content-center justify-content-md-start">
                                 <li @click.prevent="changePage(1)" class="page-item"><a class="page-link" :class="formData.page === 1 ? 'current' : ''" href="#">1</a></li>
                                 <li v-if="formData.page > 2" class="page-item"><a class="page-link" href="#">...</a></li>

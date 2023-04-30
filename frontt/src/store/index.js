@@ -1,16 +1,15 @@
 import {createStore} from 'vuex';
 import axios from 'axios'
 import router from '../router'
-import az from '../lang/az.json'
-import en from '../lang/en.json'
-import ru from '../lang/ru.json'
+import dummy from '../lang/dummy.json'
 const store = createStore({
     state:{
         user:{
             data:{},
             isLoggedIn:false,
             review:false,
-            language:az
+            language:dummy,
+            moderator:false
         },
         loading:true,
         category:{},
@@ -36,13 +35,20 @@ const store = createStore({
         },
         results:false,
         allresults:false,
-        soldData:false
+        soldData:false,
+        az:{},
+        en:{},
+        ru:{},
+        expired:false
     },
     mutations:{
         setUser(state,user){
             state.user.data = user
             state.user.isLoggedIn = true
             state.loading = false
+            if(user.role === 'admin' || user.role === 'moderator'){
+                state.user.moderator = true
+            }
         },
         setCat(state,categories){
             state.category = categories
@@ -102,36 +108,65 @@ const store = createStore({
         },
         changeLang(state,lang){
             if(lang === 'en'){
-                state.user.language = en
+                state.user.language = store.state.en
                 localStorage.setItem('lang',lang)
             }else if(lang === 'az'){
-                state.user.language = az
+                state.user.language = store.state.az
                 localStorage.setItem('lang',lang)
             }else if(lang === 'ru'){
-                state.user.language = ru
+                state.user.language = store.state.ru
                 localStorage.setItem('lang',lang)
             }
+        },
+        setLanguage(state,data){
+            state.az = data.az
+            state.en = data.en
+            state.ru = data.ru
         },
         setSoldData(state,data){
             state.soldData = data
         },
         clearCart(state){
             state.user.data.cart = []
+        },
+        acBagla(state){
+            state.expired = true
+            state.expired = false
         }
     },
     actions:{
         register: async ({commit},user) => {
-            await axios.post('http://127.0.0.1:8000/api/register',user).then((response)=>{
-                commit('setUser',response.data.user)
-                localStorage.setItem('TOKEN',response.data.token)
+            await axios.post('http://127.0.0.1:8000/api/sendverification',user).then((response)=>{
+                // commit('setUser',response.data.user)
+                // localStorage.setItem('TOKEN',response.data.token)
+            })
+        },
+        verificate: async ({commit},user) => {
+            await axios.post('http://127.0.0.1:8000/api/verificate',user).then((response)=>{
+                 commit('setUser',response.data.user)
+                 localStorage.setItem('TOKEN',response.data.token)
+            })
+        },
+        setNew: async ({commit},user) => {
+            await axios.post('http://127.0.0.1:8000/api/setnew',user).then((response)=>{
+                 commit('setUser',response.data.user)
+                 localStorage.setItem('TOKEN',response.data.token)
+                 window.location.reload()
+            })
+        },
+        loadLanguage: async({commit}) => {
+            await axios.get('http://127.0.0.1:8000/api/lang').then((response)=>{  
+                commit('setLanguage',response.data)
+                commit('changeLang',localStorage.getItem('lang'))
             })
         },
         login: async ({commit},user) => {
             await axios.post('http://127.0.0.1:8000/api/login',user)
             .then((response) => {
                 commit('setUser',response.data.user);
-                commit()
                 localStorage.setItem('TOKEN',response.data.token)
+            }).then(()=>{
+                window.location.reload()
             })
         },
         logout: async ({commit}) => {
@@ -301,6 +336,17 @@ const store = createStore({
                 }
             }).then((response) => {
                 commit('setSoldData',response.data.data);
+            })
+        },
+        deleteReview: async ({commit},id) => {
+            await axios.post('http://127.0.0.1:8000/api/deletereview/'+id,null,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response) => {
+                alert(response.data.message)
+            }).catch((error) => {
+                alert(error.response.data.message)
             })
         },
     },

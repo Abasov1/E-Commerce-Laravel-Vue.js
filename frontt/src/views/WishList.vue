@@ -36,7 +36,7 @@
                                         </td>
 
                                         <td data-title="Product">
-                                            <router-link :to="{name:'Product',params:{slug:wish.slug}}" class="text-gray-90">{{wish.name}}</router-link>
+                                            <router-link :to="{name:'Product',params:{slug:wish.slug}}" class="text-gray-90" :style="wish.quantity === 0 ? 'text-decoration:line-through;text-decoration-color:red;' : ''">{{wish.name}}</router-link>
                                         </td>
 
                                         <td data-title="Unit Price">
@@ -47,10 +47,15 @@
 
                                         </td>
 
-                                        <td>
-                                            <button @click="addCart(wish.id)" type="button" style="min-width:80%;max-width:80%" class="btn btn-soft-secondary mb-3 mb-md-0 font-weight-normal px-5 px-md-4 px-lg-5 w-100 w-md-auto" :style="store.state.user.data.cart.some(item=>item.id === wish.id) ? 'color:white;background-color:rgb(119,131,143)' : 'background-color:rgb(241,242,244);color:black;'">
+                                        <td v-if="wish.quantity != 0">
+                                            <button @click="addCart(wish.id)" type="button" style="min-width:80%;max-width:80%;" class="btn mb-3 mb-md-0 font-weight-normal px-5 px-md-4 px-lg-5 w-100 w-md-auto" :style="store.state.user.data.cart.some(item=>item.id === wish.id) ? 'color:white;background-color:rgb(119,131,143)' : 'background-color:rgb(241,242,244);color:black;'">
                                                 <span v-if="store.state.user.data.cart.some(item=>item.id === wish.id)">{{store.state.user.language.already_in_cart}}</span>
                                                 <span v-else>{{store.state.user.language.add_cart}}</span>
+                                            </button>
+                                        </td>
+                                        <td v-else>
+                                            <button type="button" disabled class="btn mb-3 mb-md-0 font-weight-normal px-5 px-md-4 px-lg-5 w-100 w-md-auto" style="min-width:80%;max-width:80%;background-color:rgb(216,254,229);color:black;">
+                                                <span>{{store.state.user.language.add_cart}}</span>
                                             </button>
                                         </td>
                                     </tr>
@@ -87,27 +92,27 @@ onMounted(()=>{
 })
 watch(()=>store.state.user.language,()=>{
     document.title = store.state.user.language.wish.title
-    if(products.value){
-        setPrName()
-    }
+    setPrName()
 })
 watch(()=>store.state.user.data,()=>{
     products.value = store.state.user.data.wishlist
     setPrName()
 })
 const setPrName = () =>{
-    if (localStorage.getItem('lang') === 'az'){
-        products.value.forEach(item => {
-            item.name = item.translations[0].name
-        });
-    }else if (localStorage.getItem('lang') === 'en'){
-        products.value.forEach(item => {
-            item.name = item.translations[1].name
-        });
-    }else if (localStorage.getItem('lang') === 'ru'){
-        products.value.forEach(item => {
-            item.name = item.translations[2].name
-        });
+    if(products.value){
+        if (localStorage.getItem('lang') === 'az'){
+            products.value.forEach(item => {
+                item.name = item.translations[0].name
+            });
+        }else if (localStorage.getItem('lang') === 'en'){
+            products.value.forEach(item => {
+                item.name = item.translations[1].name
+            });
+        }else if (localStorage.getItem('lang') === 'ru'){
+            products.value.forEach(item => {
+                item.name = item.translations[2].name
+            });
+        }
     }
 }
 const addCart = (id) => {
@@ -130,5 +135,8 @@ const getPrice = (pr) => {
     background-color:white;
     opacity:50%;
     z-index:999999;
+}
+.disabledCart{
+    background-color:green;
 }
 </style>

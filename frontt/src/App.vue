@@ -1,5 +1,5 @@
 <template>
-<router-view >
+<router-view v-if="store.state.user.language">
 
 </router-view>
 </template>
@@ -10,9 +10,10 @@ import store from './store'
 import {onMounted} from 'vue'
 
 onMounted(()=>{
-    if (localStorage.getItem('lang') !== null) {
-        store.commit('changeLang',localStorage.getItem('lang'))
+    if(localStorage.getItem('lang') != 'az' && localStorage.getItem('lang') != 'en' && localStorage.getItem('lang') != 'ru'){
+        localStorage.setItem('lang','az')
     }
+    store.dispatch('loadLanguage')
     store.dispatch('loadUser')
 })
 </script>

@@ -1,7 +1,7 @@
 <template>
     <main id="content" role="main">
-        <div class="mb-6 bg-gray-7 py-6">
-            <div v-if="categories" class="container">
+        <div v-if="categories" class="mb-6 bg-gray-7 py-6">
+            <div class="container">
                 <router-link :to="{name:'Categories'}" class="my-link text-black">{{store.state.user.language.categories}} > </router-link>{{categories[0].parent.name}}
                 <div class=" d-flex justify-content-between border-bottom border-color-1 flex-lg-nowrap flex-wrap border-md-down-top-0 border-md-down-bottom-0 mb-5">
                     <h3 class="section-title mb-0 pb-2 font-size-22">{{categories[0].parent.name}}</h3>
@@ -24,12 +24,16 @@
                 </div>
             </div>
         </div>
+        <div v-if="noResult" style="display:flex;width:100%;justify-content:center;align-items:center;padding:30px 0px;">
+            <h1>{{store.state.user.language.search_bar.no_result}}</h1>
+        </div>
     </main>
 </template>
 <script setup>
 import store from '../store'
 import { onMounted,ref,reactive,computed,watch } from 'vue'
 const categories = ref(false)
+const noResult = ref(false)
 const props = defineProps({
     slug: String,
 })
@@ -38,12 +42,20 @@ onMounted(()=>{
     document.title = store.state.user.language.loading
     store.dispatch('loadcategory',props.slug).then(()=>{
         categories.value = store.state.category
+        if(!categories.value){
+            noResult.value = true
+            document.title = store.state.user.language.search_bar.no_result
+            return
+        }
         setCategories()
     })
 })
 watch(()=>store.state.user.language,()=>{
     if(categories.value){
         setCategories()
+    }
+    if(!categories.value && noResult){
+        document.title = store.state.user.language.search_bar.no_result
     }
 })
 const setCategories = () => {

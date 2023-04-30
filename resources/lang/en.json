@@ -1,0 +1,147 @@
+{
+    "welcome": "Welcome to my app!",
+    "recently_viewed": "Recently viewed",
+    "filters":"Filters",
+    "categories":"Categories",
+    "brands":"Brands",
+    "merchants":"Merchants",
+    "top_categories_this_week":"Top Categories This Week",
+    "search_result":"Search result for \"{index}\"",
+    "show_all":"Show all",
+    "show_more":"Show more",
+    "show_less":"Show less",
+    "language": "Choose language",
+    "register_or_sign_in":"Register or Sign in",
+    "wishlist":"Wishlist",
+    "cart":"Cart",
+    "add_cart":"Add to cart",
+    "already_in_cart":"Already in cart",
+    "loading":"Loading...",
+    "spesifications":"Spesifications",
+    "reviews":"Reviews",
+    "availability":"{x} in stock",
+    "replacable":"{x}'s products",
+    "required":"Required",
+    "messages":{
+        "notloggedin":"You are not logged in"
+    },
+    "search_bar":{
+        "placeholder":"Search for products",
+        "brand":"Brand",
+        "merchant":"Merchant",
+        "no_result":"No result"
+    },
+    "filter":{
+        "newest":"Newest",
+        "oldest":"Oldest",
+        "h_first":"Higher price first",
+        "l_first":"Lower price first"
+    },
+    "review":{
+        "review":"Review",
+        "add":"Add Review",
+        "update":"Update Review",
+        "your":"Your Review",
+        "overall":"Overall",
+        "delete":"Delete your review"
+    },
+    "wish":{
+        "title":"My wishlist",
+        "product":"Product",
+        "price":"Price",
+        "no_item":"No product in wishlist"
+    },
+    "carto":{
+        "title":"Cart",
+        "product":"Product",
+        "price":"Price",
+        "quantity":"Quantity",
+        "total":"Total",
+        "proceed":"Proceed to checkout",
+        "no_item":"No product in cart"
+    },
+    "checkout":{
+        "title":"Checkout",
+        "details":"Billing details",
+        "address":"Street Address",
+        "city":"City",
+        "state":"State",
+        "zip":"Postcode/Zip",
+        "c_info":"Card Information",
+        "your":"Your Order",
+        "place":"Place Order",
+        "purchased":"Purchased Products",
+        "n_purchased":"No purchased products",
+        "validations":{
+            "a_required":"Street Address is required",
+            "c_required":"City is required",
+            "s_required":"State is required",
+            "z_required":"Postcode is required",
+            "z_match":"Postcode does not match",
+            "card_required":"Card Information required"
+        }
+    },
+    "auth":{
+        "placeholders":{
+            "name":"Name",
+            "email":"Email",
+            "password":"Password",
+            "password_confirmation":"Password Confirmation"
+        },
+        "labels":{
+            "name":"Name",
+            "email":"Email",
+            "password":"Password",
+            "password_confirmation":"Password Confirmation"
+        },
+        "login":{
+            "greeting":"Welcome",
+            "title":"Login to manage your account",
+            "forgot_password":"Forgot Password?",
+            "button":"Login",
+            "bot_text":"Do not have an account",
+            "sign_up":"Sign up",
+            "validations":{
+                "e_required":"Email is required",
+                "e_valid":"Please enter a valid email address",
+                "e_exists":"This email doesn't exists",
+                "p_required":"Password is required",
+                "p_wrong":"Password is wrong"
+            }
+        },
+        "register":{
+            "greeting":"Welcome",
+            "title":"Register form to get started",
+            "button":"Register",
+            "bot_text":"Already have an account?",
+            "sign_up":"Sign in",
+            "validations":{
+                "n_required":"Name is required",
+                "n_min":"Name should be at least 6 characters",
+                "n_max":"Name can be maximum 20 characters",
+                "n_exists":"Name is already taken",
+                "e_required":"Email is required",
+                "e_valid":"Please enter a valid email address",
+                "e_exists":"This email already exists",
+                "p_required":"Password is required",
+                "p_min":"Password should be at least 6 characters",
+                "p_max":"Password can be maximum 20 characters",
+                "vp_required":"Password confirmation is required",
+                "vp_wrong":"Password confirmation is not correct"
+            }
+        },
+        "forgot_password":{
+            "title":"New Password",
+            "p":"Set new password"
+        },
+        "verification":{
+            "title":"Email verification",
+            "p":"We send a confirmation code to {x}",
+            "placeholder":"Verification Code",
+            "wrong":"Verification code is wrong",
+            "expired":"Verification code is expired. Returning in {x}",
+            "verificate":"Verificate"
+        },
+        "logout":"Logout"
+    }
+}

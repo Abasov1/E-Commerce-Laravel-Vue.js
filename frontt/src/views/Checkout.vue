@@ -8,7 +8,7 @@
                     <h1 class="text-center">{{store.state.user.language.messages.notloggedin}}</h1>
                 </div>
                 <div v-if="!store.state.loading && store.state.user.isLoggedIn && cart.length === 0" class="mb-5">
-                    <h1 class="text-center">No item in cart</h1>
+                    <h1 class="text-center">{{store.state.user.language.carto.no_item}}</h1>
                 </div>
                 <div v-if="!store.state.loading && store.state.user.isLoggedIn && cart.length != 0" class="mb-5">
                     <h1 class="text-center">{{store.state.user.language.checkout.title}}</h1>
@@ -162,25 +162,30 @@ const customer = reactive({
 })
 onMounted(() => {
     document.title = store.state.user.language.checkout.title
-    if(store.state.user.isLoggedIn && store.state.user.data.cart.length != 0){
-        cart.value = store.state.user.data.cart
-        customer.name = store.state.user.data.name
-        customer.email = store.state.user.data.email
-        if(store.state.user.data.address){
-            customer.address = store.state.user.data.address
+        if(store.state.user.isLoggedIn && store.state.user.data.cart.length != 0){
+            cart.value = store.state.user.data.cart
+            cart.value.forEach(element => {
+                if(element.quantity === 0){
+                    cart.value.slice(cart.value.findIndex(item => item.id === element.id),1)
+                }
+            });
+            customer.name = store.state.user.data.name
+            customer.email = store.state.user.data.email
+            if(store.state.user.data.address){
+                customer.address = store.state.user.data.address
+            }
+            if(store.state.user.data.city){
+                customer.city = store.state.user.data.city
+            }
+            if(store.state.user.data.state){
+                customer.state = store.state.user.data.state
+            }
+            if(store.state.user.data.zip_code){
+                customer.zip_code = store.state.user.data.zip_code
+            }
+            mountCard()
+            setPrName()
         }
-        if(store.state.user.data.city){
-            customer.city = store.state.user.data.city
-        }
-        if(store.state.user.data.state){
-            customer.state = store.state.user.data.state
-        }
-        if(store.state.user.data.zip_code){
-            customer.zip_code = store.state.user.data.zip_code
-        }
-        mountCard()
-        setPrName()
-    }
 })
 watch(()=>store.state.user.isLoggedIn,()=>{
     if(store.state.user.isLoggedIn){
@@ -188,6 +193,11 @@ watch(()=>store.state.user.isLoggedIn,()=>{
         mountCard()
         }
         cart.value = store.state.user.data.cart
+        cart.value.forEach(element => {
+            if(element.quantity === 0){
+                cart.value.slice(cart.value.findIndex(item => item.id === element.id),1)
+            }
+        });
         customer.name = store.state.user.data.name
         customer.email = store.state.user.data.email
         if(store.state.user.data.address){
@@ -209,19 +219,19 @@ watch(()=>store.state.user.language,()=>{
     if(cart.value){
         setPrName()
     }
-    if(addressV){
+    if(addressV.value){
         validateAddress()
     }
-    if(cityV){
+    if(cityV.value){
         validateCity()
     }
-    if(stateV){
+    if(stateV.value){
         validateState()
     }
-    if(zipCodeV){
+    if(zipCodeV.value){
         validateZip()
     }
-    if(cartV){
+    if(cartV.value){
         validateCart()
     }
 })
@@ -278,9 +288,13 @@ const payMf = async() => {
                 proccessing.value = false
                 store.commit('clearCart')
                 router.push({name:'Sold'})
-            }).catch((error)=>{
+            }).catch(err=>{
                 proccessing.value = false
-                alert('Something bad is happened')
+                if(err.response.data.quantity){
+                    alert(err.response.data.quantity)
+                }else{
+                    alert('Something bad is happened')
+                }
             })
         }
     }

@@ -30,7 +30,7 @@
                                     </td>
 
                                     <td data-title="Product">
-                                        <router-link :to="{name:'Product',params:{slug:cr.slug}}" class="text-gray-90">{{cr.name}}</router-link>
+                                        <router-link :to="{name:'Product',params:{slug:cr.slug}}" class="text-gray-90"><span :style="[cr.quantity === 0 ? 'text-decoration:line-through;text-decoration-color:red;' : '']">{{cr.name}}</span><span v-if="cr.quantity === 0" style="color:red;margin-left:20px;">{{store.state.user.language.availability.replace('{x}',0)}}</span></router-link>
                                     </td>
 
                                     <td data-title="Price">
@@ -43,13 +43,13 @@
                                         <div class="border rounded-pill py-1 width-122 w-xl-80 px-3 border-color-1">
                                             <div class="js-quantity row align-items-center">
                                                 <div class="col">
-                                                    <input class="js-result form-control h-auto border-0 rounded p-0 shadow-none" type="text" :value="cr.pivot.quantity">
+                                                    <input readonly class="js-result form-control h-auto border-0 rounded p-0 shadow-none" type="text" :value="cr.pivot.quantity">
                                                 </div>
                                                 <div class="col-auto pr-1">
-                                                    <a v-if="cr.pivot.quantity != 1" @click.prevent="changeQuantity(cr.id,cr.quantity,cr.pivot.quantity,2)" class="js-minus btn btn-icon btn-xs btn-outline-secondary rounded-circle border-0" href="javascript:;">
+                                                    <a v-if="cr.pivot.quantity != 1 && cr.pivot.quantity != 0" @click.prevent="changeQuantity(cr.id,cr.quantity,cr.pivot.quantity,2)" class="js-minus btn btn-icon btn-xs btn-outline-secondary rounded-circle border-0" href="javascript:;">
                                                         <small class="bi bi-dash btn-icon__inner"></small>
                                                     </a>
-                                                    <a v-if="cr.pivot.quantity != cr.quantity" @click.prevent="changeQuantity(cr.id,cr.quantity,cr.pivot.quantity,1)" class="js-plus btn btn-icon btn-xs btn-outline-secondary rounded-circle border-0" href="javascript:;">
+                                                    <a v-if="cr.pivot.quantity != cr.quantity && cr.pivot.quantity <= cr.quantity" @click.prevent="changeQuantity(cr.id,cr.quantity,cr.pivot.quantity,1)" class="js-plus btn btn-icon btn-xs btn-outline-secondary rounded-circle border-0" href="javascript:;">
                                                         <small class="bi bi-plus btn-icon__inner"></small>
                                                     </a>
                                                 </div>
@@ -91,38 +91,57 @@ const formData = reactive({
     id:null,
     quantity:null,
     increase:false,
-    decrase:false
+    decrase:false,
+    fix:false
 })
 onMounted(()=>{
     document.title = store.state.user.language.carto.title
     if(store.state.user.isLoggedIn){
         products.value = store.state.user.data.cart
+        products.value.forEach(item => {
+            if(item.quantity < item.pivot.quantity){
+                changeQuantity(item.id,item.quantity,item.quantity,3)
+            }
+            if(item.quantity === 0){
+                removeWish(item.id)
+            }
+        });
         setPrName()
     }
 })
 watch(()=>store.state.user.data,()=>{
-    products.value = store.state.user.data.cart
-    setPrName()
-})
-watch(()=>store.state.user.language,()=>{
-    document.title = store.state.user.language.carto.title
-    if(products.value){
+    if(store.state.user.isLoggedIn){
+        products.value = store.state.user.data.cart
+        products.value.forEach(item => {
+            if(item.quantity < item.pivot.quantity){
+                changeQuantity(item.id,item.quantity,item.quantity,3)
+            }
+            if(item.quantity === 0){
+                removeWish(item.id)
+            }
+        });
         setPrName()
     }
 })
+watch(()=>store.state.user.language,()=>{
+    document.title = store.state.user.language.carto.title
+        setPrName()
+})
 const setPrName = () =>{
-    if (localStorage.getItem('lang') === 'az'){
-        products.value.forEach(item => {
-            item.name = item.translations[0].name
-        });
-    }else if (localStorage.getItem('lang') === 'en'){
-        products.value.forEach(item => {
-            item.name = item.translations[1].name
-        });
-    }else if (localStorage.getItem('lang') === 'ru'){
-        products.value.forEach(item => {
-            item.name = item.translations[2].name
-        });
+    if(products.value){
+        if (localStorage.getItem('lang') === 'az'){
+            products.value.forEach(item => {
+                item.name = item.translations[0].name
+            });
+        }else if (localStorage.getItem('lang') === 'en'){
+            products.value.forEach(item => {
+                item.name = item.translations[1].name
+            });
+        }else if (localStorage.getItem('lang') === 'ru'){
+            products.value.forEach(item => {
+                item.name = item.translations[2].name
+            });
+        }
     }
 }
 const changeQuantity = (id,cquantity,quantity,n) => {
@@ -135,12 +154,18 @@ const changeQuantity = (id,cquantity,quantity,n) => {
         }
         formData.increase = true
         formData.decrase = false
+        formData.fix = false
     }else if(n === 2){
         if(quantity === 1){
             return
         }
         formData.increase = false
         formData.decrase = true
+        formData.fix = false
+    }else if(n === 3){
+        formData.increase = false
+        formData.decrase = false
+        formData.fix = true
     }
     store.dispatch('changeQuantity',formData).then(()=>{
         ploading.value = false
@@ -168,5 +193,8 @@ const getPrice = (pr) => {
     background-color:white;
     opacity:50%;
     z-index:999999;
+}
+input[readonly] {
+    background-color: inherit;
 }
 </style>

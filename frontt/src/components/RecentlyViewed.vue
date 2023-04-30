@@ -82,12 +82,10 @@
     store.dispatch('recentlyViewed').then(()=>{
         products.value = store.state.prs.recentlyviewed
         setPrName()
-        setCat()
     })
   })
   watch(()=>store.state.user.language,()=>{
         if(products.value){
-            setCat()
             setPrName()
         }
   })
@@ -95,32 +93,20 @@ const setPrName = () =>{
         if (localStorage.getItem('lang') === 'az'){
             products.value.forEach(item => {
                 item.name = item.translations[0].name
+                item.category.name = item.category.translations[0].name
             });
         }else if (localStorage.getItem('lang') === 'en'){
             products.value.forEach(item => {
                 item.name = item.translations[1].name
+                item.category.name = item.category.translations[1].name
             });
         }else if (localStorage.getItem('lang') === 'ru'){
             products.value.forEach(item => {
                 item.name = item.translations[2].name
+                item.category.name = item.category.translations[2].name
             });
         }
 }
-  const setCat = () => {
-    if (localStorage.getItem('lang') === 'az'){
-        products.value.forEach(item => {
-            item.category.name = item.category.translations[0].name
-        });
-    }else if (localStorage.getItem('lang') === 'en'){
-        products.value.forEach(item => {
-            item.category.name = item.category.translations[1].name
-        });
-    }else if (localStorage.getItem('lang') === 'ru'){
-        products.value.forEach(item => {
-            item.category.name = item.category.translations[2].name
-        });
-    }
-  }
   const addWish = (id) => {
     pLoading.value = id
     store.dispatch('addWish',id).then(()=>{

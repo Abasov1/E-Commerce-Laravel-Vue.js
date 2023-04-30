@@ -11,7 +11,7 @@
                                 </div>
                             </div>
 
-                            <div style="position:relative; display:flex; justify-content:space-between; align-items:center; margin-right:1rem;">
+                            <div style="position:relative;margin-top:10px; display:flex; align-items:center; margin-right:1rem;" :style="product.images.length < 5 ? 'justify-content:center;' : 'justify-content:space-between;'">
                                 <a @click.prevent="activePage--" v-if="activePage != 0" href="#">
                                     <i class="bi bi-chevron-left" style="font-size: 1rem;"></i>
                                 </a>
@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="mb-2">
                                     <ul class="font-size-14 pl-3 ml-1 text-gray-110">
-                                        <li v-for="inf in informations.body.slice(0,4)" :key="inf.id">{{inf.body}}</li>
+                                        <li v-for="inf in information.slice(0,4)" :key="inf.id">{{inf.body}}</li>
                                     </ul>
                                 </div>
                                 <p>
@@ -64,7 +64,7 @@
                             <div :class="[pLoading ? 'ploading' : '']"></div>
                             <div class="mb-2">
                                 <div class="card p-5 border-width-2 border-color-1 borders-radius-17">
-                                    <div class="text-gray-9 font-size-14 pb-2 border-color-1 border-bottom mb-3"><span class="text-green font-weight-bold">{{stock}}</span></div>
+                                    <div class="text-gray-9 font-size-14 pb-2 border-color-1 border-bottom mb-3"><span class="font-weight-bold" :style="[product.quantity === 0 ? 'color:red' : 'color:green']">{{stock}}</span></div>
                                     <div class="mb-3">
                                         <div class="font-size-36" v-text="getPrice(product.price)"></div>
                                     </div>
@@ -76,7 +76,7 @@
                                         <a @click.prevent="dejj" href="#" class="btn btn-block btn-dark"><i class="bi bi-heart mr-2 font-size-15"></i>{{store.state.user.language.wishlist}}</a>
                                     </div>
                                     <div v-if="store.state.user.isLoggedIn" class="mb-2 pb-0dot5">
-                                        <a @click.prevent="addCart(product.id)" href="#" class="btn btn-block btn-primary-dark" :style="[store.state.user.data.cart.some(item => item.id === product.id) ? 'background-color:green' : '']"><span v-if="store.state.user.data.cart.some(item => item.id === product.id)" ><i class="bi bi-cart-check-fill mr-1 font-size-15" style="color:white;"></i>{{store.state.user.language.already_in_cart}}</span><span v-else><i class="bi bi-cart mr-1 font-size-15"></i> {{store.state.user.language.add_cart}}</span></a>
+                                        <a @click.prevent="addCart(product.id)"  href="#" class="btn btn-block " :class="[product.quantity === 0 ? 'disabledCart' : 'btn-primary-dark']" :style="[store.state.user.data.cart.some(item => item.id === product.id) ? 'background-color:green' : '']"><span v-if="store.state.user.data.cart.some(item => item.id === product.id)" ><i class="bi bi-cart-check-fill mr-1 font-size-15" style="color:white;"></i>{{store.state.user.language.already_in_cart}}</span><span v-else><i class="bi bi-cart mr-1 font-size-15"></i> {{store.state.user.language.add_cart}}</span></a>
                                     </div>
                                     <div v-if="store.state.user.isLoggedIn" class="mb-3">
                                         <a @click.prevent="addWish(product.id)" href="#" class="btn btn-block btn-dark" :style="[store.state.user.data.wishlist.some(item => item.id === product.id) ? 'background-color:crimson' : '']"><i v-if="store.state.user.data.wishlist.some(item => item.id === product.id)" class="bi bi-heart-fill mr-1 font-size-15" style="color:white;"></i><i v-else class="bi bi-heart mr-1 font-size-15"></i>{{store.state.user.language.wishlist}}</a>
@@ -104,12 +104,12 @@
                             <div class="tab-pane fade active show" id="Jpills-three-example1" role="tabpanel" aria-labelledby="Jpills-three-example1-tab">
                                 <div class="mx-md-5 pt-1">
                                     <div class="table-responsive" style="overflow:hidden;">
-                                        <div class="row" style="overflow:hidden;">
+                                        <div v-if="information" v-for="tit in information" :key="tit.id" class="row" style="overflow:hidden;">
                                             <div class="col-6">
-                                                <h6 v-for="tit in informations.title" :key="tit.id">{{tit.title}}</h6>
+                                                <h6 >{{tit.title.title}}</h6>
                                             </div>
                                             <div class="col-6">
-                                                <h6 v-for="tit in informations.body" :key="tit.id">{{tit.body}}</h6>
+                                                <h6>{{tit.body}}</h6>
                                             </div>
                                         </div>
                                         <b style="cursor:pointer;" @click="showMore" v-if="!showingMore">{{store.state.user.language.show_all}}</b>
@@ -293,6 +293,7 @@
                                             <small :class="[rew.star < 4 ? 'bi bi-star text-muted' : 'bi bi-star-fill']"></small>
                                             <small :class="[rew.star < 5 ? 'bi bi-star text-muted' : 'bi bi-star-fill']"></small>
                                             <span v-if="rew.isBought" style="color:green;font-size:11px;"> - Bought this product</span>
+                                            <span v-if="store.state.user.data.role === 'admin' || store.state.user.data.role === 'moderator'" @click="deleteAsMod(rew.id)" style="color:red;font-size:11px;cursor:pointer;"> - Delete as {{store.state.user.data.role}}</span>
                                         </div>
                                     </div>
                                     <!-- End Review Rating -->
@@ -313,6 +314,9 @@
                     <!-- End Tab Content -->
                 </div>
             </div>
+            <div v-if="!product && relatablyNoProduct" style="display:flex;width:100%;justify-content:center;align-items:center;padding:30px 0px;">
+                <h1>{{store.state.user.language.search_bar.no_result}}</h1>
+            </div>
         </main>
 </template>
 <script setup>
@@ -326,10 +330,9 @@ const reviewLoading = ref(true)
 const revProccess = ref(false)
 const activeImage = ref(0)
 const activePage = ref(0)
-const informations = reactive({
-    title:null,
-    body:null
-})
+const noProduct = ref(false)
+const relatablyNoProduct = ref(false)
+const information = ref(false)
 const showingMore = ref(false)
 const pLoading = ref(false)
 const stock = ref(false)
@@ -362,19 +365,25 @@ watch(()=>formData.star,()=>{
 })
 onMounted(()=>{
     document.title = store.state.user.language.loading
+    loadProduct()
+})
+const loadProduct = () => {
     store.dispatch('loadproduct',props.slug).then(()=>{
-        product.value = store.state.prs.product[0]
+        product.value = store.state.prs.product
+        if(store.state.prs.product.length === 0){
+            document.title = store.state.user.language.search_bar.no_result
+            relatablyNoProduct.value = true
+            return
+        }
+        setCat()
         formData.product_id = product.value.id
         kartof.id = product.value.id
-        setCat()
-        informations.title = store.state.prs.product[1].slice(0,4)
-        informations.body = store.state.prs.product[0].infbody.slice(0,4)
-        setTitle()
-        setBody()
+        information.value = product.value.infbody.slice(0,4)
+        setInf()
         stock.value =  store.state.user.language.availability.replace('{x}',product.value.quantity)
         loadReview(product.value.id)
     })
-})
+}
 const addReview = () => {
     if(store.state.user.isLoggedIn){
         if(formData.body != ''){
@@ -383,10 +392,6 @@ const addReview = () => {
                 store.dispatch('addReview',formData).then(()=>{
                     product.value = store.state.prs.product[0]
                     setCat()
-                    informations.title = store.state.prs.product[1].slice(0,4)
-                    informations.body = store.state.prs.product[0].infbody.slice(0,4)
-                    setTitle()
-                    setBody()
                     stock.value =  store.state.user.language.availability.replace('{x}',product.value.quantity)
                     loadReview(product.value.id)
                     revProccess.value = false
@@ -406,10 +411,13 @@ const deleteReview = () =>{
         formData.deleting = true
         revProccess.value = true
         store.dispatch('addReview',formData).then(()=>{
+            revProccess.value = false
             formData.updating = null
             formData.deleting = null
             formData.body = ''
             formData.star = 0
+            bodyR.value = false
+            starR.value = false
             product.value = store.state.prs.product[0]
             setCat()
             informations.title = store.state.prs.product[1].slice(0,4)
@@ -418,9 +426,23 @@ const deleteReview = () =>{
             setBody()
             stock.value =  store.state.user.language.availability.replace('{x}',product.value.quantity)
             loadReview(product.value.id)
-            revProccess.value = false
         })
     }
+}
+const deleteAsMod = (id) => {
+    if(window.confirm('Are you sure')){
+        store.dispatch('deleteReview',id).then(()=>{
+            revProccess.value = false
+            formData.updating = null
+            formData.deleting = null
+            formData.body = ''
+            formData.star = 0
+            bodyR.value = false
+            starR.value = false
+            loadProduct()
+        })
+    }
+    
 }
 watch(()=>store.state.user.isLoggedIn,()=>{
     if(product.value){
@@ -447,73 +469,58 @@ watch(()=>store.state.user.language,()=>{
     if(product.value){
         stock.value =  store.state.user.language.availability.replace('{x}',product.value.quantity)
         setCat()
-        if(informations.title){
-            setTitle()
+        if(information.value){
+            setInf()
         }
-        if(informations.body){
-            setBody()
-        }
+    }
+    if(store.state.prs.product){
+        document.title = store.state.user.language.search_bar.no_result
+        relatablyNoProduct.value = true
     }
 
 })
-const setTitle = () => {
+const setInf = () => {
     if (localStorage.getItem('lang') === 'az'){
-        informations.title.forEach(item => {
-            item.title = item.translations[0].title
-        });
-    }else if (localStorage.getItem('lang') === 'en'){
-        informations.title.forEach(item => {
-            item.title = item.translations[1].title
-        });
-    }else if (localStorage.getItem('lang') === 'ru'){
-        informations.title.forEach(item => {
-            item.title = item.translations[2].title
-        });
-    }
-}
-const setBody = () => {
-    if (localStorage.getItem('lang') === 'az'){
-        informations.body.forEach(item => {
+        information.value.forEach(item => {
             item.body = item.translations[0].body
+            item.title.title = item.title.translations[0].title
         });
     }else if (localStorage.getItem('lang') === 'en'){
-        informations.body.forEach(item => {
+        information.value.forEach(item => {
             item.body = item.translations[1].body
+            item.title.title = item.title.translations[1].title
         });
     }else if (localStorage.getItem('lang') === 'ru'){
-        informations.body.forEach(item => {
+        information.value.forEach(item => {
             item.body = item.translations[2].body
+            item.title.title = item.title.translations[2].title
         });
     }
 }
 const setCat = () => {
-    if (localStorage.getItem('lang') === 'az'){
-        product.value.category.name = product.value.category.translations[0].name
-        product.value.name = product.value.translations[0].name
-        document.title = product.value.name
-    }else if (localStorage.getItem('lang') === 'en'){
-        product.value.category.name = product.value.category.translations[1].name
-        product.value.name = product.value.translations[1].name
-        document.title = product.value.name
-    }else if (localStorage.getItem('lang') === 'ru'){
-        product.value.category.name = product.value.category.translations[2].name
-        product.value.name = product.value.translations[2].name
-        document.title = product.value.name
-    }
+        if (localStorage.getItem('lang') === 'az'){
+            product.value.category.name = product.value.category.translations[0].name
+            product.value.name = product.value.translations[0].name
+            document.title = product.value.name
+        }else if (localStorage.getItem('lang') === 'en'){
+            product.value.category.name = product.value.category.translations[1].name
+            product.value.name = product.value.translations[1].name
+            document.title = product.value.name
+        }else if (localStorage.getItem('lang') === 'ru'){
+            product.value.category.name = product.value.category.translations[2].name
+            product.value.name = product.value.translations[2].name
+            document.title = product.value.name
+        }
 }
 const showMore = () => {
     showingMore.value = true
-    informations.title = store.state.prs.product[1]
-    informations.body = store.state.prs.product[0].infbody
-    setTitle()
-    setBody()
+    information.value = product.value.infbody
+    setInf()
 }
 const showLess = () => {
     showingMore.value = false
-    informations.title = store.state.prs.product[1].slice(0,4)
-    informations.body = store.state.prs.product[0].infbody.slice(0,4)
-    setTitle()
-    setBody()
+    information.value = product.value.infbody.slice(0,4)
+    setInf()
 }
 const addWish = (id) => {
     pLoading.value = id
@@ -525,11 +532,16 @@ const addWish = (id) => {
 }
 const addCart = (id) => {
     pLoading.value = id
-    store.dispatch('addCart',id).then(()=>{
+    if(product.value.quantity === 0){
         pLoading.value = false
-    }).catch((error)=>{
+        return
+    }else{
+        store.dispatch('addCart',id).then(()=>{
         pLoading.value = false
-    })
+        }).catch((error)=>{
+            pLoading.value = false
+        })
+    }
 }
 const dejj = () => {
     setTimeout(function() {
@@ -549,5 +561,7 @@ const getPrice = (pr) => {
     opacity:50%;
     z-index:999999;
 }
-
+.disabledCart {
+    background-color: gray;
+  }
 </style>

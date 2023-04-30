@@ -1,7 +1,8 @@
 <template>
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Forms/</span> Horizontal Layouts</h4>
+        <h4 class="fw-bold py-3 mb-4">Merchants</h4>
         <div class="row">
+            <div v-if="loading" style="position:absolute;z-index:99999;width:100%;height:100%;background-color:white;opacity:50%;"></div>
             <div class="col-xxl">
                 <div class="card mb-4">
                 <div class="card-header d-flex align-items-center justify-content-between">
@@ -9,16 +10,36 @@
                 </div>
                 <div class="card-body">
                     <form @submit.prevent="makeMerchant">
-                        <div v-if="previewUrl" class="row mb-3">
+                        <div v-if="previewUrl && !updatingUrl" class="row mb-3">
                             <label class="col-sm-2 mt-auto mb-auto col-form-label" for="basic-default-name">Preview</label>
                             <div class="col-sm-10">
-                                <img :src="previewUrl">
+                                <img :src="previewUrl" width="300">
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <label for="formFile" class="col-sm-2 col-form-label" >Brand Image</label>
+                        <div v-if="updatingUrl" class="row mb-3">
+                            <label class="col-sm-2 mt-auto mb-auto col-form-label" for="basic-default-name">Preview</label>
                             <div class="col-sm-10">
-                                <input @change="setImage" class="form-control" type="file" id="formFile">
+                                <div class="row d-flex justify-content-center">
+                                    <div class="col-6">
+                                        <img :src="'http://127.0.0.1:8000/api/images/merchants/'+updatingUrl" width="300">
+                                    </div>
+                                    <div class="col-6">
+                                        <img v-if="ultiUrl" :src="ultiUrl" width="300">
+                                    </div>
+                                    <button v-if="ultiUrl" @click="changeImage" type="button" class="btn btn-primary mt-4" style="max-width:100px">Save</button>
+                                    <button v-if="ultiUrl" @click="resetUlti" type="button" class="btn btn-primary mt-4" style="max-width:100px">Reset</button>
+                                </div>
+                                
+                                <div class="d-flex justify-content-center mt-3" style="width:300px">
+                                    <button v-if="!ultiUrl" @click="this.$refs.ultiFile.click()" type="button" class="btn btn-primary">Change</button>
+                                    <input @change="setUltiImage" class="form-control" ref="ultiFile" type="file" id="formFile" style="display:none">
+                                </div>
+                            </div>
+                        </div>
+                        <div v-if="!updatingUrl" class="row mb-3">
+                            <label for="formFile" class="col-sm-2 col-form-label" >Merchant Image <b v-if="v$.image.$error" style="color:rgb(255,62,29)"> - required</b></label>
+                            <div class="col-sm-10">
+                                <input @change="setImage" class="form-control" ref="file" type="file" id="formFile">
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -97,11 +118,10 @@
                                 <div class="d-flex justify-content-start align-items-center user-name">
                                     <div class="avatar-wrapper">
                                         <div class="avatar me-2">
-                                            <span v-if="merchant.image === 'default.png'" class="avatar-initial rounded-circle bg-label-warning">{{merchant.name.charAt(0)}}</span>
-                                            <img v-else :src="'http://127.0.0.1:8000/api/images/'+merchant.image" alt="Avatar" class="rounded-circle">
+                                            <img :src="'http://127.0.0.1:8000/api/images/merchants/'+merchant.image" alt="Avatar" class="rounded-circle">
                                         </div>
                                     </div>
-                                    <div class="d-flex flex-column" style="overflow:hidden;max-width:100px;">
+                                    <div class="d-flex flex-column" style="overflow:hidden;max-width:150px;">
                                         <span class="emp_name text-truncate">{{merchant.name}}</span>
                                     </div>
                                 </div>
@@ -110,7 +130,7 @@
                             <td>{{merchant.date}}</td>
                             <td>
                                 <a @click.prevent="deletE(merchant.id)" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-trash"></i></a>
-                                <a @click.prevent="editE(merchant.id,merchant.name)" href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>
+                                <a @click.prevent="editE(merchant)" href="javascript:;" class="btn btn-sm btn-icon item-edit"><i class="bx bxs-edit"></i></a>
 
                             </td>
                         </tr>
@@ -159,7 +179,13 @@
     const merchants = ref([])
     const pagesCount = ref('')
     const previewUrl = ref('')
+    const updatingUrl = ref(false)
+    const ultiUrl = ref(false)
+    const ultiImg = ref(false)
     const merchantCount = ref('')
+    const loading = ref(false)
+    const file = ref(null)
+    const ultiFile = ref(null)
     const page = reactive({
         page:1,
         search:'',
@@ -175,11 +201,17 @@
     })
     const rules = {
         name:{required},
+        image:{required},
     }
 
     watch(()=>selected.name,()=>{
         if(merchanterror){
             merchanterror.value = ''
+        }
+    })
+    watch(()=>selected.image,()=>{
+        if(!selected.image){
+            previewUrl.value = false
         }
     })
 
@@ -197,27 +229,75 @@
         };
         reader.readAsDataURL(selected.image);
     }
+    const setUltiImage = (event) => {
+        ultiImg.value = event.target.files[0]
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            ultiUrl.value = e.target.result;
+        };
+        reader.readAsDataURL(ultiImg.value);
+    }
+    const changeImage = async() => {
+        const formData = new FormData()
+        formData.append("image",ultiImg.value)
+        formData.append("merchant_id",selected.id)
+        loading.value = true
+        await axios.post('http://127.0.0.1:8000/api/changemerchantimage',formData,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response)=>{
+                loading.value = false
+                resetUlti()
+                updatingUrl.value = response.data.merchant.image
+                loadMerchants()
+            }).catch(err=>{
+                loading.value = false
+            })
+    }
     const makeMerchant = () => {
-        v$.value.$validate()
+        v$.value.name.$touch()
+        if(!updatingUrl.value){
+            v$.value.image.$touch()
+        }
         if(v$.value.$error){
             return
         }
+        loading.value = true
         const formData = new FormData()
-        formData.append("image",selected.image)
+        if(!updatingUrl.value){
+            formData.append("image",selected.image)
+        }
         formData.append("name",selected.name)
         formData.append("id",selected.id)
         store.dispatch('addmerchant',formData).then(async()=>{
             page.order = false
             await loadMerchants()
+            loading.value = false
         }).catch(err=>{
             merchanterror.value = err.response.data.message
+            loading.value = false
         })
     }
 
     const reset = () => {
         selected.name = ''
+        selected.image = null
         selected.id = ''
+        previewUrl.value = ''
+        if(file.value){
+            file.value.value = ''
+        }
+        updatingUrl.value = false
+        resetUlti()
         v$.value.$reset()
+    }
+    const resetUlti = () => {
+        if(ultiFile.value){
+            ultiFile.value.value = ''
+        }
+        ultiImg.value = false
+        ultiUrl.value = false
     }
     onMounted(async()=>{
         await loadMerchants()
@@ -235,9 +315,11 @@
                 })
         }
     }
-    const editE = (id,name) => {
-        selected.id = id
-        selected.name = name
+    const editE = (merchant) => {
+        selected.id = merchant.id
+        selected.name = merchant.name
+        selected.image = 20
+        updatingUrl.value = merchant.image
         window.location.href = '#'
     }
     const searchMerchants = () => {

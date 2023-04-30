@@ -21,11 +21,14 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'email_verified_at',
         'password',
         'address',
         'city',
         'state',
-        'zip_code'
+        'zip_code',
+        'verification_token',
+        'verification_expire_date'
     ];
     /**
      * The attributes that should be hidden for serialization.
@@ -42,9 +45,6 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
 
     public function wproducts(){
         return $this->belongsToMany(Product::class,'wishlist','user_id','product_id')->with('images');
@@ -62,5 +62,24 @@ class User extends Authenticatable
     public function isBought($id){
         $orids = auth()->user()->orders()->pluck('id')->toArray();
         return DB::table('order_product')->whereIn('order_id',$orids)->where('product_id',$id)->exists();
+    }
+    public function roles(){
+        return $this->belongsToMany(Role::class,'user_role');
+    }
+    public function role(){
+        $base = DB::table('user_role')->where('user_id',$this->id)->first();
+        if($base){
+            $role = Role::where('id',$base->role_id)->first();
+            return $role->name;
+        }else{
+            return 'NULL';
+        }
+        
+    }
+    public function isAdmin(){
+        return $this->role() === 'admin';
+    }
+    public function isModerator(){
+        return $this->role() === 'moderator';
     }
 }

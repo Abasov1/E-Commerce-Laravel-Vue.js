@@ -18,4 +18,7 @@ class ProductInformation extends Model
     public function product(){
         return $this->hasOne(Product::class,'id','product_id');
     }
+    public function title(){
+        return $this->hasOne(Information::class,'id','information_id');
+    }
 }

@@ -7,7 +7,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SendVerificationToken;
 class ApiUserController extends Controller
 {
     public function register(Request $request){
@@ -34,7 +37,89 @@ class ApiUserController extends Controller
             //
         };
         $token = $user->createToken('main')->plainTextToken;
+        $user->role = $user->role();
+        return response([
+            'user' => $user,
+            'token' => $token
+        ]);
+    }
+    public function sendVerification(Request $request){
+        $token = Str::random(8);
+        $dozer = User::where('email',$request->email)->first();
+        if($dozer){
+            if($dozer->role() === 'admin' || $dozer->role() === 'moderator'){
+                return response([
+                    'message' => 1
+                ],422); 
+            }
+            if($dozer->email_verified_at != null){
+                return response([
+                    'message' => 1
+                ],422); 
+            }
+        }
+        $user = User::updateOrCreate(
+            [
+                'email' => $request->email
+            ],
+            [
+                'name' => $request->name,
+                'password' => Hash::make($request->password),
+                'email' => $request->email,
+                'verification_token' => $token,
+                'verification_expire_date' => Carbon::now()->addMinutes(60)
+            ]);
+        Mail::to($user->email)->send(new SendVerificationToken($token));
+    }
+    public function verificate(Request $request){
+        $user = User::where('email',$request->email)->first();
+        if($user->verification_expire_date < now()){
+            $user->update([
+                'verification_token' => null
+            ]);
+            return response([
+                'message' => 2
+            ],422);
+        }
+        if($request->v_token != $user->verification_token){
+            return response([
+                'message' => 1
+            ],422);
+        }
+        $user->update([
+            'verification_token' => null,
+            'email_verified_at' => Carbon::now(),
+            'verification_expire_date' => null
+        ]);
+        if(!Auth::attempt(['email'=>$user->email,'password'=>$user->password],$request->remember)){
+            //
+        };
+        $token = $user->createToken('main')->plainTextToken;
+        $user->role = $user->role();
+        $user->wishlist = $user->wproducts()->get();
+        $user->cart = $user->cproducts()->get();
+        return response([
+            'user' => $user,
+            'token' => $token
+        ]);
+    }
 
+    public function forgotpassword(Request $request){
+        $user = User::where('email',$request->email)->first();
+        $token = Str::random(8);
+        $user->update([
+            'verification_token' => $token,
+            'verification_expire_date' => Carbon::now()->addMinutes(60)
+        ]);
+        Mail::to($user->email)->send(new SendVerificationToken($token));
+    }
+    public function setNew(Request $request){
+        $user = User::where('email',$request->email)->first();
+        $user->update([
+            'password'=>Hash::make($request->new_password)
+        ]);
+        $token = $user->createToken('main')->plainTextToken;
+        $user->role = $user->role();
         return response([
             'user' => $user,
             'token' => $token
@@ -47,14 +132,48 @@ class ApiUserController extends Controller
         ],[
             'email.exists' => 'This email was never logged in'
         ]);
-
+        $dozer = User::where('email',$request->email)->first();
+        if($dozer->email_verified_at === null && $dozer->role() != 'admin' && $dozer->role() != 'moderator'){
+            return response([
+                'message' => 'This email does not exists'
+            ],422);
+        }
         if(!Auth::attempt($request->only('email','password'),$request->remember)){
             return response([
-                'error' => 'Password is wrong'
+                'message' => 'Password is wrong'
             ],422);
         };
         $user = Auth::user();
         $token = $user->createToken('main')->plainTextToken;
+        $user->role = $user->role();
+        $user->wishlist = $user->wproducts()->get();
+        $user->cart = $user->cproducts()->get();
+        return response([
+            'user'=> $user,
+            'token' => $token
+        ]);
+    }
+    public function admin_login(Request $request){
+        $validated = $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required'
+        ],[
+            'email.exists' => 'This email does not exists'
+        ]);
+        $dozer = User::where('email',$request->email)->first();
+        if($dozer->role() != 'admin' && $dozer->role() != 'moderator'){
+            return response([
+                'message' =>  2 //'You have no permission to log in'
+            ],422);
+        }
+        if(!Auth::attempt($request->only('email','password'),$request->remember)){
+            return response([
+                'message' => 3 //'Password is wrong'
+            ],422);
+        };
+        $user = Auth::user();
+        $token = $user->createToken('main')->plainTextToken;
+        $user->role = $user->role();
         return response([
             'user'=> $user,
             'token' => $token
@@ -69,23 +188,23 @@ class ApiUserController extends Controller
     }
     public function yoxla(){
         $user = Auth::user();
+        $user->role = $user->role();
         if($user){
-            if($user->is_admin){
+            if($user->role() === 'admin' || $user->role() === 'moderator'){
                 return response ([
                     'user' => $user,
                     'auth' => true,
                     'admin' => true
                 ]);
             }
+            return response([
+                'message' => 'Unauthanticated.'
+            ],422);
         }
-        return response([
-            'user' => $user,
-            'auth' => true,
-            'admin' => false
-        ]);
     }
     public function fryoxla(){
         $user = Auth::user();
+        $user->role = $user->role();
         $user->wishlist = $user->wproducts()->get();
         $user->cart = $user->cproducts()->get();
         return response([

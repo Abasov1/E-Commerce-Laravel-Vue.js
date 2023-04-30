@@ -25,4 +25,7 @@ class Category extends Model
     public function products(){
         return $this->hasMany(Product::class);
     }
+    public function blocophobia(){
+        return $this->hasOne(Category::class,'id','category_id');
+    }
 }

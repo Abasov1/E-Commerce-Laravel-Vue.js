@@ -17,4 +17,7 @@ class Information extends Model
     public function category(){
         return $this->hasOne(Category::class,'id','category_id');
     }
+    public function bodies(){
+        return $this->hasMany(ProductInformation::class);
+    }
 }

@@ -1,6 +1,6 @@
 <template>
     <main id="content" role="main">
-        <div v-if="show" class="mb-6 bg-gray-7 py-6">
+        <div v-if="show && !noResult" class="mb-6 bg-gray-7 py-6">
             <div class="container">
                 <router-link :to="{name:'Categories'}" class="my-link text-black">{{store.state.user.language.categories}} </router-link> >
                 <router-link :to="{name:'Category',params:{slug:categories[0].parent2.slug}}" class="my-link text-black">{{categories[0].parent2.name}}</router-link> > {{categories[0].parent.name}}
@@ -25,7 +25,10 @@
                 </div>
             </div>
         </div>
-        <Filter v-if="show || dow" :catid="categories[0].parent.id" />
+        <Filter v-if="(show || dow) && !noResult" :catid="categories[0].parent.id" />
+        <div v-if="noResult" style="display:flex;width:100%;justify-content:center;align-items:center;padding:30px 0px;">
+            <h1>{{store.state.user.language.search_bar.no_result}}</h1>
+        </div>
     </main>
 </template>
 <script setup>
@@ -35,6 +38,7 @@ import Filter from '../components/Filter.vue'
 const show = ref(false)
 const dow = ref(false)
 const categories = ref(false)
+const noResult = ref(false)
 const props = defineProps({
     slug: String,
     parent:String
@@ -43,6 +47,11 @@ onMounted(()=>{
     window.scrollTo(0,0);
     store.dispatch('loadcategory',props.slug).then(()=>{
         categories.value = store.state.category
+        if(!categories.value){
+            document.title = store.state.user.language.search_bar.no_result
+            noResult.value = true
+            return
+        }
         setCategories()
         if(store.state.ctype !== 1){
             show.value = true
@@ -55,6 +64,9 @@ onMounted(()=>{
 watch(()=>store.state.user.language,()=>{
     if(categories.value){
         setCategories()
+    }
+    if(!categories.value && noResult){
+        document.title = store.state.user.language.search_bar.no_result
     }
 })
 const setCategories = () => {

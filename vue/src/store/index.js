@@ -12,7 +12,8 @@ const store = createStore({
         loading: true,
         search:{
             merchant:null
-        }
+        },
+        category:false
     },
     getters:{},
     mutations:{
@@ -32,7 +33,7 @@ const store = createStore({
         loadik(state,data){
             state.user.data = data.user
             state.user.token = localStorage.getItem('TOKEN')
-            if(data.user.is_admin){
+            if(data.user.role === 'admin' || data.user.role === 'moderator'){
                 state.user.admin = true
             }
             state.loading = false
@@ -40,6 +41,9 @@ const store = createStore({
         endload(state){
             localStorage.removeItem('TOKEN');
             state.loading = false
+        },
+        setCategory(state,category){
+            state.category = category
         }
     },
     actions:{
@@ -51,6 +55,12 @@ const store = createStore({
             },
         login: async ({commit},user) => {
                 await axios.post('http://127.0.0.1:8000/api/login',user)
+                .then((response) => {
+                    commit('register',response.data);
+                })
+            },
+        alogin: async ({commit},user) => {
+                await axios.post('http://127.0.0.1:8000/api/alogin',user)
                 .then((response) => {
                     commit('register',response.data);
                 })
@@ -74,7 +84,7 @@ const store = createStore({
                     }
                 }).then((response)=>{
                     commit('loadik',response.data)
-                    router.push({name:'Product'})
+                    router.push({name:'Order'})
                 })
             }catch(error){
                 commit('endload')
@@ -118,7 +128,19 @@ const store = createStore({
                     Authorization: 'Bearer '+localStorage.getItem('TOKEN')
                 }
             }).then((response)=>{
+                commit('setCategory',response.data.category)
                 alert(response.data.message)
+            })
+        },
+        adduser: async({commit},selected) => {
+            await axios.post('http://127.0.0.1:8000/api/adduser',selected,{
+                headers: {
+                    Authorization: 'Bearer '+localStorage.getItem('TOKEN')
+                }
+            }).then((response)=>{
+                alert(response.data.message)
+            }).catch((error)=>{
+                alert(error.response.data.message)
             })
         }
     },

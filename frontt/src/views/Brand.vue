@@ -57,8 +57,8 @@
                     <div class="col-xl-9 col-wd-9gdot5">
                         <!-- Shop-control-bar Title -->
                         <div class="d-block d-md-flex flex-center-between mb-3">
-                            <h3 v-if="brand != null" class="font-size-25 mb-2 mb-md-0">{{replacable}}</h3>
-                            <p class="font-size-14 text-gray-90 mb-0">Showing 1–25 of 56 results</p>
+                            <h3 style="width:600px;overflow:hidden;" v-if="brand != null" class="font-size-25 mb-2 mb-md-0">{{replacable}}</h3>
+                            <p class="font-size-14 text-gray-90 mb-0"></p>
                         </div>
                         <!-- End shop-control-bar Title -->
                         <!-- Shop-control-bar -->
@@ -86,8 +86,6 @@
                                     <option value="2">{{store.state.user.language.filter.oldest}}</option>
                                     <option value="3">{{store.state.user.language.filter.h_first}}</option>
                                     <option value="4">{{store.state.user.language.filter.l_first}}</option>
-                                    <option value="5">A-Z</option>
-                                    <option value="6">Z-A</option>
                                 </select>
                             </div>
 
@@ -98,6 +96,9 @@
                         <div class="tab-content">
                             <div class="tab-pane fade pt-2 show active row">
                                 <div class="row ml-2" style="background-color: rgba(99, 50, 60, 0);">
+                                    <div v-if="noResult || noLength">
+                                        <h4>{{store.state.user.language.search_bar.no_result}}</h4>
+                                    </div>
                                     <Product v-if="products && !store.state.loading" v-for="pr in products" :key="pr.id" :pr="pr" />
                                 </div>
                             </div>
@@ -106,7 +107,7 @@
                         <!-- End Shop Body -->
                         <!-- Shop Pagination -->
                         <nav class="d-md-flex justify-content-between align-items-center border-top pt-3" aria-label="Page navigation example">
-                            <div class="text-center text-md-left mb-3 mb-md-0">Showing 1–25 of 56 results</div>
+                            <div class="text-center text-md-left mb-3 mb-md-0"></div>
                             <ul class="pagination mb-0 pagination-shop justify-content-center justify-content-md-start">
                                 <li @click.prevent="changePage(1)" class="page-item"><a class="page-link" :class="formData.page === 1 ? 'current' : ''" href="#">1</a></li>
                                 <li v-if="formData.page > 2" class="page-item"><a class="page-link" href="#">...</a></li>
@@ -141,6 +142,8 @@ watch(()=>merchantCheckbox.value,()=>{
     formData.page = 1
     loadProducts()
 })
+const noResult = ref(false)
+const brand = ref(false)
 const products = ref([])
 const show = ref(false)
 const showBras = ref(false)
@@ -148,6 +151,7 @@ const showQras = ref(false)
 const sortDropdown = ref(false)
 const perPageDropdown = ref(false)
 const comeBackTop = ref(null)
+const noLength = ref(false)
 const formData = reactive({
     merchants:null,
     category:null,
@@ -168,6 +172,13 @@ onMounted(()=>{
     document.title = store.state.user.language.loading
     replacable.value = store.state.user.language.loading
     store.dispatch('loadbrand',props.slug).then(()=>{
+        if(!store.state.brand){
+            document.title = store.state.user.language.search_bar.no_result
+            replacable.value = store.state.user.language.replacable.replace('{x}',props.slug)
+            noResult.value = true
+            return
+        }
+        brand.value = store.state.brand
         replacable.value = store.state.user.language.replacable.replace('{x}',store.state.brand.name)
         document.title = replacable.value
         formData.brid = store.state.brand.id
@@ -188,6 +199,10 @@ watch(()=>store.state.user.language,()=>{
     if(store.state.brand.name){
         replacable.value = store.state.user.language.replacable.replace('{x}',store.state.brand.name)
         document.title = replacable.value
+    }
+    if(!store.state.brand && noResult){
+        document.title = store.state.user.language.search_bar.no_result
+        replacable.value = store.state.user.language.replacable.replace('{x}',props.slug)
     }
 })
 const setCategory = () =>{
@@ -239,6 +254,11 @@ const changePage = (n) => {
 const loadProducts = () => {
     store.dispatch('loadbrpras',formData).then(()=>{
         products.value = store.state.prs.pras.products
+        if(products.value.length === 0){
+            noLength.value = true
+        }else{
+            noLength.value = false
+        }
         setPrName()
     })
 }
@@ -272,6 +292,5 @@ const noldu = (id) => {
         return true
     }
 }
-const brand = computed(()=>store.state.brand)
 
 </script>

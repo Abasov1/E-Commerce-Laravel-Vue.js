@@ -89,10 +89,7 @@
                   Remember me
                 </label>
               </div>
-            </div>
-            <button type="submit" class="btn btn-primary d-grid w-100">
-              Sign up
-            </button>
+            </div>  
           </form>
 
           <p class="text-center">

@@ -1,6 +1,7 @@
 
 <template>
     <div class="container-xxl">
+    <div :class="loadik ? 'loadik' : ''"></div>
     <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner">
 
@@ -79,34 +80,10 @@
                     </div>
                 </div>
                 <button class="btn btn-primary d-grid w-100">
-                Sign up
+                Sign in
                 </button>
             </form>
 
-            <p class="text-center">
-                <span>Don't have an account?</span>
-                <router-link :to="{name:'Sagol'}">
-                <span>Sign up instead</span>
-                </router-link>
-            </p>
-
-            <div class="divider my-4">
-                <div class="divider-text">or</div>
-            </div>
-
-            <div class="d-flex justify-content-center">
-                <a href="javascript:;" class="btn btn-icon btn-label-facebook me-3">
-                <i class="tf-icons bx bxl-facebook"></i>
-                </a>
-
-                <a href="javascript:;" class="btn btn-icon btn-label-google-plus me-3">
-                <i class="tf-icons bx bxl-google-plus"></i>
-                </a>
-
-                <a href="javascript:;" class="btn btn-icon btn-label-twitter">
-                <i class="tf-icons bx bxl-twitter"></i>
-                </a>
-            </div>
             </div>
         </div>
         <!-- Register Card -->
@@ -126,6 +103,7 @@
     const router = useRouter()
     const responseMsg = ref(false);
     const responseMsg2 = ref(false);
+    const loadik = ref(false);
     const msg = ref('');
     const user = reactive({
         email:'',
@@ -156,19 +134,32 @@
         if(v$.value.$error){
             return
         }
-        store.dispatch('login',user).then(() => {
+        loadik.value = true
+        store.dispatch('alogin',user).then(() => {
             location.reload()
+            loadik.value = false
         }).catch(err=>{
-            if(err.response.data.message){
+            if(err.response.data.message === 2){
+                responseMsg.value = 'You have no permission to continue'
+                responseMsg2.value = false
+            }else if(err.response.data.message === 3){
+                responseMsg2.value = 'Password is wrong'
+            }else{
                 responseMsg.value = err.response.data.message
                 responseMsg2.value = false
-            }else{
-                responseMsg2.value = err.response.data.error
             }
+            loadik.value = false
         })
     }
 </script>
 
 <style scoped>
-
+.loadik{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background-color:white;
+    opacity:0.5;
+    z-index:90;
+}
 </style>

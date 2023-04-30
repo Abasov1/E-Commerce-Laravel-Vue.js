@@ -3,7 +3,7 @@
                 <div class="row mb-8">
                     <div class="d-none d-xl-block col-xl-3 col-wd-2gdot5">
                         <!-- List -->
-                       
+
                         <!-- Filter -->
                         <div class="mb-6">
                             <div class="border-bottom border-color-1 mb-5">
@@ -73,7 +73,7 @@
                         <!-- Shop-control-bar Title -->
                         <div class="d-block d-md-flex flex-center-between mb-3">
                             <h3 class="font-size-25 mb-2 mb-md-0">{{categories[0].parent.name}}</h3>
-                            <p class="font-size-14 text-gray-90 mb-0">Showing 1–25 of 56 results</p>
+                            <p class="font-size-14 text-gray-90 mb-0"></p>
                         </div>
                         <!-- End shop-control-bar Title -->
                         <!-- Shop-control-bar -->
@@ -101,11 +101,9 @@
                                     <option value="2">{{store.state.user.language.filter.oldest}}</option>
                                     <option value="3">{{store.state.user.language.filter.h_first}}</option>
                                     <option value="4">{{store.state.user.language.filter.l_first}}</option>
-                                    <option value="5">A-Z</option>
-                                    <option value="6">Z-A</option>
                                 </select>
                             </div>
-                            
+
                         </div>
                         <!-- End Shop-control-bar -->
                         <!-- Shop Body -->
@@ -113,7 +111,10 @@
                         <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade pt-2 show active" id="pills-one-example1" role="tabpanel" aria-labelledby="pills-one-example1-tab" data-target-group="groups">
                                 <div class="row ml-2" style="background-color: rgba(99, 50, 60, 0);">
-                                    <Product v-if="products && !store.state.loading" v-for="pr in products" :key="pr.id" :pr="pr" />    
+                                    <div v-if="noLength">
+                                        <h4>{{store.state.user.language.search_bar.no_result}}</h4>
+                                    </div>
+                                    <Product v-if="products && !store.state.loading" v-for="pr in products" :key="pr.id" :pr="pr" />
                                 </div>
                             </div>
                         </div>
@@ -121,7 +122,7 @@
                         <!-- End Shop Body -->
                         <!-- Shop Pagination -->
                         <nav class="d-md-flex justify-content-between align-items-center border-top pt-3" aria-label="Page navigation example">
-                            <div class="text-center text-md-left mb-3 mb-md-0">Showing 1–25 of 56 results</div>
+                            <div class="text-center text-md-left mb-3 mb-md-0"></div>
                             <ul class="pagination mb-0 pagination-shop justify-content-center justify-content-md-start">
                                 <li @click.prevent="changePage(1)" class="page-item"><a class="page-link" :class="formData.page === 1 ? 'current' : ''" href="#">1</a></li>
                                 <li v-if="formData.page > 2" class="page-item"><a class="page-link" href="#">...</a></li>
@@ -163,6 +164,7 @@ const showMras = ref(false)
 const showNras = ref(false)
 const sortDropdown = ref(false)
 const perPageDropdown = ref(false)
+const noLength = ref(false)
 const comeBackTop = ref(null)
 const props = defineProps({
     catid:Number,
@@ -193,7 +195,7 @@ onMounted(()=>{
 const showMoreBrands = () => {
         showBras.value = true
         brands.value = store.state.brands.bras
-        showQras.value = true   
+        showQras.value = true
 }
 const showLessBrands = () => {
         showQras.value = false
@@ -203,7 +205,7 @@ const showLessBrands = () => {
 const showMoreMerchants = () => {
         showMras.value = true
         merchants.value = store.state.merchants.mras
-        showNras.value = true   
+        showNras.value = true
 }
 const showLessMerchants = () => {
         showNras.value = false
@@ -220,6 +222,11 @@ const changePage = (n) => {
 const loadProducts = () => {
     store.dispatch('loadpras',formData).then(()=>{
         products.value = store.state.prs.pras.products
+        if(products.value.length === 0){
+            noLength.value = true
+        }else{
+            noLength.value = false
+        }
         setPrName()
     })
 }

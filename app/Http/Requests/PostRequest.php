@@ -27,9 +27,14 @@ class PostRequest extends FormRequest
             'category_id' => 'required',
             'merchant_id' => 'required',
             'brand_id' => 'required',
-            'name' => 'required|unique:products,name',
+            'az_name' => 'required',
+            'en_name' => 'required',
+            'ru_name' => 'required',
             'price' => 'required',
-            'inf' => 'required'
+            'quantity' => 'required',
+            'az_inf' => 'required',
+            'en_inf' => 'required',
+            'ru_inf' => 'required'
         ];
     }
 }

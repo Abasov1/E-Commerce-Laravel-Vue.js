@@ -9,6 +9,9 @@ use App\Models\Category;
 use App\Models\Merchant;
 use App\Models\Review;
 use App\Models\Product;
+use App\Models\Slider;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ExampleMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -18,33 +21,40 @@ class FrontController extends Controller
 {
     public function loadcategory($slug){
         $category = Category::where('slug',$slug)->first();
-        $categories = Category::with('subcategories.subcategories')->where('category_id',$category->id)->get();
-        if(Category::where('id',$category->category_id)->exists()){
-            $category->parent = Category::where('id',$category->category_id)->first();
-            if(Category::where('id',$category->parent->category_id)->exists()){
-                    $category->parent2 = Category::where('id',$category->parent->category_id)->first();
+        if($category){
+            $categories = Category::with('subcategories.subcategories')->where('category_id',$category->id)->get();
+            if(Category::where('id',$category->category_id)->exists()){
+                $category->parent = Category::where('id',$category->category_id)->first();
+                if(Category::where('id',$category->parent->category_id)->exists()){
+                        $category->parent2 = Category::where('id',$category->parent->category_id)->first();
+                        $category->parent = Category::where('slug',$slug)->first();
+                        return response([
+                            'categories' => [$category]
+                        ]);
+                }elseif(!Category::where('category_id',$category->id)->exists()){
                     $category->parent = Category::where('slug',$slug)->first();
                     return response([
-                        'categories' => [$category]
+                        'categories' => [$category],
+                        'type' => 1,
                     ]);
-            }elseif(!Category::where('category_id',$category->id)->exists()){
-                $category->parent = Category::where('slug',$slug)->first();
-                return response([
-                    'categories' => [$category],
-                    'type' => 1,
-                ]);
+                }
             }
-        }
-        foreach($categories as $cr){
-            $cr->parent = Category::where('id',$cr->category_id)->first();
-            if(Category::where('id',$cr->parent->category_id)->exists()){
-                $cr->parent2 = Category::where('id',$cr->parent->category_id)->first();
+            foreach($categories as $cr){
+                $cr->parent = Category::where('id',$cr->category_id)->first();
+                if(Category::where('id',$cr->parent->category_id)->exists()){
+                    $cr->parent2 = Category::where('id',$cr->parent->category_id)->first();
+                }
             }
-        }
             return response([
                 'categories' =>$categories,
                 'type' => 2
             ]);
+        }else{
+            return response([
+                'categories'=>false,
+                'type'=>false
+            ]);
+        }
     }
     public function loadcategories(){
         $categories = Category::with('subcategories.subcategories')->whereNull('category_id')->get();
@@ -72,44 +82,49 @@ class FrontController extends Controller
         ]);
     }
     public function loadpr($slug){
-        $product = Product::with(['merchant','brand','category','infbody','images','reviews.user'])->where('slug',$slug)->first();
-        $titles = $product->inftitle();
-        $product->revcount = Review::where('product_id',$product->id)->get()->count();
-        $product->fivestar = Review::where(['product_id'=>$product->id,'star'=>5])->count();
-        if($product->fivestar != 0){
-            $product->fivepercent = $product->fivestar * 100 / $product->revcount;
+        $product = Product::with(['merchant','brand','category','infbody.title','images','reviews.user'])->where('slug',$slug)->first();
+        if($product){
+            $titles = $product->inftitle();
+            $product->revcount = Review::where('product_id',$product->id)->get()->count();
+            $product->fivestar = Review::where(['product_id'=>$product->id,'star'=>5])->count();
+            if($product->fivestar != 0){
+                $product->fivepercent = $product->fivestar * 100 / $product->revcount;
+            }else{
+                $product->fivepercent = 0;
+            }
+            $product->fourstar = Review::where(['product_id'=>$product->id,'star'=>4])->count();
+            if($product->fourstar != 0){
+                $product->fourpercent = $product->fourstar * 100 / $product->revcount;
+            }else{
+                $product->fourpercent = 0;
+            }
+            $product->threestar = Review::where(['product_id'=>$product->id,'star'=>3])->count();
+            if($product->threestar != 0){
+                $product->threepercent = $product->threestar * 100 / $product->revcount;
+            }else{
+                $product->threepercent = 0;
+            }
+            $product->twostar = Review::where(['product_id'=>$product->id,'star'=>2])->count();
+            if($product->twostar != 0){
+                $product->twopercent = $product->twostar * 100 / $product->revcount;
+            }else{
+                $product->twopercent = 0;
+            }
+            $product->joestar = Review::where(['product_id'=>$product->id,'star'=>1])->count();
+            if($product->joestar != 0){
+                $product->joepercent = $product->joestar * 100 / $product->revcount;
+            }else{
+                $product->joepercent = 0;
+            }
+            foreach($product->reviews as $rew){
+                $rew->date = Carbon::parse($rew->created_at)->format('j F Y');
+            }
         }else{
-            $product->fivepercent = 0;
-        }
-        $product->fourstar = Review::where(['product_id'=>$product->id,'star'=>4])->count();
-        if($product->fourstar != 0){
-            $product->fourpercent = $product->fourstar * 100 / $product->revcount;
-        }else{
-            $product->fourpercent = 0;
-        }
-        $product->threestar = Review::where(['product_id'=>$product->id,'star'=>3])->count();
-        if($product->threestar != 0){
-            $product->threepercent = $product->threestar * 100 / $product->revcount;
-        }else{
-            $product->threepercent = 0;
-        }
-        $product->twostar = Review::where(['product_id'=>$product->id,'star'=>2])->count();
-        if($product->twostar != 0){
-            $product->twopercent = $product->twostar * 100 / $product->revcount;
-        }else{
-            $product->twopercent = 0;
-        }
-        $product->joestar = Review::where(['product_id'=>$product->id,'star'=>1])->count();
-        if($product->joestar != 0){
-            $product->joepercent = $product->joestar * 100 / $product->revcount;
-        }else{
-            $product->joepercent = 0;
-        }
-        foreach($product->reviews as $rew){
-            $rew->date = Carbon::parse($rew->created_at)->format('j F Y');
+            $product = false;
+            $titles = false;
         }
         return response([
-            'product' => [$product,$titles],
+            'product' => $product,
         ]);
     }
     public function loadpras(Request $request){
@@ -582,27 +597,34 @@ class FrontController extends Controller
     }
     public function loadbrand($slug){
         $brand = Brand::where('slug',$slug)->first();
-        $catids = Product::where('brand_id',$brand->id)->pluck('category_id')->toArray();
-        $mrids = Product::where('brand_id',$brand->id)->pluck('merchant_id')->toArray();
-        $categories = Category::whereIn('id',$catids)->get();
-        $parents = [];
-        foreach($categories as $cr){
-            if(Category::where('id',$cr->category_id)->exists()){
-                $cr->parent = Category::with('subcategories.subcategories')->where('id',$cr->category_id)->first();
-                if(!in_array($cr->parent,$parents)){
-                    array_push($parents,$cr->parent);
-                }
-                if(Category::where('id',$cr->parent->category_id)->exists()){
-                    $cr->parent2 = Category::with('subcategories.subcategories')->where('id',$cr->parent->category_id)->first();
-                    $cr->type = 3;
+        if($brand){
+            $catids = Product::where('brand_id',$brand->id)->pluck('category_id')->toArray();
+            $mrids = Product::where('brand_id',$brand->id)->pluck('merchant_id')->toArray();
+            $categories = Category::whereIn('id',$catids)->get();
+            $parents = [];
+            foreach($categories as $cr){
+                if(Category::where('id',$cr->category_id)->exists()){
+                    $cr->parent = Category::with('subcategories.subcategories')->where('id',$cr->category_id)->first();
+                    if(!in_array($cr->parent,$parents)){
+                        array_push($parents,$cr->parent);
+                    }
+                    if(Category::where('id',$cr->parent->category_id)->exists()){
+                        $cr->parent2 = Category::with('subcategories.subcategories')->where('id',$cr->parent->category_id)->first();
+                        $cr->type = 3;
+                    }else{
+                        $cr->type = 2;
+                    }
                 }else{
-                    $cr->type = 2;
+                    $cr->type = 1;
                 }
-            }else{
-                $cr->type = 1;
             }
+            $merchants = Merchant::whereIn('id',$mrids)->get();
+        }else{
+            $brand = false;
+            $merchants = false;
+            $parents = false;
+            $catids = false;
         }
-        $merchants = Merchant::whereIn('id',$mrids)->get();
         return response([
             'brand'=>$brand,
             'merchants'=>$merchants,
@@ -630,27 +652,34 @@ class FrontController extends Controller
     }
     public function loadmerchant($slug){
         $merchant = Merchant::where('slug',$slug)->first();
-        $catids = Product::where('merchant_id',$merchant->id)->pluck('category_id')->toArray();
-        $brids = Product::where('merchant_id',$merchant->id)->pluck('brand_id')->toArray();
-        $categories = Category::whereIn('id',$catids)->get();
-        $parents = [];
-        foreach($categories as $cr){
-            if(Category::where('id',$cr->category_id)->exists()){
-                $cr->parent = Category::with('subcategories.subcategories')->where('id',$cr->category_id)->first();
-                if(!in_array($cr->parent,$parents)){
-                    array_push($parents,$cr->parent);
-                }
-                if(Category::where('id',$cr->parent->category_id)->exists()){
-                    $cr->parent2 = Category::with('subcategories.subcategories')->where('id',$cr->parent->category_id)->first();
-                    $cr->type = 3;
+        if($merchant){
+            $catids = Product::where('merchant_id',$merchant->id)->pluck('category_id')->toArray();
+            $brids = Product::where('merchant_id',$merchant->id)->pluck('brand_id')->toArray();
+            $categories = Category::whereIn('id',$catids)->get();
+            $parents = [];
+            foreach($categories as $cr){
+                if(Category::where('id',$cr->category_id)->exists()){
+                    $cr->parent = Category::with('subcategories.subcategories')->where('id',$cr->category_id)->first();
+                    if(!in_array($cr->parent,$parents)){
+                        array_push($parents,$cr->parent);
+                    }
+                    if(Category::where('id',$cr->parent->category_id)->exists()){
+                        $cr->parent2 = Category::with('subcategories.subcategories')->where('id',$cr->parent->category_id)->first();
+                        $cr->type = 3;
+                    }else{
+                        $cr->type = 2;
+                    }
                 }else{
-                    $cr->type = 2;
+                    $cr->type = 1;
                 }
-            }else{
-                $cr->type = 1;
             }
+            $brands = Brand::whereIn('id',$brids)->get();
+        }else{
+            $merchant = false;
+            $parents = false;
+            $catids = false;
+            $brands = false;
         }
-        $brands = Brand::whereIn('id',$brids)->get();
         return response([
             'merchant'=>$merchant,
             'categories'=>[$parents,$catids],
@@ -676,6 +705,9 @@ class FrontController extends Controller
             'merchants' => $merchants
         ]);
     }
+    public function loadslider(){
+        return Slider::all();
+    }
     public function addwish($id){
         $user = Auth::user();
         $product = Product::where('id',$id)->first();
@@ -696,7 +728,11 @@ class FrontController extends Controller
         if($user->cproducts->contains('id',$id)){
             $user->cproducts()->detach($product->id);
         }else{
-            $user->cproducts()->attach($product->id,['quantity'=>1]);
+            if($product->quantity === 0){
+                $user->cproducts()->attach($product->id,['quantity'=>0]);
+            }else{
+                $user->cproducts()->attach($product->id,['quantity'=>1]);
+            }
         }
         $user->wishlist = $user->wproducts()->get();
         $user->cart = $user->cproducts()->get();
@@ -706,10 +742,23 @@ class FrontController extends Controller
     }
     public function changequantity(Request $request){
         $user = Auth::user();
-        if($request->increase){
-            $oror = $request->quantity + 1;
-        }elseif($request->decrase){
-            $oror = $request->quantity - 1;
+        $pr = Product::where('id',$request->id)->first();
+        if($request->fix){
+            $oror = $pr->quantity;
+        }else{
+            if($request->increase){
+                if($request->quantity + 1 <= $pr->quantity){
+                    $oror = $request->quantity + 1;
+                }else{
+                    $oror = $request->quantity;
+                }
+            }elseif($request->decrase){
+                if($request->quantity - 1 >= 0){
+                    $oror = $request->quantity - 1;
+                }else{
+                    $oror = $request->quantity;
+                }
+            }
         }
         $user->cproducts()->updateExistingPivot($request->id, ['quantity' => $oror]);
         $user->wishlist = $user->wproducts()->get();
@@ -973,7 +1022,6 @@ class FrontController extends Controller
         return response([
             'product' => [$product,$titles],
         ]);
-
     }
     public function loadreview(Request $request){
         $user = Auth::user();
@@ -988,9 +1036,16 @@ class FrontController extends Controller
             ]);
         }
     }
-
     public function purchase(Request $request){
         $user = auth()->user();
+        foreach(json_decode($request->cart,true) as $item){
+            $pr = Product::where('id',$item['id'])->first();
+            if($pr->quantity < $item['pivot']['quantity']){
+                return response([
+                    'quantity'=> 'We have only '.$pr->quantity.' '.$pr->name.' in stock'
+                ],422);
+            }
+        }
         $user->update([
             'address'=>$request->address,
             'city'=>$request->city,
@@ -1015,6 +1070,9 @@ class FrontController extends Controller
                 $pr->update([
                     'quantity' => $pr->quantity - $item['pivot']['quantity']
                 ]);
+                 DB::table('cart')->where('product_id',$pr->id)->where('quantity','>',$pr->quantity)->update([
+                     'quantity' => $pr->quantity
+                 ]);
             }
             return response([
                 'message'=>'success'
@@ -1025,7 +1083,6 @@ class FrontController extends Controller
             ],422);
         }
     }
-
     public function soldPrs(Request $request){
         $user = auth()->user();
         $orders = $user->orders()->with('products.brand','products.merchant','products.category','products.images')->paginate(5,['*'],'page',$request->page);

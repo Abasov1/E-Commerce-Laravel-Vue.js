@@ -9,33 +9,17 @@ import Layout from '../components/Layout.vue'
 import AuthLayout from '../components/AuthLayout.vue'
 import AdminLayout from '../components/AdminLayout.vue'
 import Testik from '../views/admin/Testik.vue'
-import Product from '../views/admin/Product.vue'
+import NewProduct from '../views/admin/NewProduct.vue'
 import Brand from '../views/admin/Brand.vue'
 import Merchant from '../views/admin/Merchant.vue'
 import Category from '../views/admin/Category.vue'
+import User from '../views/admin/User.vue'
+import Slider from '../views/admin/Slider.vue'
+import Order from '../views/admin/Order.vue'
 import store from '../store/index.js'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/',
-      redirect:'/dashboard',
-      meta:{requiresAuth:true},
-      component: Layout,
-      children:[
-        {
-            path:'/dashboard',
-            name:'Dashboard',
-            component:Dashboard
-        },
-        {
-            path:'/surveys',
-            name:'Surveys',
-            component:Surveys
-        }
-      ]
-
-    },
     {
         path: '/admin',
         name:'Admin',
@@ -61,8 +45,23 @@ const router = createRouter({
           {
             path:'/product',
             name:'Product',
-            component: Product
-        }
+            component: NewProduct
+          },
+          {
+            path:'/user',
+            name:'User',
+            component: User
+          },
+          {
+            path:'/slider',
+            name:'Slider',
+            component: Slider
+          },
+          {
+            path:'/order',
+            name:'Order',
+            component: Order
+          }
         ]
 
     },
@@ -77,11 +76,6 @@ const router = createRouter({
                 path:'/salam',
                 name:'Salam',
                 component: Salam
-            },
-            {
-                path:'/sagol',
-                name:'Sagol',
-                component: Sagol
             }
         ]
     },
@@ -92,8 +86,7 @@ const router = createRouter({
     },
     {
         path:'/:catchAll(.*)',
-        name: 'NotFound',
-        component: NotFound
+        redirect:'/loading'
     }
   ]
 })
@@ -103,7 +96,7 @@ const router = createRouter({
         }else if((to.meta.requiresAuth || to.meta.isAdmin) && !store.state.user.admin && !store.state.user.token){
             next({name:'Salam'})
         }else if((to.meta.requiresAuth || (to.meta.isGuest)) && store.state.user.admin){
-            next({name:'test'})
+            next({name:'Product'})
         }
         else if(((to.meta.isGuest) || to.meta.isAdmin) && !store.state.user.admin && store.state.user.token){
             next({name:'Dashboard'})
