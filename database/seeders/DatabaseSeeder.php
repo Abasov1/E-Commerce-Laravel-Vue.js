@@ -55,7 +55,17 @@ class DatabaseSeeder extends Seeder
             'slug' => 'computers',
             'image' => 'computers.jpg'
         ];
-        Category::create($data2);
+        $computer = Category::create($data2);
+        $computerIds = [];
+        for($i=0;$i <= 15;$i++){
+            $info = Information::create([
+                'category_id' => $computer->id,
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət - Komputerlər'.$i],
+                'en' => ['title' => 'Specification in English - Computers'.$i],
+                'ru' => ['title' => 'Спецификация на русском языке - Компьютеры'.$i],
+            ]);
+            array_push($computerIds,$info->id);
+        }
         $data3 = [
             'category_id' => $computersparent->id,
             'az' => ['name'=>'Notbuklar'],
@@ -64,7 +74,17 @@ class DatabaseSeeder extends Seeder
             'slug' => 'laptops',
             'image' => 'laptops.jpg'
         ];
-        Category::create($data3);
+        $laptop = Category::create($data3);
+        $laptopIds = [];
+        for($i=0;$i <= 15;$i++){
+            $info = Information::create([
+                'category_id' => $laptop->id,
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət - Notbuklar'.$i],
+                'en' => ['title' => 'Specification in English - Laptops'.$i],
+                'ru' => ['title' => 'Спецификация на русском языке - Ноутбуки'.$i],
+            ]);
+            array_push($laptopIds,$info->id);
+        }
         $data4 = [
             'category_id' => $computersparent->id,
             'az' => ['name'=>'Monitorlar'],
@@ -73,7 +93,17 @@ class DatabaseSeeder extends Seeder
             'slug' => 'monitors',
             'image' => 'monitors.jpg'
         ];
-        Category::create($data4);
+        $monitor = Category::create($data4);
+        $monitorIds = [];
+        for($i=0;$i <= 15;$i++){
+            $info = Information::create([
+                'category_id' => $monitor->id,
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət - Monitorlar'.$i],
+                'en' => ['title' => 'Specification in English - Monitors'.$i],
+                'ru' => ['title' => 'Спецификация на русском языке - Мониторы'.$i],
+            ]);
+            array_push($monitorIds,$info->id);
+        }
         $data5 = [
             'category_id' => $computersparent->id,
             'az' => ['name'=>'Siçan və klavişlər'],
@@ -92,6 +122,16 @@ class DatabaseSeeder extends Seeder
             'image' => 'keyboards.jpg'
         ];
         $keyboard = Category::create($data6);
+        $keyboardIds = [];
+        for($i=0;$i <= 15;$i++){
+            $info = Information::create([
+                'category_id' => $keyboard->id,
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət - Klavişlər'.$i],
+                'en' => ['title' => 'Specification in English - Keyboards'.$i],
+                'ru' => ['title' => 'Спецификация на русском языке - Клавиатуры'.$i],
+            ]);
+            array_push($keyboardIds,$info->id);
+        }
         $data7 = [
             'category_id' => $mouseandkeyboards->id,
             'az' => ['name'=>'Siçanlar'],
@@ -101,15 +141,15 @@ class DatabaseSeeder extends Seeder
             'image' => 'mouses.jpg'
         ];
         $mouse = Category::create($data7);
-        $infoIds = [];
+        $mouseIds = [];
         for($i=0;$i <= 15;$i++){
             $info = Information::create([
                 'category_id' => $mouse->id,
-                'az' => ['title' => 'Azərbaycanca xüsusiyyət '.$i],
-                'en' => ['title' => 'Spesification in English '.$i],
-                'ru' => ['title' => 'Спецификация на русском языке '.$i],
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət - Siçanlar'.$i],
+                'en' => ['title' => 'Specification in English - Mouses'.$i],
+                'ru' => ['title' => 'Спецификация на русском языке - Мыши'.$i],
             ]);
-            array_push($infoIds,$info->id);
+            array_push($mouseIds,$info->id);
         }
         $data8 = [
             'category_id' => $mouseandkeyboards->id,
@@ -120,6 +160,16 @@ class DatabaseSeeder extends Seeder
             'image' => 'mousepads.jpg'
         ];
         $mousepad = Category::create($data8);
+        $mousepadIds = [];
+        for($i=0;$i <= 15;$i++){
+            $info = Information::create([
+                'category_id' => $mousepad->id,
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət - Mouse altlıqları'.$i],
+                'en' => ['title' => 'Specification in English - Mousepads'.$i],
+                'ru' => ['title' => 'Спецификация на русском языке - Коврики для мыши'.$i],
+            ]);
+            array_push($mousepadIds,$info->id);
+        }
         $data9 = [
             'az' => ['name'=>'Məişət əşyaları'],
             'en' => ['name'=>'Household appliances'],
@@ -136,7 +186,17 @@ class DatabaseSeeder extends Seeder
             'slug' => 'refrigerators',
             'image' => 'refrigerators.jpg',
         ];
-        Category::create($data10);
+        $refrigerator = Category::create($data10);
+        $refrigeratorIds = [];
+        for($i=0;$i <= 15;$i++){
+            $info = Information::create([
+                'category_id' => $refrigerator->id,
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət - Soyuducular'.$i],
+                'en' => ['title' => 'Specification in English - Refrigerators'.$i],
+                'ru' => ['title' => 'Спецификация на русском языке - Холодильники'.$i],
+            ]);
+            array_push($refrigeratorIds,$info->id);
+        }
         $data11 = [
             'category_id' => $housestuff->id,
             'az' => ['name'=>'Paltaryuyan maşınlar'],
@@ -145,7 +205,17 @@ class DatabaseSeeder extends Seeder
             'slug' => 'washing-machines',
             'image' => 'washingmachines.jpg'
         ];
-        $houseprid = Category::create($data11);
+        $washingmachine = Category::create($data11);
+        $washingmachineIds = [];
+        for($i=0;$i <= 15;$i++){
+            $info = Information::create([
+                'category_id' => $washingmachine->id,
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət - Paltaryuyan maşınlar'.$i],
+                'en' => ['title' => 'Specification in English - Washing machines'.$i],
+                'ru' => ['title' => 'Спецификация на русском языке - Стиральные машины'.$i],
+            ]);
+            array_push($washingmachineIds,$info->id);
+        }
         $data12 = [
             'category_id' => $housestuff->id,
             'az' => ['name'=>'Qurutma maşınları'],
@@ -154,7 +224,17 @@ class DatabaseSeeder extends Seeder
             'slug' => 'drying-machines',
             'image' => 'dryingmachines.jpg',
         ];
-        Category::create($data12);
+        $dryingmachine = Category::create($data12);
+        $dryingmachineIds = [];
+        for($i=0;$i <= 15;$i++){
+            $info = Information::create([
+                'category_id' => $dryingmachine->id,
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət - Qurutma maşınları'.$i],
+                'en' => ['title' => 'Specification in English - Drying machines'.$i],
+                'ru' => ['title' => 'Спецификация на русском языке - Сушильные машины'.$i],
+            ]);
+            array_push($dryingmachineIds,$info->id);
+        }
         $data13 = [
             'category_id' => $housestuff->id,
             'az' => ['name'=>'Qabyuyan maşınlar'],
@@ -163,7 +243,17 @@ class DatabaseSeeder extends Seeder
             'slug' => 'dishwashers',
             'image' => 'dishwashers.jpg',
         ];
-        Category::create($data13);
+        $dishwasher =  Category::create($data13);
+        $dishwasherIds = [];
+        for($i=0;$i <= 15;$i++){
+            $info = Information::create([
+                'category_id' => $dishwasher->id,
+                'az' => ['title' => 'Azərbaycanca xüsusiyyət - Qabyuyan maşınlar'.$i],
+                'en' => ['title' => 'Specification in English - Dishwashers'.$i],
+                'ru' => ['title' => 'Спецификация на русском языке - Посудомоечные машины'.$i],
+            ]);
+            array_push($dishwasherIds,$info->id);
+        }
         $user = User::create([
             'name' => 'admin',
             'email' => 'admin@gmail.com',
@@ -225,34 +315,74 @@ class DatabaseSeeder extends Seeder
                 'image'=>'keyboard.jpg',
                 'id'=>$keyboard->id,
                 'brid'=>$br1->id,
-                'mrid'=>$mr1->id
+                'mrid'=>$mr1->id,
+                'ids'=>$keyboardIds
             ],
             [
                 'image'=>'mouse.jpg',
                 'id'=>$mouse->id,
                 'brid'=>$br2->id,
-                'mrid'=>$mr2->id
+                'mrid'=>$mr2->id,
+                'ids'=>$mouseIds
             ],
             [
                 'image'=>'mousepad.jpg',
                 'id'=>$mousepad->id,
                 'brid'=>$br3->id,
-                'mrid'=>$mr3->id
+                'mrid'=>$mr3->id,
+                'ids'=>$mousepadIds
             ],
             [
-                'image'=>'default.jpg',
-                'id'=>$keyboard->id,
+                'image'=>'laptop.jpg',
+                'id'=>$laptop->id,
                 'brid'=>$br5->id,
-                'mrid'=>$mr5->id
+                'mrid'=>$mr5->id,
+                'ids'=>$laptopIds
+            ],
+            [
+                'image'=>'monitor.jpg',
+                'id'=>$monitor->id,
+                'brid'=>$br5->id,
+                'mrid'=>$mr5->id,
+                'ids'=>$monitorIds
+            ],
+            [
+                'image'=>'computer.jpg',
+                'id'=>$computer->id,
+                'brid'=>$br5->id,
+                'mrid'=>$mr5->id,
+                'ids'=>$computerIds
             ],
             [
                 'image'=>'washingmachine.jpg',
-                'id'=>$houseprid->id,
+                'id'=>$washingmachine->id,
                 'brid'=>$br4->id,
-                'mrid'=>$mr4->id
+                'mrid'=>$mr4->id,
+                'ids'=>$washingmachineIds
+            ],
+            [
+                'image'=>'dryingmachine.jpg',
+                'id'=>$dryingmachine->id,
+                'brid'=>$br4->id,
+                'mrid'=>$mr4->id,
+                'ids'=>$dryingmachineIds
+            ],
+            [
+                'image'=>'refrigerator.jpg',
+                'id'=>$refrigerator->id,
+                'brid'=>$br4->id,
+                'mrid'=>$mr4->id,
+                'ids'=>$refrigeratorIds
+            ],
+            [
+                'image'=>'dishwasher.jpg',
+                'id'=>$dishwasher->id,
+                'brid'=>$br4->id,
+                'mrid'=>$mr4->id,
+                'ids'=>$dishwasherIds
             ],
         ];
-        for($i=0;$i <= 5;$i++){
+        for($i=0;$i <= 10000;$i++){
             $rand = array_rand($randomize);
             $randItem = $randomize[$rand];
             $product = Product::create([
@@ -278,6 +408,15 @@ class DatabaseSeeder extends Seeder
                     'product_id' => $product->id,
                 ]);
             }
+            foreach($randItem['ids'] as $infoId){
+                ProductInformation::create([
+                    'product_id' => $product->id,
+                    'information_id' => $infoId,
+                    'az' => ['body'=>'Örnək xüsusiyyət '.$i],
+                    'en' => ['body'=>'Example specification '.$i],
+                    'ru' => ['body'=>'Пример спецификации '.$i],
+                ]);
+            }
         }
         $exaproduct = Product::create([
             'merchant_id' => $randomize[rand(0,4)]['mrid'],
@@ -291,7 +430,7 @@ class DatabaseSeeder extends Seeder
             'quantity' => rand(5, 20)
         ]);
         $da = 0;
-        foreach($infoIds as $infoId){
+        foreach($mouseIds as $infoId){
             ProductInformation::create([
                 'product_id' => $exaproduct->id,
                 'information_id' => $infoId,
